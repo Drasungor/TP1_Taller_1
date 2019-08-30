@@ -1,6 +1,9 @@
 #ifndef _SUDOKU_H_
 #define _SUDOKU_H_
 
+#include <stdbool.h>
+#include "cell.h"
+
 #define BOARD_DIMENSION 9
 
 
@@ -26,8 +29,9 @@ int sudoku_set_number(sudoku_t *sudoku, int value, int vertical_position, int ho
 //Sets all player set cells to 0
 int sudoku_reset(sudoku_t *sudoku);
 
-
-
+//Indicates if the current state of the board follows
+//the rules of the game
+bool sudoku_verify(sudoku_t *sudoku);
 
 
 #endif
