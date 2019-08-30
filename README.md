@@ -18,3 +18,4 @@ DUDAS:
 - Está bien hacer un iterador interno privado para un tda? O solo ensuciaría el código del .c? (así no escribo muchas veces el doble for )
 - Esta bien poner returns y breaks en las iteraciones?
 - Otras funciones en un TDA que no sean primitivas son consideradas globales?
+- Está mal usar memset en algo que no sea strings?

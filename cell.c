@@ -38,3 +38,8 @@ int cell_set(cell_t *cell, int number){
   cell->number = number;
   return SUCCESS;
 }
+
+
+int cell_get_number(const cell_t *cell){
+  return cell->number;
+}

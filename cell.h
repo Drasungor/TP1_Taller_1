@@ -34,5 +34,7 @@ bool cell_set_as_default(cell_t *cell, int number);
 //and returns a success value
 int cell_set(cell_t *cell, int number);
 
+//Returns the number holded by the cell
+int cell_get_number(const cell_t *cell);
 
 #endif
