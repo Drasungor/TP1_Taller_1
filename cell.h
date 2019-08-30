@@ -7,6 +7,8 @@
 #define INVALID_NUMBER -1
 #define IS_DEFAULT -2
 
+#define EMPTY_CELL_VALUE 0
+
 typedef struct{
   int number;
   bool is_default;

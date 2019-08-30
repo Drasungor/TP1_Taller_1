@@ -21,7 +21,7 @@ bool cell_set_as_default(cell_t *cell, int number){
   }
 
   //VER SI DEBERIA SACAR ESTE IF
-  if (number != 0) {
+  if (number != EMPTY_CELL_VALUE) {
     cell->is_default = true;
   }
   return true;

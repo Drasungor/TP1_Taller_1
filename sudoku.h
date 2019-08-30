@@ -6,6 +6,9 @@
 
 #define BOARD_DIMENSION 9
 
+#define INVALID_NUMBER -1
+#define OUT_OF_BOUNDS -2
+#define SUCCESS 0
 
 typedef struct {
   cell_t board[BOARD_DIMENSION][BOARD_DIMENSION];
@@ -24,10 +27,10 @@ int sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIM
 //or the value that is trying to be changed is one of
 //the default non zero ones. Returns 1 on error and 0
 //on success
-int sudoku_set_number(sudoku_t *sudoku, int value, int vertical_position, int horizontal_position);
+int sudoku_set_number(sudoku_t *sudoku, int number, int vertical_position, int horizontal_position);
 
 //Sets all player set cells to 0
-int sudoku_reset(sudoku_t *sudoku);
+void sudoku_reset(sudoku_t *sudoku);
 
 //Indicates if the current state of the board follows
 //the rules of the game
