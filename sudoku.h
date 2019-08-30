@@ -12,7 +12,7 @@ typedef struct {
 //Initializes the game's beginning numbers
 //If a number is below 0 (empty space) or above 9
 //it fails and returns 1, otherwise returns 0
-int sudoku_init(sudoku_t * sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIMENSION]);
+int sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIMENSION]);
 
 
 //Sets the cell in the position specified to the
@@ -21,6 +21,13 @@ int sudoku_init(sudoku_t * sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DI
 //or the value that is trying to be changed is one of
 //the default non zero ones. Returns 1 on error and 0
 //on success
-int sudoku_set_number(sudoku_t * sudoku, int value, int vertical_position, int horizontal_position);
+int sudoku_set_number(sudoku_t *sudoku, int value, int vertical_position, int horizontal_position);
+
+//Sets all player set cells to 0
+int sudoku_reset(sudoku_t *sudoku);
+
+
+
+
 
 #endif
