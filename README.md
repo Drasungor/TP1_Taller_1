@@ -20,3 +20,6 @@ DUDAS:
 - Otras funciones en un TDA que no sean primitivas son consideradas globales?
 - Está mal usar memset en algo que no sea strings?
 - Por qué se pone const puntero si en vez de eso se puede pasar una copia del tda y así se asegura que no se puede cambiar?
+- Estoy mezclando cosas si en el init del sudoku leo el archivo?
+- Programo las cosas independientemente de lo que se pida? (ej: se chequea que en la inicializacion el sudoku reciba numeros de 0 a 9 aunque no se vaya a recibir un archivo mal hecho)
+- No puedo usar fgets porque retorna un char* que no puedo guardar de forma que no me rompa el compilador

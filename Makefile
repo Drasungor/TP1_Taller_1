@@ -19,7 +19,7 @@ extension = c
 #fuentes = entrada.cpp
 
 # Si usa funciones de math.h, descomentar (quitar el '#' a) la siguiente línea.
-math = si
+#math = si
 
 # Si usa threads, descomentar (quitar el '#' a) la siguiente línea.
 #threads = si
@@ -148,4 +148,3 @@ $(target): $(o_files)
 
 clean:
 	$(RM) $(o_files) $(target)
-

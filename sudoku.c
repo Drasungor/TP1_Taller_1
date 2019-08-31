@@ -1,10 +1,13 @@
+#define _POSIX_C_SOURCE 200809L
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "sudoku.h"
 #include "cell.h"
 
 #define BLOCK_DIMENSION 3
+#define CHARACTERS_BY_LINE 18
 
 //PASAR LOS NUMEROS A CONSTANTES
 #define IS_BOUNDED(x) ((x>=1) && (x<=9))
@@ -177,6 +180,43 @@ int sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIM
   }
   return SUCCESS;
 }
+
+
+
+int sudoku_init_with_file(sudoku_t *sudoku){
+
+  FILE *sudoku_file =  fopen("sudoku.txt", "r");
+  if (!sudoku_file) {
+    return FILE_ERROR;
+  }
+
+  char *line;
+  size_t size;
+  char num[2];
+  num[1] = '\0';
+
+
+  //VER SI HAY QUE AGREGAR CHEQUEOS DE VALORES USADOS
+  //PARA INICIALIZAR
+  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
+    //VER SI SE PUEDE SOLUCIONAR ESTE COMENTARIO DE ABAJO
+    //fgets throws error for unused return value
+    size = getline(&line, &size, sudoku_file);
+    for (size_t j = 0; j < BOARD_DIMENSION; j++) {
+      num[0] = line[2*j];
+      cell_set_as_default(&(sudoku->board[i][j]), atoi(num));
+    }
+    free(line);
+  }
+
+  fclose(sudoku_file);
+
+  //VER SI NO TIENE SENTIDO QUE RETORNE ALGO, TAL VEZ SE
+  //CAMBIE POR VOID
+  return SUCCESS;
+
+}
+
 
 
 //Sets the cell in the position specified to the

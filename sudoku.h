@@ -8,6 +8,7 @@
 
 #define INVALID_NUMBER -1
 #define OUT_OF_BOUNDS -2
+#define FILE_ERROR -3
 #define SUCCESS 0
 
 typedef struct {
@@ -19,6 +20,8 @@ typedef struct {
 //If a number is below 0 (empty space) or above 9
 //it fails and returns 1, otherwise returns 0
 int sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIMENSION]);
+
+int sudoku_init_with_file(sudoku_t *sudoku);
 
 
 //Sets the cell in the position specified to the
