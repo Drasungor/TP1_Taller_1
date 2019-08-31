@@ -206,3 +206,12 @@ void sudoku_reset(sudoku_t *sudoku){
 bool sudoku_verify(sudoku_t *sudoku){
   return verify_blocks(sudoku) && verify_rows(sudoku) && verify_columns(sudoku);
 }
+
+
+void sudoku_get_board(sudoku_t *sudoku, int destiny[BOARD_DIMENSION][BOARD_DIMENSION]){
+  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
+    for (size_t j = 0; j < BOARD_DIMENSION; j++) {
+      destiny[i][j] = cell_get_number(&(sudoku->board[i][j]));
+    }
+  }
+}

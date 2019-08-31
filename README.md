@@ -6,7 +6,7 @@ TO DO:
 - See if functions return bools or ints to indicate errors (correct the ones that return ints if bool are chosen)
 - Achicar verify_block, leer comentarios de todo el codigo escrito
 - Ver si se pueden generalizar los verify en uno solo
-
+- Ver si es mejor devolver memoria dinamica en vez de pasar una matriz por parametro a sudoku_get_board
 
 
 
@@ -19,3 +19,4 @@ DUDAS:
 - Esta bien poner returns y breaks en las iteraciones?
 - Otras funciones en un TDA que no sean primitivas son consideradas globales?
 - Está mal usar memset en algo que no sea strings?
+- Por qué se pone const puntero si en vez de eso se puede pasar una copia del tda y así se asegura que no se puede cambiar?
