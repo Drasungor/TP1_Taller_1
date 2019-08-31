@@ -7,7 +7,7 @@ TO DO:
 - Achicar verify_block, leer comentarios de todo el codigo escrito
 - Ver si se pueden generalizar los verify en uno solo
 - Ver si es mejor devolver memoria dinamica en vez de pasar una matriz por parametro a sudoku_get_board
-
+- Cambiar el atoi por una función char_to_int para no tener que pasar las cosas a un array
 
 
 DUDAS:
@@ -23,3 +23,4 @@ DUDAS:
 - Estoy mezclando cosas si en el init del sudoku leo el archivo?
 - Programo las cosas independientemente de lo que se pida? (ej: se chequea que en la inicializacion el sudoku reciba numeros de 0 a 9 aunque no se vaya a recibir un archivo mal hecho)
 - No puedo usar fgets porque retorna un char* que no puedo guardar de forma que no me rompa el compilador
+- Usamos setsockopt para ver si la dirección no está disponible por un TIME_WAIT?
