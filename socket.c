@@ -2,12 +2,13 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
 #include "socket.h"
 
 
-typedef int (*linking_function_t) (int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+typedef int (*linking_function_t) (int socket_fd, const struct sockaddr *addr, socklen_t addr_len);
 
 /*
 //Iterates the list while the visit function returns true
@@ -63,7 +64,7 @@ bool process_info_to_link(struct addrinfo* info, int *socket_fd, linking_functio
     *socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
     if (*socket_fd != -1) {
       link_value = link(*socket_fd, info->ai_addr, info->ai_addrlen);
-      if (connect_value == -1) {
+      if (link_value == -1) {
         close(*socket_fd);
       } else{
         is_linked = true;
@@ -76,53 +77,61 @@ bool process_info_to_link(struct addrinfo* info, int *socket_fd, linking_functio
 
 
 
-void socket_init(socket_t *socket){
-  socket->file_descriptor = 0;
-  memset(&(socket->hints), 0, sizeof(struct addrinfo));
-  socket->hints.ai_family = AF_INET;
-  socket->hints.ai_socktype = SOCK_STREAM;
+void socket_init(socket_t *sckt){
+  sckt->file_descriptor = 0;
+  memset(&(sckt->hints), 0, sizeof(struct addrinfo));
+  sckt->hints.ai_family = AF_INET;
+  sckt->hints.ai_socktype = SOCK_STREAM;
+  sckt->is_client = false;
+  sckt->is_server = false;
+  sckt->client = 0;
 }
 
 void socket_release(socket_t *socket){
 }
 
-int socket_bind_and_listen(socket_t *socket, const char *service){
+int socket_bind_and_listen(socket_t *sckt, const char *service){
   int info_result = 0;
   bool is_bounded = false;
   int socket_fd = 0;
-  socket->hints.ai_flags = AI_PASSIVE;
+  sckt->hints.ai_flags = AI_PASSIVE;
   struct addrinfo *result;
 
-  info_result = getaddrinfo(NULL, service, &(socket->hints), &result);
+  info_result = getaddrinfo(NULL, service, &(sckt->hints), &result);
   if (info_result != 0) {
     //VER SI HAY QUE IMPRIMIR UN MENSAJE DE ERROR
     return info_result;
   }
-  is_bounded = process_info_to_link(result, &socket_fd, bound);
+  is_bounded = process_info_to_link(result, &socket_fd, bind);
   freeaddrinfo(result);
   if (!is_bounded) {
     return BOUNDING_ERROR;
   }
-  socket->file_descriptor = socket_fd;
+  sckt->file_descriptor = socket_fd;
   return SUCCESS;
 }
 
-int socket_connect(socket_t *socket, const char *host, const char *service){
+int socket_connect(socket_t *sckt, const char *host, const char *service){
   int info_result = 0;
   bool is_connected = false;
-  socket->hints.ai_flags = 0;
+  int socket_fd = 0;
+  sckt->hints.ai_flags = 0;
   struct addrinfo *result;
 
-  info_result = getaddrinfo(host, service, &(socket->hints), &result);
+  if (sckt->is_server) {
+    return false;
+  }
+  info_result = getaddrinfo(host, service, &(sckt->hints), &result);
   if (info_result != 0) {
     //VER SI HAY QUE IMPRIMIR UN MENSAJE DE ERROR
     return info_result;
   }
-  is_connected = process_info_to_link(result, &socket_fd, listen);
+  is_connected = process_info_to_link(result, &socket_fd, connect);
   freeaddrinfo(result);
   if (!is_connected) {
     return CONNECTION_ERROR;
   }
-  socket->file_descriptor = socket_fd;
+  sckt->file_descriptor = socket_fd;
+  sckt->is_client = true;
   return SUCCESS;
 }
