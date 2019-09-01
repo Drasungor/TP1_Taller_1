@@ -77,6 +77,14 @@ bool process_info_to_link(struct addrinfo* info, int *socket_fd, linking_functio
 
 
 
+int get_fd(socket_t *sckt){
+  if (sckt->is_server) {
+    return sckt->client_fd;
+  }
+  return sckt->fd;
+}
+
+
 void socket_init(socket_t *sckt){
   sckt->fd = 0;
   memset(&(sckt->hints), 0, sizeof(struct addrinfo));
@@ -88,7 +96,16 @@ void socket_init(socket_t *sckt){
   sckt->can_accept = false;
 }
 
-void socket_release(socket_t *socket){
+void socket_release(socket_t *sckt){
+  if (sckt->is_server) {
+    shutdown(sckt->client_fd, SHUT_RDWR);
+    close(sckt->client_fd);
+  }
+  if (sckt->is_server || sckt->is_client) {
+    shutdown(sckt->fd, SHUT_RDWR);
+    close(sckt->fd);
+  }
+
 }
 
 int socket_bind_and_listen(socket_t *sckt, const char *service){
@@ -168,21 +185,43 @@ int soket_send(socket_t *sckt, const void *buffer, size_t element_len, void (*co
 }
 */
 
+
 //PREGUNTA: CONVIENE HACER QUE ENVIE UN ARRAY DE DATOS EN VEZ DEUN SOLO CONJUNTO DE DATOS?
 //VER SI CONVIENE QUE DEVUELVA UN INT (TAL VEZ SE DEVUELVE INT POR SI SE
 //AGREGAN DESPUÉS OTROS TIPOS DE ERRORES QUE SE QUIERAN DEVOLVER)
 bool soket_send(socket_t *sckt, const void *buffer, size_t len){
   size_t total_bytes_sent = 0;
   size_t current_bytes_sent = 0;
+  int fd = get_fd(sckt);
   const char *current_address = buffer;
   //VER SI SACO EL RETURN DEL WHILE POR SI QUEDA MUY MAL
-  do {
-    current_bytes_sent = send(sckt->fd, buffer, len - total_bytes_sent, MSG_NOSIGNAL);
+
+  while (total_bytes_sent < len) {
+    current_bytes_sent = send(fd, current_address, len - total_bytes_sent, MSG_NOSIGNAL);
     if (current_bytes_sent < 1) {
       return false;
     }
     current_address += current_bytes_sent;
     total_bytes_sent += current_bytes_sent;
-  } while(total_bytes_sent < len);
+  }
+  return true;
+}
+
+//VER SI SE PUEDE COMBINAR EN UNA UNICA FUNCION QUE RECIBA
+//Y QUE ENVIE, HAY PROBLEMA CON QUE UN BUFFER ES CONST Y EL OTRO NO
+bool soket_receive(socket_t *sckt, void *buffer, size_t len){
+  int total_bytes_received = 0;
+  int current_bytes_received = 0;
+  int fd = get_fd(sckt);
+  char *current_address = buffer;
+
+  while (current_bytes_received < len) {
+    current_bytes_received = recv(fd, current_address, len - current_bytes_received, MSG_NOSIGNAL);
+    if (current_bytes_received < 1) {
+      return false;
+    }
+    current_address += current_bytes_received;
+    total_bytes_received += current_bytes_received;
+  }
   return true;
 }
