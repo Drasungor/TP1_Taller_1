@@ -175,7 +175,7 @@ bool soket_send(socket_t *sckt, const void *buffer, size_t len){
   size_t total_bytes_sent = 0;
   size_t current_bytes_sent = 0;
   const char *current_address = buffer;
-  //VER SI SACO EL RETURN DEL WHILE
+  //VER SI SACO EL RETURN DEL WHILE POR SI QUEDA MUY MAL
   do {
     current_bytes_sent = send(sckt->fd, buffer, len - total_bytes_sent, MSG_NOSIGNAL);
     if (current_bytes_sent < 1) {
