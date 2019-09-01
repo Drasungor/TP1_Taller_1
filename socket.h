@@ -1,6 +1,8 @@
 #ifndef _SOCKET_H_
 #define  _SOCKET_H_
 
+#define SUCCESS 0
+#define CONNECTION_ERROR -1
 
 typedef struct{
   int file_descriptor;
