@@ -160,7 +160,29 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
 }
 
 
+//PREGUNTA: CONVIENE USAR ESTA IMPLEMENTACION DE SEND?
+/*
 int soket_send(socket_t *sckt, const void *buffer, size_t element_len, void (*convert_endian)(void*, void*)){
 
   return htonl(3);
+}
+*/
+
+//PREGUNTA: CONVIENE HACER QUE ENVIE UN ARRAY DE DATOS EN VEZ DEUN SOLO CONJUNTO DE DATOS?
+//VER SI CONVIENE QUE DEVUELVA UN INT (TAL VEZ SE DEVUELVE INT POR SI SE
+//AGREGAN DESPUÉS OTROS TIPOS DE ERRORES QUE SE QUIERAN DEVOLVER)
+bool soket_send(socket_t *sckt, const void *buffer, size_t len){
+  size_t total_bytes_sent = 0;
+  size_t current_bytes_sent = 0;
+  void *current_address = buffer;
+  //VER SI SACO EL RETURN DEL WHILE
+  do {
+    current_bytes_sent = send(sckt->fd, buffer, len - total_bytes_sent, MSG_NOSIGNAL);
+    if (current_bytes_sent < 1) {
+      return false;
+    }
+    current_address += current_bytes_sent;
+    total_bytes_sent += current_bytes_sent;
+  } while(total_bytes_sent < len);
+  return true;
 }

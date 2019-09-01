@@ -27,3 +27,4 @@ DUDAS:
 - Usamos setsockopt para ver si la dirección no está disponible por un TIME_WAIT?
 - Las constantes de las bibliotecas van en el .c o en el .h?
 - IMPORTANTE: Está bien usar iteradores para no reescribir la iteración por toda una estructura? O es demasiado confuso?
+- IMPORANTE: Ver dudas en socket_send.
