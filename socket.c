@@ -9,6 +9,7 @@
 
 typedef int (*linking_function_t) (int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
+/*
 //Iterates the list while the visit function returns true
 void iterate_addrinfo_list(struct addrinfo *element, bool (*visit)(struct addrinfo*, void *extra), void *extra){
   while ((element != NULL) && (visit(element, extra))) {
@@ -16,7 +17,6 @@ void iterate_addrinfo_list(struct addrinfo *element, bool (*visit)(struct addrin
   }
 }
 
-/*
 //Tries to bind an addess.
 //Returns true if it fails, false otherwise
 bool process_info_to_bind(struct addrinfo* info, void *extra){
@@ -51,21 +51,27 @@ bool process_info_to_connect(struct addrinfo* info, void *extra){
 }
 */
 
-bool process_info_to_link(struct addrinfo* info, linking_function_t link){
+//Gets a socket and executes the linking function.
+//Returns true if it succeeds and false if it fails,
+//in which case the socked_fd value must be ignored
+bool process_info_to_link(struct addrinfo* info, int *socket_fd, linking_function_t link){
   int link_value = 0;
-  bool *is_connected = (bool*)extra;
+  bool is_linked = false;
 
-  int socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
-  if (socket_fd == -1) {
-    return true;
+  //VER SI SE PUEDE SACAR LA "ESCALERA DE LLAVES"
+  while ((info != NULL) && (!is_linked)) {
+    *socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
+    if (*socket_fd != -1) {
+      link_value = link(*socket_fd, info->ai_addr, info->ai_addrlen);
+      if (connect_value == -1) {
+        close(*socket_fd);
+      } else{
+        is_linked = true;
+      }
+    }
+    info = info->ai_next;
   }
-  connect_value = connect(socket_fd, info->ai_addr, info->ai_addrlen);
-  if (connect_value == -1) {
-    close(socket_fd);
-    return true;
-  }
-  *is_connected = false;
-  return false;
+  return is_linked;
 }
 
 
@@ -83,6 +89,7 @@ void socket_release(socket_t *socket){
 int socket_bind_and_listen(socket_t *socket, const char *service){
   int info_result = 0;
   bool is_bounded = false;
+  int socket_fd = 0;
   socket->hints.ai_flags = AI_PASSIVE;
   struct addrinfo *result;
 
@@ -91,8 +98,12 @@ int socket_bind_and_listen(socket_t *socket, const char *service){
     //VER SI HAY QUE IMPRIMIR UN MENSAJE DE ERROR
     return info_result;
   }
-  iterate_addrinfo_list(result, process_info_to_bind, &is_bounded);
+  is_bounded = process_info_to_link(result, &socket_fd, bound);
   freeaddrinfo(result);
+  if (!is_bounded) {
+    return BOUNDING_ERROR;
+  }
+  socket->file_descriptor = socket_fd;
   return SUCCESS;
 }
 
@@ -107,10 +118,11 @@ int socket_connect(socket_t *socket, const char *host, const char *service){
     //VER SI HAY QUE IMPRIMIR UN MENSAJE DE ERROR
     return info_result;
   }
-  iterate_addrinfo_list(result, process_info_to_connect, &is_connected);
+  is_connected = process_info_to_link(result, &socket_fd, listen);
   freeaddrinfo(result);
   if (!is_connected) {
     return CONNECTION_ERROR;
   }
+  socket->file_descriptor = socket_fd;
   return SUCCESS;
 }

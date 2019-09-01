@@ -3,6 +3,7 @@
 
 #define SUCCESS 0
 #define CONNECTION_ERROR -1
+#define BOUNDING_ERROR -2
 
 typedef struct{
   int file_descriptor;
