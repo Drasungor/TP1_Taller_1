@@ -8,6 +8,7 @@ TO DO:
 - Ver si se pueden generalizar los verify en uno solo
 - Ver si es mejor devolver memoria dinamica en vez de pasar una matriz por parametro a sudoku_get_board
 - Cambiar el atoi por una función char_to_int para no tener que pasar las cosas a un array
+- Hacer para socket un handler de cliente y un handler de server
 
 
 DUDAS:

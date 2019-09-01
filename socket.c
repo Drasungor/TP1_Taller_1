@@ -78,21 +78,27 @@ bool process_info_to_link(struct addrinfo* info, int *socket_fd, linking_functio
 
 
 void socket_init(socket_t *sckt){
-  sckt->file_descriptor = 0;
+  sckt->fd = 0;
   memset(&(sckt->hints), 0, sizeof(struct addrinfo));
   sckt->hints.ai_family = AF_INET;
   sckt->hints.ai_socktype = SOCK_STREAM;
   sckt->is_client = false;
   sckt->is_server = false;
   sckt->client = 0;
+  sckt->can_accept = false;
 }
 
 void socket_release(socket_t *socket){
 }
 
 int socket_bind_and_listen(socket_t *sckt, const char *service){
+  if (sckt->is_client) {
+    return false;
+  }
+
   int info_result = 0;
-  bool is_bounded = false;
+  bool is_bound = false;
+  int listen_value = 0;
   int socket_fd = 0;
   sckt->hints.ai_flags = AI_PASSIVE;
   struct addrinfo *result;
@@ -102,25 +108,42 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
     //VER SI HAY QUE IMPRIMIR UN MENSAJE DE ERROR
     return info_result;
   }
-  is_bounded = process_info_to_link(result, &socket_fd, bind);
+  is_bound = process_info_to_link(result, &socket_fd, bind);
   freeaddrinfo(result);
   if (!is_bounded) {
-    return BOUNDING_ERROR;
+    return BINDING_ERROR;
   }
-  sckt->file_descriptor = socket_fd;
+  sckt->fd = socket_fd;
+  listen_value = listen(sckt->fd, 1);
+  if (listen_value != 0) {
+    return LISTEN_ERROR;
+  }
+  sckt->can_accept = true;
+  return SUCCESS;
+}
+
+int socket_accept(socket_t *sckt){
+  if (!can_accept) {
+    return INVALID_ACTION;
+  }
+  sckt->client_fd = accept(sckt->fd, NULL, NULL);
+  if (sckt->client_fd == -1) {
+    return ACCEPT_ERROR;
+  }
   return SUCCESS;
 }
 
 int socket_connect(socket_t *sckt, const char *host, const char *service){
+  if (sckt->is_server) {
+    return false;
+  }
+
   int info_result = 0;
   bool is_connected = false;
   int socket_fd = 0;
   sckt->hints.ai_flags = 0;
   struct addrinfo *result;
 
-  if (sckt->is_server) {
-    return false;
-  }
   info_result = getaddrinfo(host, service, &(sckt->hints), &result);
   if (info_result != 0) {
     //VER SI HAY QUE IMPRIMIR UN MENSAJE DE ERROR
@@ -131,7 +154,7 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
   if (!is_connected) {
     return CONNECTION_ERROR;
   }
-  sckt->file_descriptor = socket_fd;
+  sckt->fd = socket_fd;
   sckt->is_client = true;
   return SUCCESS;
 }
