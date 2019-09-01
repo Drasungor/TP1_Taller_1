@@ -40,7 +40,7 @@ int main(int argc, char const *argv[]) {
       socket_release(&sckt);
       return 1;
     }
-    if (!soket_send(&sckt, argv[2], 4)) {
+    if (!soket_send(&sckt, argv[3], 4)) {
       printf("Error en send\n");
       socket_release(&sckt);
       return 1;
