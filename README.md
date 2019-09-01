@@ -25,3 +25,4 @@ DUDAS:
 - No puedo usar fgets porque retorna un char* que no puedo guardar de forma que no me rompa el compilador
 - Usamos setsockopt para ver si la dirección no está disponible por un TIME_WAIT?
 - Las constantes de las bibliotecas van en el .c o en el .h?
+- IMPORTANTE: Está bien usar iteradores para no reescribir la iteración por toda una estructura? O es demasiado confuso?
