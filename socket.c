@@ -174,7 +174,7 @@ int soket_send(socket_t *sckt, const void *buffer, size_t element_len, void (*co
 bool soket_send(socket_t *sckt, const void *buffer, size_t len){
   size_t total_bytes_sent = 0;
   size_t current_bytes_sent = 0;
-  void *current_address = buffer;
+  const char *current_address = buffer;
   //VER SI SACO EL RETURN DEL WHILE
   do {
     current_bytes_sent = send(sckt->fd, buffer, len - total_bytes_sent, MSG_NOSIGNAL);
