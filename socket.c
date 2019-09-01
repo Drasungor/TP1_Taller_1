@@ -136,6 +136,7 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
     return LISTEN_ERROR;
   }
   sckt->can_accept = true;
+  sckt->is_server = true;
   return SUCCESS;
 }
 
