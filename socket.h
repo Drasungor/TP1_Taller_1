@@ -3,7 +3,9 @@
 
 
 typedef struct{
-
+  int file_descriptor;
+  //VER SI NO VALE LA PENA GUARDARLO PARA INICIALIZARLO UNA SOLA VEZ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  struct addrinfo hints;
 }socket_t;
 
 

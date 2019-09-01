@@ -24,3 +24,4 @@ DUDAS:
 - Programo las cosas independientemente de lo que se pida? (ej: se chequea que en la inicializacion el sudoku reciba numeros de 0 a 9 aunque no se vaya a recibir un archivo mal hecho)
 - No puedo usar fgets porque retorna un char* que no puedo guardar de forma que no me rompa el compilador
 - Usamos setsockopt para ver si la dirección no está disponible por un TIME_WAIT?
+- Las constantes de las bibliotecas van en el .c o en el .h?
