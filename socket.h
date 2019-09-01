@@ -8,6 +8,8 @@
 #define INVALID_ACTION -4
 #define ACCEPT_ERROR -5
 
+
+//VER SI HAY QUE CAMBIAR ATRIBUTOS DEL STRUCT PORQUE PUEDE SER QUE ESTO SEA MUY ASQUEROSO
 typedef struct{
   int fd;
   //VER SI NO VALE LA PENA GUARDARLO PARA INICIALIZARLO UNA SOLA VEZ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -34,6 +36,6 @@ int socket_accept(socket_t *sckt);
 
 int socket_connect(socket_t *sckt, const char *host, const char *service);
 
-
+int soket_send(socket_t *sckt);
 
 #endif

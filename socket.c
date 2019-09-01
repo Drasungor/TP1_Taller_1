@@ -84,7 +84,7 @@ void socket_init(socket_t *sckt){
   sckt->hints.ai_socktype = SOCK_STREAM;
   sckt->is_client = false;
   sckt->is_server = false;
-  sckt->client = 0;
+  sckt->client_fd = 0;
   sckt->can_accept = false;
 }
 
@@ -110,7 +110,7 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
   }
   is_bound = process_info_to_link(result, &socket_fd, bind);
   freeaddrinfo(result);
-  if (!is_bounded) {
+  if (!is_bound) {
     return BINDING_ERROR;
   }
   sckt->fd = socket_fd;
@@ -123,7 +123,7 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
 }
 
 int socket_accept(socket_t *sckt){
-  if (!can_accept) {
+  if (!sckt->can_accept) {
     return INVALID_ACTION;
   }
   sckt->client_fd = accept(sckt->fd, NULL, NULL);
@@ -157,4 +157,10 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
   sckt->fd = socket_fd;
   sckt->is_client = true;
   return SUCCESS;
+}
+
+
+int soket_send(socket_t *sckt, const void *buffer, size_t element_len, void (*convert_endian)(void*, void*)){
+
+  return htonl(3);
 }
