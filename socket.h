@@ -1,6 +1,13 @@
 #ifndef _SOCKET_H_
 #define  _SOCKET_H_
 
+#define _POSIX_C_SOURCE 200112L
+#include <stdbool.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <unistd.h>
+
 #define SUCCESS 0
 #define CONNECTION_ERROR -1
 #define BINDING_ERROR -2
