@@ -12,6 +12,7 @@ TO DO:
 - Implementar send y receive para socket
 - Cambiar sudoku_init_with_file a sudoku_init
 - Implementar sudoku_release (hay que hacer release a todas las celulas del tablero)
+- Arreglar el funcionamiento de sudoku_verify (se fija tambien que no haya casilleros vacíos, los cuales en realidad debería ignorar)
 
 DUDAS:
 
@@ -33,3 +34,4 @@ DUDAS:
 - Está mal incluir un header solo por los defines? (incluyo server.h en client para que solo esten definidos en un único lugar los caracteres de los comandos para no tenes que cambiarlos en distintos lugares en caso de alguna modificación)
 - IMPORTANTE: ver duda en verify de server.c
 - Me tira que hints es un tipo incompleto de dato y para arreglarlo tengo q incluir posix en archivos q no usan sockets explicitamente ¿Lo puedo arreglar de otra manera?
+- IMPORTANTE: que conviene: ¿Pasar un array como parametro y modificarlo para que guarde lo que queramos?¿O devolverlo con memoria dinamica?

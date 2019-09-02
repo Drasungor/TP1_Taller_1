@@ -6,9 +6,31 @@
 
 #define SUDOKU_VERIFIES "OK\n"
 #define SUDOKU_DOESNT_VERIFY "ERROR\n"
-#define BYTES_FOR_PUT 4
+#define PUT_BYTES_RECEIVED 4
+#define PUT_INDEX_NUMBER 0
+#define PUT_INDEX_VERTICAL_POS 1
+#define PUT_INDEX_HORIZONTAL_POS 2
+#define NON_MODIFIABLE_CELL_MESSAGE "La celda indicada no es modificable\n"
+#define HORIZONTAL_DIM_PRINTED_BOARD 37
+#define VERTICAL_DIM_PRINTED_BOARD 19
 
-char get_command(socket_t *sckt){
+
+int send_message(socket_t *sckt, char *message){
+  uint32_t number_of_chars = strlen(message);
+
+  //ESTÁ MAL LLAMAR A htonl ACÁ? NO ESTÁ A OTRO NIVEL ESTA FUNCIÓN?
+  uint32_t number_to_send = htonl(number_of_chars);
+  if (!socket_send(sckt, &number_to_send, sizeof(uint32_t))) {
+    return SOCKET_ERROR;
+  }
+  if (!socket_send(sckt, message, number_of_chars * sizeof(uint32_t))) {
+    return SOCKET_ERROR;
+  }
+  return SUCCESS;
+}
+
+
+char receive_command(socket_t *sckt){
   char command = 0;
   if (!socket_receive(sckt, &command, sizeof(char))) {
     return SOCKET_ERROR;
@@ -24,8 +46,22 @@ int get(server_t *server){
 }
 
 int put(server_t *server){
+  char *message = NON_MODIFIABLE_CELL_MESSAGE;
+  uint8_t values[PUT_BYTES_RECEIVED-1];
 
-
+  if (!socket_receive(&(server->sckt), values, (PUT_BYTES_RECEIVED-1) * sizeof(uint8_t))) {
+    return SOCKET_ERROR;
+  }
+  //CAMBIAR EL LLAMADO AL ARRAY EN CADA POSICION POR EL NOMBRE DE UNA VARIABLE ASIGNADA ANTES
+  //O PONER DIRECTAMENTE EL INDICE (PERO HACIENDO ESO TAL VEZ NO SE ENTIENDE FACIL AL LEER)
+  if (sudoku_set_number(&(server->sudoku), values[PUT_INDEX_NUMBER], values[PUT_INDEX_VERTICAL_POS], values[PUT_INDEX_HORIZONTAL_POS]) != SUCCESS) {
+    if (send_message(&(server->sckt), message) != SUCCESS) {
+      return SOCKET_ERROR;
+    }
+  } else {
+    //HACER CHEQUEO DE VALOR DE RETORNO DE GET
+    get(server);
+  }
 
   return SUCCESS;
 }
@@ -35,14 +71,7 @@ int verify(server_t *server){
   if (!sudoku_verify(&(server->sudoku))) {
     message = SUDOKU_DOESNT_VERIFY;
   }
-  uint32_t number_of_chars = strlen(message);
-
-  //ESTÁ MAL LLAMAR A htonl ACÁ? NO ESTÁ A OTRO NIVEL ESTA FUNCIÓN?
-  uint32_t number_to_send = htonl(number_of_chars);
-  if (!socket_send(&(server->sckt), &number_to_send, sizeof(uint32_t))) {
-    return SOCKET_ERROR;
-  }
-  if (!socket_send(&(server->sckt), message, number_of_chars * sizeof(uint32_t))) {
+  if (send_message(&(server->sckt), message) != SUCCESS) {
     return SOCKET_ERROR;
   }
   return SUCCESS;
@@ -107,7 +136,7 @@ void server_release(server_t *server){
 int operate(server_t *server){
   //PONER TODO EN UN LOOP DE WHILE IS CONNECTED O ALGO ASI
 
-  char command = get_command(&(server->sckt));
+  char command = receive_command(&(server->sckt));
   //HACER CHEQUEO DE LO QUE DEVUELVE
   process_command(server, command);
 
