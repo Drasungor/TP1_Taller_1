@@ -15,11 +15,12 @@
 #define VERTICAL_DIM_PRINTED_BOARD 19
 
 
-int send_message(socket_t *sckt, char *message){
-  uint32_t number_of_chars = strlen(message);
+int send_data(socket_t *sckt, void *message, uint32_t len){
+  //uint32_t number_of_chars = strlen(message);
 
   //ESTÁ MAL LLAMAR A htonl ACÁ? NO ESTÁ A OTRO NIVEL ESTA FUNCIÓN?
-  uint32_t number_to_send = htonl(number_of_chars);
+  //uint32_t number_to_send = htonl(number_of_chars);
+  uint32_t number_to_send = htonl(len);
   if (!socket_send(sckt, &number_to_send, sizeof(uint32_t))) {
     return SOCKET_ERROR;
   }
@@ -63,6 +64,9 @@ void initialize_limits(char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_D
 
 
 char int_to_char(int n){
+  if (n == 0) {
+    return ' ';
+  }
   return n+ 48;
 }
 
@@ -88,8 +92,9 @@ int get(server_t *server){
   int sudoku_board[9][9];
   sudoku_get_board(&(server->sudoku), sudoku_board);
   process_board(sudoku_board, board);
-
-  //AGREGAR CHEQUEOS DE ERRORES
+  if (!send_data(&(server->sudoku), board, VERTICAL_DIM_PRINTED_BOARD * HORIZONTAL_DIM_PRINTED_BOARD * sizeof(char))) {
+    return SOCKET_ERROR;
+  }
   return SUCCESS;
 }
 
@@ -103,7 +108,7 @@ int put(server_t *server){
   //CAMBIAR EL LLAMADO AL ARRAY EN CADA POSICION POR EL NOMBRE DE UNA VARIABLE ASIGNADA ANTES
   //O PONER DIRECTAMENTE EL INDICE (PERO HACIENDO ESO TAL VEZ NO SE ENTIENDE FACIL AL LEER)
   if (sudoku_set_number(&(server->sudoku), values[PUT_INDEX_NUMBER], values[PUT_INDEX_VERTICAL_POS], values[PUT_INDEX_HORIZONTAL_POS]) != SUCCESS) {
-    if (send_message(&(server->sckt), message) != SUCCESS) {
+    if (send_data(&(server->sckt), message, strlen(message)) != SUCCESS) {
       return SOCKET_ERROR;
     }
   } else {
@@ -119,7 +124,7 @@ int verify(server_t *server){
   if (!sudoku_verify(&(server->sudoku))) {
     message = SUDOKU_DOESNT_VERIFY;
   }
-  if (send_message(&(server->sckt), message) != SUCCESS) {
+  if (send_data(&(server->sckt), message, strlen(message)) != SUCCESS) {
     return SOCKET_ERROR;
   }
   return SUCCESS;
@@ -183,11 +188,15 @@ void server_release(server_t *server){
 
 int operate(server_t *server){
   //PONER TODO EN UN LOOP DE WHILE IS CONNECTED O ALGO ASI
+  int programm_state = SUCCESS;
+  char command = receive_command(&(server->sckt);
+  while ((programm_state == SUCCESS) && (command != SOCKET_ERROR)) {
+    programm_state = process_command(server, command);
+    command = receive_command(&(server->sckt));
+  }
 
-  char command = receive_command(&(server->sckt));
-  //HACER CHEQUEO DE LO QUE DEVUELVE
-  process_command(server, command);
-
+  //VA A SALIR SOLO CUANDO RECIBA UN ERROR, XQ LO VA A RECIBIR CUANDO CIERRE EL SOCKET
+  //DEL CLIENTE
 
   return SUCCESS;
 }

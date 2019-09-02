@@ -13,7 +13,8 @@ TO DO:
 - Cambiar sudoku_init_with_file a sudoku_init
 - Implementar sudoku_release (hay que hacer release a todas las celulas del tablero)
 - Arreglar el funcionamiento de sudoku_verify (se fija tambien que no haya casilleros vacíos, los cuales en realidad debería ignorar)
-- agregar static a todas las funciones que no estén declaradas en el .h
+- Agregar static a todas las funciones que no estén declaradas en el .h
+- Arreglar la forma en la que se mandan los mensajes del server al cliente, la cantidad de caracteres que se van a recibir tiene que estar concatenada con los caracteres, y tiene que estar al principio del buffer
 
 DUDAS:
 

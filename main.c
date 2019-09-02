@@ -12,6 +12,9 @@ int main(int argc, char const *argv[]) {
     printf("Cantidad incorrecta de parametros\n");
   }
   */
+
+  server_t server;
+
   socket_t sckt;
 
   socket_init(&sckt);
