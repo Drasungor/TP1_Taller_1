@@ -201,6 +201,8 @@ int sudoku_init_with_file(sudoku_t *sudoku){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     //VER SI SE PUEDE SOLUCIONAR ESTE COMENTARIO DE ABAJO
     //fgets throws error for unused return value
+    line = NULL;
+    size = 0;
     size = getline(&line, &size, sudoku_file);
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
       num[0] = line[2*j];
