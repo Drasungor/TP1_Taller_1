@@ -38,6 +38,24 @@ char receive_command(socket_t *sckt){
   return command;
 }
 
+
+//
+void set_char(){
+
+}
+
+
+void initialize_limits(char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
+
+}
+
+//CAMBIAR LOS 9 POR CTES
+//translates the board returned by sudoku to the one that the server
+//has to return
+void process_board(int source[9][9], char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
+
+}
+
 int get(server_t *server){
 
 

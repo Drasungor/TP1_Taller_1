@@ -44,6 +44,6 @@ bool sudoku_verify(sudoku_t *sudoku);
 
 //Copies the current state of the board in destiny
 //VER SI CONVIENE DEVOLVER UN PUNTERO CON MEMORIA DINAMICA
-void sudoku_get_board(sudoku_t *sudoku, int destiny[BOARD_DIMENSION][BOARD_DIMENSION]);
+void sudoku_get_board(sudoku_t *sudoku, int destination[BOARD_DIMENSION][BOARD_DIMENSION]);
 
 #endif
