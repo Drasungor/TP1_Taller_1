@@ -10,6 +10,7 @@ TO DO:
 - Cambiar el atoi por una función char_to_int para no tener que pasar las cosas a un array
 - Hacer para socket un handler de cliente y un handler de server
 - Implementar send y receive para socket
+- Cambiar sudoku_init_with_file a sudoku_init
 
 DUDAS:
 
@@ -28,3 +29,4 @@ DUDAS:
 - Las constantes de las bibliotecas van en el .c o en el .h?
 - IMPORTANTE: Está bien usar iteradores para no reescribir la iteración por toda una estructura? O es demasiado confuso?
 - IMPORANTE: Ver dudas en socket_send.
+- Está mal incluir un header solo por los defines? (incluyo server.h en client para que solo esten definidos en un único lugar los caracteres de los comandos para no tenes que cambiarlos en distintos lugares en caso de alguna modificación)
