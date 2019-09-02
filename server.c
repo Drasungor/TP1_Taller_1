@@ -20,11 +20,14 @@ int send_data(socket_t *sckt, void *message, uint32_t len){
 
   //ESTÁ MAL LLAMAR A htonl ACÁ? NO ESTÁ A OTRO NIVEL ESTA FUNCIÓN?
   //uint32_t number_to_send = htonl(number_of_chars);
+
+  //CORREGIR, EL NUMERO SE TIENE QUE MANDAR EN LA MISMA TIRA DE BYTES QUE
+  //EL STRING QUE HAY QUE IMPRIMIR
   uint32_t number_to_send = htonl(len);
   if (!socket_send(sckt, &number_to_send, sizeof(uint32_t))) {
     return SOCKET_ERROR;
   }
-  if (!socket_send(sckt, message, number_of_chars * sizeof(uint32_t))) {
+  if (!socket_send(sckt, message, len)) {
     return SOCKET_ERROR;
   }
   return SUCCESS;

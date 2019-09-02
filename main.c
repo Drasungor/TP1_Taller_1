@@ -13,7 +13,6 @@ int main(int argc, char const *argv[]) {
   }
   */
 
-  server_t server;
 
   socket_t sckt;
 
