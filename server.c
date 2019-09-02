@@ -39,14 +39,24 @@ char receive_command(socket_t *sckt){
 }
 
 
-//
-void set_char(){
-
+//VER SI CONVIENE SACAR LAS CONSTANTES XQ QUEDA UNA DEFINICION MUY LARGA
+void set_char(char matrix[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD], size_t i_offset, size_t j_offset, char c){
+  //VER SI CONVIENE CAMBIAR COMO FUNCIONA LA FUNCION XQ CÓMO QUEDA ESCRITO
+  //DEPENDE DEL ORDEN EN EL QUE SE SETEEN LOS CARACTERES, ADEMAS
+  //HACE INICIALIZACIONES INNECESARIAS XQ DESPUES SE VAN A SOBRESCRIBIR
+  //CON OTROS CARACTERES
+  for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i += i_offset) {
+    for (size_t j = 0; j < HORIZONTAL_DIM_PRINTED_BOARD; j += j_offset) {
+      matrix[i][j] = c;
+    }
+  }
 }
 
 
 void initialize_limits(char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
-
+  set_char(destination, 1, 2, '-');
+  set_char(destination, 2, 4, '+');
+  set_char(destination, 1, 6, '=');
 }
 
 //CAMBIAR LOS 9 POR CTES
