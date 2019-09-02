@@ -217,6 +217,9 @@ int sudoku_init_with_file(sudoku_t *sudoku){
 
 }
 
+void sudoku_release(sudoku_t *sudoku){
+  //HAY QUE ITERAR TODO EL BOARD PARA LIBERAR TODODAS LAS CELDAS
+}
 
 
 //Sets the cell in the position specified to the

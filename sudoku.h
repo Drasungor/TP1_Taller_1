@@ -23,6 +23,7 @@ int sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIM
 
 int sudoku_init_with_file(sudoku_t *sudoku);
 
+void sudoku_release(sudoku_t *sudoku);
 
 //Sets the cell in the position specified to the
 //value written. It fails if a value is below 0 or

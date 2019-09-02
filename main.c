@@ -27,24 +27,37 @@ int main(int argc, char const *argv[]) {
       return 1;
     }
     char buf[30];
-    if (!soket_receive(&sckt, buf, 4)) {
+    if (!socket_receive(&sckt, buf, 4)) {
       printf("Error en receive\n");
       socket_release(&sckt);
       return 1;
     }
     buf[4] = '\0';
     printf("%s\n", buf);
+    if (!socket_send(&sckt, buf, 4)) {
+      printf("Error en send\n");
+      socket_release(&sckt);
+      return 1;
+    }
   } else if (strcmp(argv[1], "client") == 0){
     if (socket_connect(&sckt, NULL, argv[2]) != 0) {
       printf("Error en connect\n");
       socket_release(&sckt);
       return 1;
     }
-    if (!soket_send(&sckt, argv[3], 4)) {
+    if (!socket_send(&sckt, argv[3], 4)) {
       printf("Error en send\n");
       socket_release(&sckt);
       return 1;
     }
+    char mensaje[5];
+    if (!socket_receive(&sckt, mensaje, 4)) {
+      printf("Error en receive\n");
+      socket_release(&sckt);
+      return 1;
+    }
+    mensaje[4] = '\0';
+    printf("%s\n", mensaje);
   }
 
   socket_release(&sckt);

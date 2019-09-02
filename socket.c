@@ -180,7 +180,7 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
 
 //PREGUNTA: CONVIENE USAR ESTA IMPLEMENTACION DE SEND?
 /*
-int soket_send(socket_t *sckt, const void *buffer, size_t element_len, void (*convert_endian)(void*, void*)){
+int socket_send(socket_t *sckt, const void *buffer, size_t element_len, void (*convert_endian)(void*, void*)){
 
   return htonl(3);
 }
@@ -190,7 +190,7 @@ int soket_send(socket_t *sckt, const void *buffer, size_t element_len, void (*co
 //PREGUNTA: CONVIENE HACER QUE ENVIE UN ARRAY DE DATOS EN VEZ DEUN SOLO CONJUNTO DE DATOS?
 //VER SI CONVIENE QUE DEVUELVA UN INT (TAL VEZ SE DEVUELVE INT POR SI SE
 //AGREGAN DESPUÉS OTROS TIPOS DE ERRORES QUE SE QUIERAN DEVOLVER)
-bool soket_send(socket_t *sckt, const void *buffer, size_t len){
+bool socket_send(socket_t *sckt, const void *buffer, size_t len){
   size_t total_bytes_sent = 0;
   size_t current_bytes_sent = 0;
   int fd = get_fd(sckt);
@@ -210,7 +210,7 @@ bool soket_send(socket_t *sckt, const void *buffer, size_t len){
 
 //VER SI SE PUEDE COMBINAR EN UNA UNICA FUNCION QUE RECIBA
 //Y QUE ENVIE, HAY PROBLEMA CON QUE UN BUFFER ES CONST Y EL OTRO NO
-bool soket_receive(socket_t *sckt, void *buffer, size_t len){
+bool socket_receive(socket_t *sckt, void *buffer, size_t len){
   int total_bytes_received = 0;
   int current_bytes_received = 0;
   int fd = get_fd(sckt);

@@ -43,9 +43,9 @@ int socket_accept(socket_t *sckt);
 
 int socket_connect(socket_t *sckt, const char *host, const char *service);
 
-//int soket_send(socket_t *sckt);
-bool soket_send(socket_t *sckt, const void *buffer, size_t len);
+//int socket_send(socket_t *sckt);
+bool socket_send(socket_t *sckt, const void *buffer, size_t len);
 
-bool soket_receive(socket_t *sckt, void *buffer, size_t len);
+bool socket_receive(socket_t *sckt, void *buffer, size_t len);
 
 #endif

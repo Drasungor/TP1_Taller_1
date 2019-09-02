@@ -9,7 +9,9 @@
 #define VERIFY_INDICATOR 'V'
 #define RESET_INDICATOR 'R'
 
+#define SUCCESS 0
 #define SOCKET_ERROR -1
+#define INVALID_INDICATOR -2
 
 typedef struct{
   sudoku_t sudoku;
@@ -19,7 +21,7 @@ typedef struct{
 
 
 
-int server_init(server_t *server);
+int server_init(server_t *server, const char *service);
 
 void server_release(server_t *server);
 

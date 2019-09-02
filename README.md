@@ -11,6 +11,7 @@ TO DO:
 - Hacer para socket un handler de cliente y un handler de server
 - Implementar send y receive para socket
 - Cambiar sudoku_init_with_file a sudoku_init
+- Implementar sudoku_release (hay que hacer release a todas las celulas del tablero)
 
 DUDAS:
 
@@ -30,3 +31,5 @@ DUDAS:
 - IMPORTANTE: Está bien usar iteradores para no reescribir la iteración por toda una estructura? O es demasiado confuso?
 - IMPORANTE: Ver dudas en socket_send.
 - Está mal incluir un header solo por los defines? (incluyo server.h en client para que solo esten definidos en un único lugar los caracteres de los comandos para no tenes que cambiarlos en distintos lugares en caso de alguna modificación)
+- IMPORTANTE: ver duda en verify de server.c
+- Me tira que hints es un tipo incompleto de dato y para arreglarlo tengo q incluir posix en archivos q no usan sockets explicitamente ¿Lo puedo arreglar de otra manera?
