@@ -95,7 +95,7 @@ int get(server_t *server){
   int sudoku_board[9][9];
   sudoku_get_board(&(server->sudoku), sudoku_board);
   process_board(sudoku_board, board);
-  if (!send_data(&(server->sudoku), board, VERTICAL_DIM_PRINTED_BOARD * HORIZONTAL_DIM_PRINTED_BOARD * sizeof(char))) {
+  if (!send_data(&(server->sckt), board, VERTICAL_DIM_PRINTED_BOARD * HORIZONTAL_DIM_PRINTED_BOARD * sizeof(char))) {
     return SOCKET_ERROR;
   }
   return SUCCESS;
@@ -191,10 +191,10 @@ void server_release(server_t *server){
 
 int operate(server_t *server){
   //PONER TODO EN UN LOOP DE WHILE IS CONNECTED O ALGO ASI
-  int programm_state = SUCCESS;
-  char command = receive_command(&(server->sckt);
-  while ((programm_state == SUCCESS) && (command != SOCKET_ERROR)) {
-    programm_state = process_command(server, command);
+  int program_state = SUCCESS;
+  char command = receive_command(&(server->sckt));
+  while ((program_state == SUCCESS) && (command != SOCKET_ERROR)) {
+    program_state = process_command(server, command);
     command = receive_command(&(server->sckt));
   }
 
