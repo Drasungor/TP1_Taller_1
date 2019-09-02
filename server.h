@@ -25,7 +25,7 @@ int server_init(server_t *server, const char *service);
 
 void server_release(server_t *server);
 
-int operate(server_t *server);
+void server_operate(server_t *server);
 
 
 

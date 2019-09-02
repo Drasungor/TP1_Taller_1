@@ -15,10 +15,10 @@ TO DO:
 - Arreglar el funcionamiento de sudoku_verify (se fija tambien que no haya casilleros vacíos, los cuales en realidad debería ignorar)
 - Agregar static a todas las funciones que no estén declaradas en el .h
 - Arreglar la forma en la que se mandan los mensajes del server al cliente, la cantidad de caracteres que se van a recibir tiene que estar concatenada con los caracteres, y tiene que estar al principio del buffer
-
+- Agregar la primitiva release a los TDA's que no la tengan
 DUDAS:
 
-- Está mal no poner un init o destroy si sé que no lo no lo necesita el TDA
+- Está mal no poner un init o destroy si sé que no lo no lo necesita el TDA?. Rta: poner siempre porque si despues se modifica el TDA y se necesita uno no se tiene que agregar en todos los lugares en los que se inicializo el TDA
 - Está mal tener un .h que solo tenga defines que se van a usar en todo el proyecto?
 - Init tiene que inicializar todos los elementos del struct? O solo los que yo considere necesarios?
 - Está bien hacer un iterador interno privado para un tda? O solo ensuciaría el código del .c? (así no escribo muchas veces el doble for )

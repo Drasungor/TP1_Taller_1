@@ -189,7 +189,7 @@ void server_release(server_t *server){
   socket_release(&(server->sckt));
 }
 
-int operate(server_t *server){
+void server_operate(server_t *server){
   //PONER TODO EN UN LOOP DE WHILE IS CONNECTED O ALGO ASI
   int program_state = SUCCESS;
   char command = receive_command(&(server->sckt));
