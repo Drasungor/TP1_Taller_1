@@ -53,23 +53,43 @@ void set_char(char matrix[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOA
 }
 
 
+//CAMBIAR, ES MUY INEFICIENTE
 void initialize_limits(char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
   set_char(destination, 1, 2, '-');
   set_char(destination, 2, 4, '+');
   set_char(destination, 1, 6, '=');
+  set_char(destination, 1, 12, 'U');
 }
+
+
+char int_to_char(int n){
+  return n+ 48;
+}
+
+void initialize_numbers(int source[9][9], char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
+  for (size_t i = 0; i < 9; i++) {
+    for (size_t j = 0; j < 9; j++) {
+      destination[2 + i * 4][2 + j * 4] = int_to_char(source[i][j]);
+    }
+  }
+}
+
 
 //CAMBIAR LOS 9 POR CTES
 //translates the board returned by sudoku to the one that the server
 //has to return
 void process_board(int source[9][9], char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
-
+  initialize_limits(destination);
+  initialize_numbers(source, destination);
 }
 
 int get(server_t *server){
+  char board[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD];
+  int sudoku_board[9][9];
+  sudoku_get_board(&(server->sudoku), sudoku_board);
+  process_board(sudoku_board, board);
 
-
-
+  //AGREGAR CHEQUEOS DE ERRORES
   return SUCCESS;
 }
 

@@ -27,7 +27,12 @@ int main(int argc, char const *argv[]) {
       return 1;
     }
     char buf[30];
-    if (!socket_receive(&sckt, buf, 4)) {
+    if (!socket_receive(&sckt, buf, 2)) {
+      printf("Error en receive\n");
+      socket_release(&sckt);
+      return 1;
+    }
+    if (!socket_receive(&sckt, buf+2, 2)) {
       printf("Error en receive\n");
       socket_release(&sckt);
       return 1;
