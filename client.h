@@ -15,6 +15,8 @@
 #define SOCKET_ERROR -1
 #define MEMORY_ERROR -2
 #define INVALID_COMMAND -3
+#define INVALID_NUMBER -4
+#define INVALID_COORDINATES -5
 
 typedef struct{
   socket_t sckt;

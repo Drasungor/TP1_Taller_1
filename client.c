@@ -1,9 +1,9 @@
 #define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
+#include <stdlib.h>
 #include "client.h"
 #include "socket.h"
 
-//Indicates if
 bool strings_are_equal(char *command, char *input, size_t size){
   //VER SI CONVIENE PONERLO TODO EN UNA SOLA LINEA
   if (strlen(command) != size) {
@@ -15,13 +15,41 @@ bool strings_are_equal(char *command, char *input, size_t size){
   return true;
 }
 
+
+bool is_valid_position(int position){
+  return (position >= 1) && (position <= 9);
+}
+
+
 //Indicates if the input is a valid format for the command put
-bool is_valid_put(char *input, char *input, size_t size){
+int is_valid_put(char *input, size_t size){
+
+  //HACER CHEQUEO DEL CASO EN EL Q NO SE TENGAN LOS SUFICIENTES PEDAZOS
+  //DEL COMANDO
+
   char *first_word = strtok(input, " ");
   if (!strings_are_equal(VERIFY_COMMAND, first_word, size)) {
-    return false;
+    return INVALID_COMMAND;
   }
-  
+  char *number = strtok(NULL, " ");
+  if (number == NULL) {
+    return INVALID_COMMAND;
+  }
+  if (!is_valid_number(atoi(number))) {
+    return INVALID_NUMBER;
+  }
+  char *nexus = strtok(NULL, " ");
+  if ((nexus == NULL) || (!strings_are_equal("in", nexus, strlen(nexus)))) {
+    return INVALID_COMMAND;
+  }
+  char *coordinates = strtok(NULL, "\n");
+  if ((coordinates == NULL) || (coodrinates[1] != ',')) {
+    return INVALID_COMMAND;
+  }
+  if (!(is_valid_position(int position) && is_valid_position(int position))) {
+    return INVALID_COORDINATES;
+  }
+  return 0;
 }
 
 //If the input is a valid command it executes it, otherwise returns error
@@ -37,7 +65,7 @@ int validate_input(char *input, size_t size){
 
   } else if(strings_are_equal(EXIT_COMMAND, input, size)) {
 
-  } else if() {
+  } else if(is_valid_put(input, size) == 0) {
 
   } else {
     program_status = INVALID_COMMAND;
