@@ -1,6 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "client.h"
 #include "socket.h"
 
@@ -20,6 +21,10 @@ bool is_valid_position(int position){
   return (position >= 1) && (position <= 9);
 }
 
+
+bool is_valid_number(int n){
+  return (n >= 0) && (n <= 9);
+}
 
 //Indicates if the input is a valid format for the command put
 int is_valid_put(char *input, size_t size){
@@ -42,31 +47,68 @@ int is_valid_put(char *input, size_t size){
   if ((nexus == NULL) || (!strings_are_equal("in", nexus, strlen(nexus)))) {
     return INVALID_COMMAND;
   }
-  char *coordinates = strtok(NULL, "\n");
-  if ((coordinates == NULL) || (coodrinates[1] != ',')) {
+  //VER SI LE MANDO UN STRING "VACIO"
+  char *coordinates = strtok(NULL, "\0");
+  if ((coordinates == NULL) || (coordinates[1] != ',')) {
     return INVALID_COMMAND;
   }
-  if (!(is_valid_position(int position) && is_valid_position(int position))) {
+  if (!(is_valid_position(atoi(strtok(coordinates, ","))) && is_valid_position(atoi(strtok(NULL, "\0"))))) {
     return INVALID_COORDINATES;
   }
   return 0;
 }
 
-//If the input is a valid command it executes it, otherwise returns error
-int validate_input(char *input, size_t size){
+/*
+int send_indicator(socket_t *sckt, char indicator){
+  char indicator_copy = indicator;
+  if (!socket_send(sckt, &indicator_copy)) {
+  }
+  if (!socket_send(sckt, &indicator, sizeof(char))) {
+    return SOCKET_ERROR;
+  }
+  return SUCCESS;
+}
+*/
 
+void print_message(char* message, size_t size){
+  for (size_t i = 0; i < size; i++) {
+    printf("%c", message[i]);
+  }
+}
+
+int obtain_answer(socket_t *sckt, char indicator){
+  char indicator_copy = indicator;
+  if (!socket_send(sckt, &indicator_copy, sizeof(char))) {
+    return SOCKET_ERROR;
+  }
+  uint32_t message_size;
+  if (!socket_receive(sckt, &message_size, sizeof(uint32_t))) {
+    return SOCKET_ERROR;
+  }
+  message_size = ntohl(message_size);
+  char message[message_size];
+  if (!socket_receive(sckt, message, message_size)) {
+    return SOCKET_ERROR;
+  }
+  print_message(message, message_size);
+  return SUCCESS;
+}
+
+
+//If the input is a valid command it executes it, otherwise returns error
+int execute_command(socket_t *sckt, char *input, size_t size){
   int program_status = 0;
 
   if (strings_are_equal(VERIFY_COMMAND, input, size)) {
-    /* code */
+    program_status = obtain_answer(sckt, VERIFY_INDICATOR);
   } else if(strings_are_equal(RESET_COMMAND, input, size)) {
-
+    program_status = obtain_answer(sckt, RESET_INDICATOR);
   } else if(strings_are_equal(GET_COMMAND, input, size)) {
-
+    program_status = obtain_answer(sckt, GET_INDICATOR);
   } else if(strings_are_equal(EXIT_COMMAND, input, size)) {
-
+    program_status = EXIT_PROGRAM;
   } else if(is_valid_put(input, size) == 0) {
-
+    program_status = obtain_answer(sckt, PUT_INDICATOR);
   } else {
     program_status = INVALID_COMMAND;
   }
@@ -75,7 +117,7 @@ int validate_input(char *input, size_t size){
 
 
 //VER SI CAMBIO EL NOMBRE POR process_command
-int process_input(){
+int process_input(socket_t *sckt){
   char *line = NULL;
   size_t size = 0;
 
@@ -86,7 +128,12 @@ int process_input(){
     return MEMORY_ERROR;
   }
 
-
+  //VER SI ESTE IF ESTÁ A OTRO NIVEL Y DEBERÍA SER PASADO A UNA FUNCIÓN
+  if (line[size-1] == '\n') {
+    line[size-1] = '\0';
+    size--;
+  }
+  return execute_command(sckt, line, size);
 }
 
 
@@ -105,7 +152,12 @@ void client_release(client_t *client){
 }
 
 void client_operate(client_t *client){
-
-
-
+  int program_state = 0;
+  do {
+    program_state = process_input(&(client->sckt));
+    //IMPLEMENTAR, INDICA AL USUARIO EL ERROR QUE
+    //COMETIO AL PONER EL INPUT, SE BASA EN EL VALOR DE
+    //PROGRAM STATE
+    comunicate_error(program_state);
+  } while(program_state != EXIT_PROGRAM );
 }

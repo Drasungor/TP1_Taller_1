@@ -1,6 +1,8 @@
 #ifndef _CLIENT_H_
 #define  _CLIENT_H_
 
+#include "socket.h"
+
 #define GET_INDICATOR 'G'
 #define PUT_INDICATOR 'P'
 #define VERIFY_INDICATOR 'V'
@@ -17,6 +19,7 @@
 #define INVALID_COMMAND -3
 #define INVALID_NUMBER -4
 #define INVALID_COORDINATES -5
+#define EXIT_PROGRAM -6
 
 typedef struct{
   socket_t sckt;
