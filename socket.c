@@ -85,11 +85,15 @@ int get_fd(socket_t *sckt){
 }
 
 
+void set_hints(struct addrinfo *hints){
+  memset(hints, 0, sizeof(struct addrinfo));
+  hints->ai_family = AF_INET;
+  hints->ai_socktype = SOCK_STREAM;
+}
+
 void socket_init(socket_t *sckt){
   sckt->fd = 0;
-  memset(&(sckt->hints), 0, sizeof(struct addrinfo));
-  sckt->hints.ai_family = AF_INET;
-  sckt->hints.ai_socktype = SOCK_STREAM;
+
   sckt->is_client = false;
   sckt->is_server = false;
   sckt->client_fd = 0;
@@ -113,14 +117,17 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
     return false;
   }
 
+
   int info_result = 0;
   bool is_bound = false;
   int listen_value = 0;
   int socket_fd = 0;
-  sckt->hints.ai_flags = AI_PASSIVE;
   struct addrinfo *result;
+  struct addrinfo hints;
+  set_hints(&hints);
+  hints.ai_flags = AI_PASSIVE;
 
-  info_result = getaddrinfo(NULL, service, &(sckt->hints), &result);
+  info_result = getaddrinfo(NULL, service, &hints, &result);
   if (info_result != 0) {
     //VER SI HAY QUE IMPRIMIR UN MENSAJE DE ERROR
     return info_result;
@@ -159,10 +166,12 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
   int info_result = 0;
   bool is_connected = false;
   int socket_fd = 0;
-  sckt->hints.ai_flags = 0;
   struct addrinfo *result;
+  struct addrinfo hints;
+  set_hints(&hints);
+  hints.ai_flags = 0;
 
-  info_result = getaddrinfo(host, service, &(sckt->hints), &result);
+  info_result = getaddrinfo(host, service, &hints, &result);
   if (info_result != 0) {
     //VER SI HAY QUE IMPRIMIR UN MENSAJE DE ERROR
     return info_result;

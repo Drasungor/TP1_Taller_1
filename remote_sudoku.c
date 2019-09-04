@@ -1,8 +1,16 @@
+#include <string.h>
 #include "remote_sudoku.h"
 #include "client.h"
 #include "server.h"
 
+#define CLIENT_MODE_ARGUMENT "client"
+#define SERVER_MODE_ARGUMENT "server"
 
+//VER SI LO DEJO COMO UN SOLO DEFINE XQ SON EL MISMO VALOR,
+//PERO SI AGREGO OTRO COMANDO MAS DESPUES QUE TIENE UNA CANTIDAD
+//DISTINTA DE PARAMETROS SE ROMPE TODO
+#define NUMBER_ARGUMENTS_CLIENT 3
+#define NUMBER_ARGUMENTS_SERVER 2
 
 int execute_as_client(){
   int program_state = 0;
@@ -36,12 +44,34 @@ int execute_as_server(){
   return SUCCESS;
 }
 
-bool is_valid_client_command(const char **arguments, int number_of_arguments){
-
+bool is_valid_client_command(const char *mode, int number_of_arguments){
+  if (number_of_arguments != NUMBER_ARGUMENTS_CLIENT) {
+    return false;
+  }
+  size_t client_mode_lenght = strlen(CLIENT_MODE_ARGUMENT);
+  if (strlen(mode) != client_mode_lenght) {
+    return false;
+  }
+  if (strncmp(mode, CLIENT_MODE_ARGUMENT, client_mode_lenght) != 0) {
+    return false;
+  }
+  return true;
 }
 
-bool is_valid_server_command(const char **arguments, int number_of_arguments){
 
+//VER SI CONVIENE HACERLA UNA MISMA FUNCION (CON LA DE CLIENT) CON MAS PARAMETROS
+bool is_valid_server_command(const char **arguments, int number_of_arguments){
+  if (number_of_arguments != NUMBER_ARGUMENTS_SERVER) {
+    return false;
+  }
+  size_t server_mode_lenght = strlen(SERVER_MODE_ARGUMENT);
+  if (strlen(mode) != client_mode_server) {
+    return false;
+  }
+  if (strncmp(mode, SERVER_MODE_ARGUMENT, client_mode_lenght) != 0) {
+    return false;
+  }
+  return true;
 }
 
 int remote_sudoku_start(const char **arguments, int number_of_arguments){

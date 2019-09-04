@@ -15,6 +15,10 @@ TO DO:
 - Agregar static a todas las funciones que no estén declaradas en el .h
 - Arreglar la forma en la que se mandan los mensajes del server al cliente, la cantidad de caracteres que se van a recibir tiene que estar concatenada con los caracteres, y tiene que estar al principio del buffer
 - Agregar la primitiva release a los TDA's que no la tengan
+- Escribir mensajes de error para que printee cuando se reciba un comando invalido
+- Sacar el chequeo de rango de posicion y de valor numerico del sudoku porque lo hace todo el cliente
+- Hacer .h con constantes generales para el tp (chequeo de errores y caracteres q importan tanto para el cliente como para el server)
+
 
 
 DUDAS:

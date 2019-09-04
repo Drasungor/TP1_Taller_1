@@ -3,9 +3,6 @@
 
 #include <stdbool.h>
 
-#define SUCCESS 0
-#define INVALID_NUMBER -1
-#define IS_DEFAULT -2
 
 #define EMPTY_CELL_VALUE 0
 

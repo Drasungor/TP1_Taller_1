@@ -1,5 +1,8 @@
 #include "cell.h"
 
+#define SUCCESS 0
+#define INVALID_NUMBER -1
+#define IS_DEFAULT -2
 
 bool is_valid_number(int number){
   return (number >= 0) && (number <= 9);

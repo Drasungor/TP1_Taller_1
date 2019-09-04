@@ -9,6 +9,11 @@
 #define BLOCK_DIMENSION 3
 #define CHARACTERS_BY_LINE 18
 
+#define INVALID_NUMBER -1
+#define OUT_OF_BOUNDS -2
+#define FILE_ERROR -3
+#define SUCCESS 0
+
 //PASAR LOS NUMEROS A CONSTANTES
 #define IS_BOUNDED(x) ((x>=1) && (x<=9))
 

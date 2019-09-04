@@ -19,7 +19,7 @@
 typedef struct{
   int fd;
   //VER SI NO VALE LA PENA GUARDARLO PARA INICIALIZARLO UNA SOLA VEZ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-  struct addrinfo hints;
+  //struct addrinfo hints;
   bool is_client;
   bool is_server;
   bool can_accept;

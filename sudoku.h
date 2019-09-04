@@ -6,10 +6,6 @@
 
 #define BOARD_DIMENSION 9
 
-#define INVALID_NUMBER -1
-#define OUT_OF_BOUNDS -2
-#define FILE_ERROR -3
-#define SUCCESS 0
 
 typedef struct {
   cell_t board[BOARD_DIMENSION][BOARD_DIMENSION];
