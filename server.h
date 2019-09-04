@@ -1,6 +1,7 @@
 #ifndef _SERVER_H_
 #define  _SERVER_H_
 
+
 #include "sudoku.h"
 #include "socket.h"
 
@@ -25,7 +26,7 @@ int server_init(server_t *server, const char *service);
 
 void server_release(server_t *server);
 
-void server_operate(server_t *server);
+int server_operate(server_t *server);
 
 
 

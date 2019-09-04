@@ -1,8 +1,8 @@
-//#define _POSIX_C_SOURCE 200112L
+#define _POSIX_C_SOURCE 200112L
 #include <stdio.h>
 #include <string.h>
 #include "socket.h"
-
+#include "remote_sudoku.h"
 
 int main(int argc, char const *argv[]) {
 

@@ -158,6 +158,6 @@ void client_operate(client_t *client){
     //IMPLEMENTAR, INDICA AL USUARIO EL ERROR QUE
     //COMETIO AL PONER EL INPUT, SE BASA EN EL VALOR DE
     //PROGRAM STATE
-    comunicate_error(program_state);
+    //comunicate_error(program_state);
   } while(program_state != EXIT_PROGRAM );
 }

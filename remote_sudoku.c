@@ -36,8 +36,15 @@ int execute_as_server(){
   return SUCCESS;
 }
 
+bool is_valid_client_command(const char **arguments, int number_of_arguments){
 
-int remote_sudoku_start(char **arguments, int number_of_arguments){
+}
+
+bool is_valid_server_command(const char **arguments, int number_of_arguments){
+
+}
+
+int remote_sudoku_start(const char **arguments, int number_of_arguments){
   if (is_valid_client_command()) {
     return execute_as_client();
   } else if (is_valid_server_command()) {
