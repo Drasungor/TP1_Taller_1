@@ -5,7 +5,7 @@
 #include "client.h"
 #include "socket.h"
 
-bool strings_are_equal(char *command, char *input, size_t size){
+static bool strings_are_equal(char *command, char *input, size_t size){
   //VER SI CONVIENE PONERLO TODO EN UNA SOLA LINEA
   if (strlen(command) != size) {
     return false;
@@ -17,17 +17,17 @@ bool strings_are_equal(char *command, char *input, size_t size){
 }
 
 
-bool is_valid_position(int position){
+static bool is_valid_position(int position){
   return (position >= 1) && (position <= 9);
 }
 
 
-bool is_valid_number(int n){
+static bool is_valid_number(int n){
   return (n >= 0) && (n <= 9);
 }
 
 //Indicates if the input is a valid format for the command put
-int is_valid_put(char *input, size_t size){
+static int is_valid_put(char *input, size_t size){
 
   //HACER CHEQUEO DEL CASO EN EL Q NO SE TENGAN LOS SUFICIENTES PEDAZOS
   //DEL COMANDO
@@ -70,13 +70,13 @@ int send_indicator(socket_t *sckt, char indicator){
 }
 */
 
-void print_message(char* message, size_t size){
+static void print_message(char* message, size_t size){
   for (size_t i = 0; i < size; i++) {
     printf("%c", message[i]);
   }
 }
 
-int obtain_answer(socket_t *sckt, char indicator){
+static int obtain_answer(socket_t *sckt, char indicator){
   char indicator_copy = indicator;
   if (!socket_send(sckt, &indicator_copy, sizeof(char))) {
     return SOCKET_ERROR;
@@ -96,7 +96,7 @@ int obtain_answer(socket_t *sckt, char indicator){
 
 
 //If the input is a valid command it executes it, otherwise returns error
-int execute_command(socket_t *sckt, char *input, size_t size){
+static int execute_command(socket_t *sckt, char *input, size_t size){
   int program_status = 0;
 
   if (strings_are_equal(VERIFY_COMMAND, input, size)) {
@@ -117,7 +117,7 @@ int execute_command(socket_t *sckt, char *input, size_t size){
 
 
 //VER SI CAMBIO EL NOMBRE POR process_command
-int process_input(socket_t *sckt){
+static int process_input(socket_t *sckt){
   char *line = NULL;
   size_t size = 0;
 

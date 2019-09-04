@@ -4,13 +4,9 @@
 #define INVALID_NUMBER -1
 #define IS_DEFAULT -2
 
-bool is_valid_number(int number){
+static bool is_valid_number(int number){
   return (number >= 0) && (number <= 9);
 }
-
-
-
-
 
 void cell_init(cell_t *cell){
   cell->number = 0;

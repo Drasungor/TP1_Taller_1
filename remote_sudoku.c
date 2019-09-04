@@ -12,7 +12,7 @@
 #define NUMBER_ARGUMENTS_CLIENT 3
 #define NUMBER_ARGUMENTS_SERVER 2
 
-int execute_as_client(const char *host, const char *port){
+static int execute_as_client(const char *host, const char *port){
   //int program_state = 0;
   client_t client;
   //VER QUE CONSTANTES VOY A USAR PARA DEVOLVER A MAIN
@@ -31,7 +31,7 @@ int execute_as_client(const char *host, const char *port){
   return SUCCESS;
 }
 
-int execute_as_server(const char *port){
+static int execute_as_server(const char *port){
   //int program_state = 0;
   server_t server;
   //VER QUE CONSTANTES VOY A USAR PARA DEVOLVER A MAIN
@@ -47,7 +47,7 @@ int execute_as_server(const char *port){
   return SUCCESS;
 }
 
-bool is_valid_client_command(const char *mode, int number_of_arguments){
+static bool is_valid_client_command(const char *mode, int number_of_arguments){
   if (number_of_arguments != NUMBER_ARGUMENTS_CLIENT) {
     return false;
   }
@@ -63,7 +63,7 @@ bool is_valid_client_command(const char *mode, int number_of_arguments){
 
 
 //VER SI CONVIENE HACERLA UNA MISMA FUNCION (CON LA DE CLIENT) CON MAS PARAMETROS
-bool is_valid_server_command(const char *mode, int number_of_arguments){
+static bool is_valid_server_command(const char *mode, int number_of_arguments){
   if (number_of_arguments != NUMBER_ARGUMENTS_SERVER) {
     return false;
   }

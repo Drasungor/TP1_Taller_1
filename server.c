@@ -15,7 +15,7 @@
 #define VERTICAL_DIM_PRINTED_BOARD 19
 
 
-int send_data(socket_t *sckt, void *message, uint32_t len){
+static int send_data(socket_t *sckt, void *message, uint32_t len){
   //uint32_t number_of_chars = strlen(message);
 
   //ESTÁ MAL LLAMAR A htonl ACÁ? NO ESTÁ A OTRO NIVEL ESTA FUNCIÓN?
@@ -34,7 +34,7 @@ int send_data(socket_t *sckt, void *message, uint32_t len){
 }
 
 
-char receive_command(socket_t *sckt){
+static char receive_command(socket_t *sckt){
   char command = 0;
   if (!socket_receive(sckt, &command, sizeof(char))) {
     return SOCKET_ERROR;
@@ -44,7 +44,7 @@ char receive_command(socket_t *sckt){
 
 
 //VER SI CONVIENE SACAR LAS CONSTANTES XQ QUEDA UNA DEFINICION MUY LARGA
-void set_char(char matrix[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD], size_t i_offset, size_t j_offset, char c){
+static void set_char(char matrix[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD], size_t i_offset, size_t j_offset, char c){
   //VER SI CONVIENE CAMBIAR COMO FUNCIONA LA FUNCION XQ CÓMO QUEDA ESCRITO
   //DEPENDE DEL ORDEN EN EL QUE SE SETEEN LOS CARACTERES, ADEMAS
   //HACE INICIALIZACIONES INNECESARIAS XQ DESPUES SE VAN A SOBRESCRIBIR
@@ -58,7 +58,7 @@ void set_char(char matrix[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOA
 
 
 //CAMBIAR, ES MUY INEFICIENTE
-void initialize_limits(char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
+static void initialize_limits(char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
   set_char(destination, 1, 2, '-');
   set_char(destination, 2, 4, '+');
   set_char(destination, 1, 6, '=');
@@ -66,14 +66,14 @@ void initialize_limits(char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_D
 }
 
 
-char int_to_char(int n){
+static char int_to_char(int n){
   if (n == 0) {
     return ' ';
   }
   return n+ 48;
 }
 
-void initialize_numbers(int source[9][9], char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
+static void initialize_numbers(int source[9][9], char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
   for (size_t i = 0; i < 9; i++) {
     for (size_t j = 0; j < 9; j++) {
       destination[2 + i * 4][2 + j * 4] = int_to_char(source[i][j]);
@@ -85,12 +85,12 @@ void initialize_numbers(int source[9][9], char destination[VERTICAL_DIM_PRINTED_
 //CAMBIAR LOS 9 POR CTES
 //translates the board returned by sudoku to the one that the server
 //has to return
-void process_board(int source[9][9], char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
+static void process_board(int source[9][9], char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
   initialize_limits(destination);
   initialize_numbers(source, destination);
 }
 
-int get(server_t *server){
+static int get(server_t *server){
   char board[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD];
   int sudoku_board[9][9];
   sudoku_get_board(&(server->sudoku), sudoku_board);
@@ -101,7 +101,7 @@ int get(server_t *server){
   return SUCCESS;
 }
 
-int put(server_t *server){
+static int put(server_t *server){
   char *message = NON_MODIFIABLE_CELL_MESSAGE;
   uint8_t values[PUT_BYTES_RECEIVED-1];
 
@@ -122,7 +122,7 @@ int put(server_t *server){
   return SUCCESS;
 }
 
-int verify(server_t *server){
+static int verify(server_t *server){
   char *message = SUDOKU_VERIFIES;
   if (!sudoku_verify(&(server->sudoku))) {
     message = SUDOKU_DOESNT_VERIFY;
@@ -133,7 +133,7 @@ int verify(server_t *server){
   return SUCCESS;
 }
 
-int reset(server_t *server){
+static int reset(server_t *server){
   //AGREGAR CHEQUEOS DE VALORES QUE DEVUELVEN LAS FUNCIONES
   sudoku_reset(&(server->sudoku));
   get(server);
@@ -148,7 +148,7 @@ int reset(server_t *server){
 //Está bien chequear que me den el comando adecuado?
 //xq yo se que el cliente soy yo, asique nunca me voy a mandar
 //algo que no sea uno de esos
-int process_command(server_t *server, char command){
+static int process_command(server_t *server, char command){
   int program_state = SUCCESS;
   switch (command) {
     case GET_INDICATOR:

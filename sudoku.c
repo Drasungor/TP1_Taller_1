@@ -15,9 +15,10 @@
 #define SUCCESS 0
 
 //PASAR LOS NUMEROS A CONSTANTES
+//VER SI CONVIENE HACER UNA MACRO EN VEZ DE UNA FUNCION
 #define IS_BOUNDED(x) ((x>=1) && (x<=9))
 
-bool is_in_bounds(int vertical_position, int horizontal_position){
+static bool is_in_bounds(int vertical_position, int horizontal_position){
   return (IS_BOUNDED(vertical_position)) && (IS_BOUNDED(horizontal_position));
 }
 
@@ -26,7 +27,7 @@ bool is_in_bounds(int vertical_position, int horizontal_position){
 
 //Receives de position of the top left number of the block and
 //indicates if the block has every number from 1 to 9
-bool verify_block(sudoku_t *sudoku, int vertical_index, int horizontal_index){
+static bool verify_block(sudoku_t *sudoku, int vertical_index, int horizontal_index){
   //Each number has an index of number-1
   bool is_number_in_block[BOARD_DIMENSION + 1];
   int number = 0;
@@ -63,7 +64,7 @@ bool verify_block(sudoku_t *sudoku, int vertical_index, int horizontal_index){
 
 }
 
-bool verify_blocks(sudoku_t *sudoku){
+static bool verify_blocks(sudoku_t *sudoku){
   for (size_t i = 0; i < BLOCK_DIMENSION; i++) {
     for (size_t j = 0; j < BLOCK_DIMENSION; j++) {
       if (!verify_block(sudoku, i+i * BLOCK_DIMENSION, j+j*BLOCK_DIMENSION)) {
@@ -75,7 +76,7 @@ bool verify_blocks(sudoku_t *sudoku){
 }
 
 
-bool verify_row(sudoku_t *sudoku, int index){
+static bool verify_row(sudoku_t *sudoku, int index){
   bool is_number_in_row[BOARD_DIMENSION + 1];
   int number = 0;
 
@@ -108,7 +109,7 @@ bool verify_row(sudoku_t *sudoku, int index){
   return true;
 }
 
-bool verify_rows(sudoku_t *sudoku){
+static bool verify_rows(sudoku_t *sudoku){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     if (!verify_row(sudoku, i)) {
       return false;
@@ -152,7 +153,7 @@ bool verify_column(sudoku_t *sudoku, int index){
 
 
 //VER SI SE PUEDE MODULARIZAR CON veify_rows()
-bool verify_columns(sudoku_t *sudoku){
+static bool verify_columns(sudoku_t *sudoku){
   for (size_t j = 0; j < BOARD_DIMENSION; j++) {
     if (!verify_column(sudoku, j)) {
       return false;

@@ -55,7 +55,7 @@ bool process_info_to_connect(struct addrinfo* info, void *extra){
 //Gets a socket and executes the linking function.
 //Returns true if it succeeds and false if it fails,
 //in which case the socked_fd value must be ignored
-bool process_info_to_link(struct addrinfo* info, int *socket_fd, linking_function_t link){
+static bool process_info_to_link(struct addrinfo* info, int *socket_fd, linking_function_t link){
   int link_value = 0;
   bool is_linked = false;
 
@@ -77,7 +77,7 @@ bool process_info_to_link(struct addrinfo* info, int *socket_fd, linking_functio
 
 
 
-int get_fd(socket_t *sckt){
+static int get_fd(socket_t *sckt){
   if (sckt->is_server) {
     return sckt->client_fd;
   }
@@ -85,7 +85,7 @@ int get_fd(socket_t *sckt){
 }
 
 
-void set_hints(struct addrinfo *hints){
+static void set_hints(struct addrinfo *hints){
   memset(hints, 0, sizeof(struct addrinfo));
   hints->ai_family = AF_INET;
   hints->ai_socktype = SOCK_STREAM;
