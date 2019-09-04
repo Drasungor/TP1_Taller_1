@@ -149,3 +149,7 @@ $(target): $(o_files)
 
 clean:
 	$(RM) $(o_files) $(target)
+
+#run:
+
+#valgrind:

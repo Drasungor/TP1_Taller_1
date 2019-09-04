@@ -188,7 +188,10 @@ int sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIM
 }
 
 
-
+//ADEMAS DE SACAR ESTA FUNCION DE ACA Y HACER UNA CLASE sudoku_parser
+//VER SI CONVIENE RECIBIR EL ARCHIVO QUE SE VA A USAR PARA INICIALIZAR,
+//CONVIENE PARA TESTING Y POR SI DESPUÉS SE QUIERE CAMBIAR EL ARCHIVO DEL
+//QUE SE LEE
 int sudoku_init_with_file(sudoku_t *sudoku){
 
   FILE *sudoku_file =  fopen("sudoku.txt", "r");
