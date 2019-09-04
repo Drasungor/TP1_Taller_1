@@ -18,7 +18,8 @@ TO DO:
 - Escribir mensajes de error para que printee cuando se reciba un comando invalido
 - Sacar el chequeo de rango de posicion y de valor numerico del sudoku porque lo hace todo el cliente
 - Hacer .h con constantes generales para el tp (chequeo de errores y caracteres q importan tanto para el cliente como para el server)
-
+- Agregar el codigo del TIME_WAIT
+- Ver si hay que mejorar la forma en la que se inicializa el sudoku con el archivo (como se acceden a los nros en la linea que se saca del archivo)
 
 
 DUDAS:
