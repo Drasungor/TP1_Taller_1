@@ -174,7 +174,6 @@ static int process_command(server_t *server, char command){
 
 
 int server_init(server_t *server, const char *service){
-
   //AGREGAR CHEQUEOS DE LO QUE DEVUELVEN LAS FUNCIONES PARA VER SI HAY QUE DEVOLVER ERROR
   sudoku_init_with_file(&(server->sudoku));
   socket_init(&(server->sckt));

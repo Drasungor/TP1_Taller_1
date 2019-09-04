@@ -1,11 +1,9 @@
-#define _POSIX_C_SOURCE 200112L
 #include <stdio.h>
 #include <string.h>
 #include "socket.h"
 #include "remote_sudoku.h"
 
 int main(int argc, char const *argv[]) {
-
   //argv: 0: nombre, 1: modo, 2: puerto, 3: mensaje de 4 chars si es cliente
 
   /*if (argc != 3) {

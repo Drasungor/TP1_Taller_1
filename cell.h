@@ -3,8 +3,8 @@
 
 #include <stdbool.h>
 
-
 #define EMPTY_CELL_VALUE 0
+
 
 typedef struct{
   int number;
@@ -23,7 +23,7 @@ void cell_init(cell_t *cell);
 //VER SI ESTÁ MAL HABLAR DEL SUDOKU A NIVEL DE CELDA EN
 //LA DESCRIPCIÓN DE LA FUNCIÓN
 
-bool cell_set_as_default(cell_t *cell, int number);
+void cell_set_as_default(cell_t *cell, int number);
 
 
 //If the cell is default or the number is invalid it does nothing

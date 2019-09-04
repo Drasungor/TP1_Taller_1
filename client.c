@@ -101,13 +101,13 @@ static int execute_command(socket_t *sckt, char *input, size_t size){
 
   if (strings_are_equal(VERIFY_COMMAND, input, size)) {
     program_status = obtain_answer(sckt, VERIFY_INDICATOR);
-  } else if(strings_are_equal(RESET_COMMAND, input, size)) {
+  } else if (strings_are_equal(RESET_COMMAND, input, size)) {
     program_status = obtain_answer(sckt, RESET_INDICATOR);
-  } else if(strings_are_equal(GET_COMMAND, input, size)) {
+  } else if (strings_are_equal(GET_COMMAND, input, size)) {
     program_status = obtain_answer(sckt, GET_INDICATOR);
-  } else if(strings_are_equal(EXIT_COMMAND, input, size)) {
+  } else if (strings_are_equal(EXIT_COMMAND, input, size)) {
     program_status = EXIT_PROGRAM;
-  } else if(is_valid_put(input, size) == 0) {
+  } else if (is_valid_put(input, size) == 0) {
     program_status = obtain_answer(sckt, PUT_INDICATOR);
   } else {
     program_status = INVALID_COMMAND;
@@ -159,7 +159,7 @@ int client_operate(client_t *client){
     //COMETIO AL PONER EL INPUT, SE BASA EN EL VALOR DE
     //PROGRAM STATE
     //comunicate_error(program_state);
-  } while(program_state != EXIT_PROGRAM );
+  } while (program_state != EXIT_PROGRAM );
   //CAMBIAR PORQUE NO SE ESTA MOSTRANDO CUANDO FALLA EL PROGRAMA
   return SUCCESS;
 }

@@ -37,6 +37,9 @@ extension = c
 # CONFIGURACION "AVANZADA"
 ###########################
 
+VFLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
+
+
 # Opciones para el compilador C/C++ para tratamiento de errores y warnings.
 CFLAGS = -Wall -Werror -pedantic -pedantic-errors
 
@@ -152,4 +155,5 @@ clean:
 
 #run:
 
-#valgrind:
+valgrind:
+	valgrind $(VFLAGS) ./tp

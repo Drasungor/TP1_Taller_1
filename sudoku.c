@@ -9,10 +9,15 @@
 #define BLOCK_DIMENSION 3
 #define CHARACTERS_BY_LINE 18
 
-#define INVALID_NUMBER -1
-#define OUT_OF_BOUNDS -2
-#define FILE_ERROR -3
 #define SUCCESS 0
+
+
+, size_t first_i_index, size_t last_i_index, size_t first_j_index, size_t first_j_index
+
+//HACER ITERADOR
+void iterate_matrix(void *matrix, bool (*visit)(void*, void*), void* extra){
+
+}
 
 //PASAR LOS NUMEROS A CONSTANTES
 //VER SI CONVIENE HACER UNA MACRO EN VEZ DE UNA FUNCION
@@ -177,11 +182,7 @@ int sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIM
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
       cell_init(&(sudoku->board[i][j]));
-      if (!cell_set_as_default(&(sudoku->board[i][j]), initial_numbers[i][j])) {
-        //VER SI HAY QUE HACER UN ARCHIVO DE CONSTANTES PARA USAR EN TODO EL TP
-        //O SI HAY QUE DEJAR LAS CONSTANTES EN LOS .c
-        return INVALID_NUMBER;
-      }
+      cell_set_as_default(&(sudoku->board[i][j]), initial_numbers[i][j]);
     }
   }
   return SUCCESS;
@@ -192,6 +193,7 @@ int sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIM
 //VER SI CONVIENE RECIBIR EL ARCHIVO QUE SE VA A USAR PARA INICIALIZAR,
 //CONVIENE PARA TESTING Y POR SI DESPUÉS SE QUIERE CAMBIAR EL ARCHIVO DEL
 //QUE SE LEE
+/*
 int sudoku_init_with_file(sudoku_t *sudoku){
 
   FILE *sudoku_file =  fopen("sudoku.txt", "r");
@@ -227,7 +229,7 @@ int sudoku_init_with_file(sudoku_t *sudoku){
   return SUCCESS;
 
 }
-
+*/
 void sudoku_release(sudoku_t *sudoku){
   //HAY QUE ITERAR TODO EL BOARD PARA LIBERAR TODODAS LAS CELDAS
 }
@@ -240,9 +242,6 @@ void sudoku_release(sudoku_t *sudoku){
 //the default non zero ones. Returns 1 on error and 0
 //on success
 int sudoku_set_number(sudoku_t *sudoku, int number, int vertical_position, int horizontal_position){
-  if (!is_in_bounds(vertical_position, horizontal_position)) {
-    return OUT_OF_BOUNDS;
-  }
   return cell_set(&(sudoku->board[vertical_position-1][horizontal_position-1]), number);
 }
 
@@ -250,6 +249,9 @@ int sudoku_set_number(sudoku_t *sudoku, int number, int vertical_position, int h
 void sudoku_reset(sudoku_t *sudoku){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
+      //VER SI HACE FALTA USAR UN .h DE CONSTANTES PARA QUE
+      //EL FUNCIONAMIENTO NO DEPENDA DE EMPTY_CELL_VALUE
+      //PUEDE SER QUE ESTO NO HAGA FALTA
       cell_set(&(sudoku->board[i][j]), EMPTY_CELL_VALUE);
     }
   }
@@ -263,6 +265,7 @@ bool sudoku_verify(sudoku_t *sudoku){
 
 
 void sudoku_get_board(sudoku_t *sudoku, int destiny[BOARD_DIMENSION][BOARD_DIMENSION]){
+  char board[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD];
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
       destiny[i][j] = cell_get_number(&(sudoku->board[i][j]));
