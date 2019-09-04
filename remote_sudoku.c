@@ -5,7 +5,7 @@
 
 #define CLIENT_MODE_ARGUMENT "client"
 #define SERVER_MODE_ARGUMENT "server"
-
+#define LOCALHOST_MODE_ARGUMENT "localhost"
 //VER SI LO DEJO COMO UN SOLO DEFINE XQ SON EL MISMO VALOR,
 //PERO SI AGREGO OTRO COMANDO MAS DESPUES QUE TIENE UNA CANTIDAD
 //DISTINTA DE PARAMETROS SE ROMPE TODO
@@ -18,6 +18,15 @@ static int execute_as_client(const char *host, const char *port){
   //VER QUE CONSTANTES VOY A USAR PARA DEVOLVER A MAIN
   //VER SI SE PUEDEN UNIFICAR ESTOS CHEQUEOS DE ERRORES
   //CON ELSE IF
+
+  //VER SI CONVIENE HACER UNA FUNCION A PARTE QUE HAGA EL CHEQUEO DE
+  //SI SON EL MISMO STRING
+  size_t host_len = strlen(host);
+  if (host_len == strlen(LOCALHOST_MODE_ARGUMENT)) {
+    if (strncmp(host, LOCALHOST_MODE_ARGUMENT, host_len) == 0) {
+      host = NULL;
+    }
+  }
   if (client_init(&client, host, port) != SUCCESS) {
     return ERROR;
   }
