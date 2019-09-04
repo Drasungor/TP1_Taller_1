@@ -151,7 +151,7 @@ void client_release(client_t *client){
   socket_release(&(client->sckt));
 }
 
-void client_operate(client_t *client){
+int client_operate(client_t *client){
   int program_state = 0;
   do {
     program_state = process_input(&(client->sckt));
@@ -160,4 +160,6 @@ void client_operate(client_t *client){
     //PROGRAM STATE
     //comunicate_error(program_state);
   } while(program_state != EXIT_PROGRAM );
+  //CAMBIAR PORQUE NO SE ESTA MOSTRANDO CUANDO FALLA EL PROGRAMA
+  return SUCCESS;
 }

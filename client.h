@@ -30,6 +30,6 @@ int client_init(client_t *client, const char *host, const char *service);
 
 void client_release(client_t *client);
 
-void client_operate(client_t *client);
+int client_operate(client_t *client);
 
 #endif
