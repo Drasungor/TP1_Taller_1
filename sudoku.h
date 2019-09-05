@@ -30,8 +30,8 @@ void sudoku_release(sudoku_t *sudoku);
 int sudoku_set_number(sudoku_t *sudoku, int number, int vertical_position, int horizontal_position);
 
 //Works in the same way as sudoku_set_number but the
-//number set is not erased when sudoku_reset is called 
-int sudoku_set_number_as_default(sudoku_t *sudoku, int number, int vertical_position, int horizontal_position);
+//number set is not erased when sudoku_reset is called
+void sudoku_set_number_as_default(sudoku_t *sudoku, int number, int vertical_position, int horizontal_position);
 
 //Sets all player set cells to 0
 void sudoku_reset(sudoku_t *sudoku);
@@ -44,6 +44,6 @@ bool sudoku_verify(sudoku_t *sudoku);
 
 //Copies the current state of the board in destiny
 //VER SI CONVIENE DEVOLVER UN PUNTERO CON MEMORIA DINAMICA
-void sudoku_get_board(sudoku_t *sudoku, int destination[BOARD_DIMENSION][BOARD_DIMENSION]);
+void sudoku_get_board(sudoku_t *sudoku, char buffer[BOARD_DIMENSION][BOARD_DIMENSION + 1]);
 
 #endif

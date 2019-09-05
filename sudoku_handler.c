@@ -1,3 +1,6 @@
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
 #include "sudoku_handler.h"
 
 #define INVALID_NUMBER -1
@@ -27,7 +30,11 @@ int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
       size = getline(&line, &size, sudoku_file);
       for (size_t j = 0; j < BOARD_DIMENSION; j++) {
         num[0] = line[2*j];
-        cell_set_as_default(&(sudoku->board[i][j]), atoi(num));
+        //ESTOY USANDO CHARS, VER SI CONVIENE QUE SE GUARDEN CHARS EN VEZ DE INTS
+        //SI NO SE PASA ACA DE CHAR A INT ENTONCES SE VA A TENER QUE PASAR DESPUÉS DE
+        //INT A CHAR LOS NROS QUE LLEGUEN DEL CLIENTE, PERO DESPUÉS SE AHORRA EL TRABAJO
+        //DE PASAR TODOS LOS CARACTERES A CHAR PARA DEVOLVER LA MATRIZ PARA IMPRIMIR
+        sudoku_set_number_as_default(sudoku_handler->sudoku, number, int vertical_position, int horizontal_position);
       }
       free(line);
     }
