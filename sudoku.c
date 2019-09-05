@@ -11,27 +11,42 @@
 
 #define SUCCESS 0
 
+typedef bool (*visit_t)(void*, void*);
 
-, size_t first_i_index, size_t last_i_index, size_t first_j_index, size_t first_j_index
+//auxiliar struct to reduce the repeted values'
+//checker firm lenght
+typedef struct{
+  size_t first_i;
+  size_t last_i;
+  size_t first_j;
+  size_t last_j;
+}limit_t;
 
-//HACER ITERADOR
-void iterate_matrix(void *matrix, bool (*visit)(void*, void*), void* extra){
+
+
+/*
+static void iterate_matrix(void *matrix, limit_t limit, visit_t v, void* extra){
+  for (size_t i = limit.first_i; i < limit.last_i+1; i++) {
+    for (size_t i = limit.first_j; i < limit.last_j+1; i++) {
+      if (!v()) {
+      }
+    }
+  }
+}
+*/
+
+
+//checks if the area delimited has repeated values
+//that go from 1 to 9
+bool has_repeated_values(cell_t* matrix, limits_t limits){
 
 }
-
-//PASAR LOS NUMEROS A CONSTANTES
-//VER SI CONVIENE HACER UNA MACRO EN VEZ DE UNA FUNCION
-#define IS_BOUNDED(x) ((x>=1) && (x<=9))
-
-static bool is_in_bounds(int vertical_position, int horizontal_position){
-  return (IS_BOUNDED(vertical_position)) && (IS_BOUNDED(horizontal_position));
-}
-
 
 //ACHICAR LA FUNCION
 
 //Receives de position of the top left number of the block and
 //indicates if the block has every number from 1 to 9
+/*
 static bool verify_block(sudoku_t *sudoku, int vertical_index, int horizontal_index){
   //Each number has an index of number-1
   bool is_number_in_block[BOARD_DIMENSION + 1];
@@ -68,6 +83,45 @@ static bool verify_block(sudoku_t *sudoku, int vertical_index, int horizontal_in
   return true;
 
 }
+*/
+/*
+static bool verify_block(sudoku_t *sudoku, int i, int j){
+  //Each number has an index of number-1
+  bool is_number_in_block[BOARD_DIMENSION + 1];
+  int number = 0;
+
+  //sets all values of the array to false
+  memset(is_number_in_block, 0, BOARD_DIMENSION * sizeof(bool));
+
+  for (size_t i = vertical_index; i < vertical_index + BLOCK_DIMENSION; i++) {
+    for (size_t j = horizontal_index; j < horizontal_index + BLOCK_DIMENSION; j++) {
+      number = cell_get_number(&(sudoku->board[i][j]));
+
+      //VER SI ES MEJOR CHEQUEAR ACA SI ES 0 PORQUE YA PUEDO SALIR DE LA
+      //ITERACION
+      if (!is_number_in_block[number]) {
+        is_number_in_block[number] = true;
+      } else{
+        return false;
+      }
+    }
+  }
+
+
+  //PASARLO A FUNCION A PARTE
+  if (is_number_in_block[0]) {
+    return false;
+  }
+  for (size_t i = 1; i < BOARD_DIMENSION+1; i++) {
+    if (!is_number_in_block[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+*/
+
 
 static bool verify_blocks(sudoku_t *sudoku){
   for (size_t i = 0; i < BLOCK_DIMENSION; i++) {
