@@ -15,6 +15,8 @@ typedef bool (*visit_t)(void*, void*);
 
 //auxiliar struct to reduce the repeted values'
 //checker firm lenght
+//It determines a region in a matrix that goes from
+//first to last-1 on each index
 typedef struct{
   size_t first_i;
   size_t last_i;
@@ -35,11 +37,52 @@ static void iterate_matrix(void *matrix, limit_t limit, visit_t v, void* extra){
 }
 */
 
+void set_block_limits(limits_t *limits, size_t first_i, size_t first_j){
+  limits->first_i = first_i;
+  limits->last_i = first_i + BLOCK_DIMENSION;
+  limits->first_j = first_j;
+  limits->first_j = first_j + BLOCK_DIMENSION;
+}
+
+
+void set_row_limits(limits_t *limits, size_t i){
+  limits->first_i = i;
+  limits->last_i = i;
+  limits->first_j = 0;
+  limits->first_j = BOARD_DIMENSION;
+}
+
+void set_column_limits(limits_t *limits, size_t j){
+  limits->first_i = 0;
+  limits->last_i = BOARD_DIMENSION;
+  limits->first_j = j;
+  limits->first_j = j;
+}
+
+
+void add_to_checker_array(int *array, int* data_size, int n){
+  if (n != 0) {
+    array[*data_size] = n;
+    (*data_size)++;
+  }
+}
 
 //checks if the area delimited has repeated values
 //that go from 1 to 9
 bool has_repeated_values(cell_t* matrix, limits_t limits){
+  int found_numbers[BOARD_DIMENSION];
+  size_t data_size = 0;
 
+  for (size_t i = limits.first_i; i < limits.last_i; i++) {
+    for (size_t j = limits.first_j; j < limits.last_j; j++) {
+      if (!is_in_array(found_numbers, data_size, matrix[i][j]))
+        add_to_checker_array(int *array, int* data_size, int n);
+      } else {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 //ACHICAR LA FUNCION
@@ -122,7 +165,7 @@ static bool verify_block(sudoku_t *sudoku, int i, int j){
 }
 */
 
-
+/*
 static bool verify_blocks(sudoku_t *sudoku){
   for (size_t i = 0; i < BLOCK_DIMENSION; i++) {
     for (size_t j = 0; j < BLOCK_DIMENSION; j++) {
@@ -133,8 +176,23 @@ static bool verify_blocks(sudoku_t *sudoku){
   }
   return true;
 }
+*/
+
+static bool verify_blocks(cell_t* board){
+  limits_t limits;
+  for (size_t i = 0; i < BLOCK_DIMENSION; i++) {
+    for (size_t j = 0; j < BLOCK_DIMENSION; j++) {
+      set_column_limits(&limits, i+i * BLOCK_DIMENSION, j+j*BLOCK_DIMENSION);
+      if (has_repeated_values(board, limits)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
 
 
+/*
 static bool verify_row(sudoku_t *sudoku, int index){
   bool is_number_in_row[BOARD_DIMENSION + 1];
   int number = 0;
@@ -176,7 +234,34 @@ static bool verify_rows(sudoku_t *sudoku){
   }
   return true;
 }
+*/
 
+static bool verify_rows(cell_t *board){
+  limits_t limits;
+  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
+    set_row_limits(&limits, i);
+    if (has_repeated_values(board, limits)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+//MODULARIZAR, ESTAS 3 FUNCIONES SE PUEDEN CONVERTIR EN UNA SOLA
+//QUE RECIBA COMO PARAMETRO LA FUNCION PARA SETEAR LOS LIMITES
+//PARA EL CASO DE LAS FILAS Y LAS COLUMNAS
+static bool verify_columns(cell_t *board){
+  limits_t limits;
+  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
+    set_column_limits(&limits, i);
+    if (has_repeated_values(board, limits)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/*
 bool verify_column(sudoku_t *sudoku, int index){
   bool is_number_in_column[BOARD_DIMENSION + 1];
   int number = 0;
@@ -220,7 +305,7 @@ static bool verify_columns(sudoku_t *sudoku){
   }
   return true;
 }
-
+*/
 
 //Initializes the game's beginning numbers
 //If a number is below 0 (empty space) or above 9
