@@ -39,22 +39,22 @@ void set_block_limits(limits_t *limits, size_t first_i, size_t first_j){
   limits->first_i = first_i;
   limits->last_i = first_i + BLOCK_DIMENSION;
   limits->first_j = first_j;
-  limits->first_j = first_j + BLOCK_DIMENSION;
+  limits->last_j = first_j + BLOCK_DIMENSION;
 }
 
 
 void set_row_limits(limits_t *limits, size_t i){
   limits->first_i = i;
-  limits->last_i = i;
+  limits->last_i = i + 1;
   limits->first_j = 0;
-  limits->first_j = BOARD_DIMENSION;
+  limits->last_j = BOARD_DIMENSION;
 }
 
 void set_column_limits(limits_t *limits, size_t j){
   limits->first_i = 0;
   limits->last_i = BOARD_DIMENSION;
   limits->first_j = j;
-  limits->first_j = j;
+  limits->last_j = j + 1;
 }
 
 bool is_in_array(int array[], size_t data_size, int n){
@@ -75,7 +75,8 @@ void add_to_checker_array(int array[], size_t* data_size, int n){
 
 //checks if the area delimited has repeated values
 //that go from 1 to 9
-bool has_repeated_values(cell_t matrix[][BOARD_DIMENSION], limits_t limits){
+//VER SI HAY QUE AGREGARLE CONST A limits_t PARA SER CONSISTENTE
+bool has_repeated_values(const cell_t matrix[][BOARD_DIMENSION], limits_t limits){
   int found_numbers[BOARD_DIMENSION];
   size_t data_size = 0;
   int aux = 0;
@@ -93,104 +94,12 @@ bool has_repeated_values(cell_t matrix[][BOARD_DIMENSION], limits_t limits){
   return false;
 }
 
-//ACHICAR LA FUNCION
 
-//Receives de position of the top left number of the block and
-//indicates if the block has every number from 1 to 9
-/*
-static bool verify_block(sudoku_t *sudoku, int vertical_index, int horizontal_index){
-  //Each number has an index of number-1
-  bool is_number_in_block[BOARD_DIMENSION + 1];
-  int number = 0;
-
-  //sets all values of the array to false
-  memset(is_number_in_block, 0, BOARD_DIMENSION * sizeof(bool));
-
-  for (size_t i = vertical_index; i < vertical_index + BLOCK_DIMENSION; i++) {
-    for (size_t j = horizontal_index; j < horizontal_index + BLOCK_DIMENSION; j++) {
-      number = cell_get_number(&(sudoku->board[i][j]));
-
-      //VER SI ES MEJOR CHEQUEAR ACA SI ES 0 PORQUE YA PUEDO SALIR DE LA
-      //ITERACION
-      if (!is_number_in_block[number]) {
-        is_number_in_block[number] = true;
-      } else{
-        return false;
-      }
-    }
-  }
-
-
-  //PASARLO A FUNCION A PARTE
-  if (is_number_in_block[0]) {
-    return false;
-  }
-  for (size_t i = 1; i < BOARD_DIMENSION+1; i++) {
-    if (!is_number_in_block[i]) {
-      return false;
-    }
-  }
-
-  return true;
-
-}
-*/
-/*
-static bool verify_block(sudoku_t *sudoku, int i, int j){
-  //Each number has an index of number-1
-  bool is_number_in_block[BOARD_DIMENSION + 1];
-  int number = 0;
-
-  //sets all values of the array to false
-  memset(is_number_in_block, 0, BOARD_DIMENSION * sizeof(bool));
-
-  for (size_t i = vertical_index; i < vertical_index + BLOCK_DIMENSION; i++) {
-    for (size_t j = horizontal_index; j < horizontal_index + BLOCK_DIMENSION; j++) {
-      number = cell_get_number(&(sudoku->board[i][j]));
-
-      //VER SI ES MEJOR CHEQUEAR ACA SI ES 0 PORQUE YA PUEDO SALIR DE LA
-      //ITERACION
-      if (!is_number_in_block[number]) {
-        is_number_in_block[number] = true;
-      } else{
-        return false;
-      }
-    }
-  }
-
-
-  //PASARLO A FUNCION A PARTE
-  if (is_number_in_block[0]) {
-    return false;
-  }
-  for (size_t i = 1; i < BOARD_DIMENSION+1; i++) {
-    if (!is_number_in_block[i]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-*/
-
-/*
-static bool verify_blocks(sudoku_t *sudoku){
-  for (size_t i = 0; i < BLOCK_DIMENSION; i++) {
-    for (size_t j = 0; j < BLOCK_DIMENSION; j++) {
-      if (!verify_block(sudoku, i+i * BLOCK_DIMENSION, j+j*BLOCK_DIMENSION)) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-*/
-
-static bool verify_blocks(cell_t board[][BOARD_DIMENSION]){
+static bool verify_blocks(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
   limits_t limits;
   for (size_t i = 0; i < BLOCK_DIMENSION; i++) {
     for (size_t j = 0; j < BLOCK_DIMENSION; j++) {
-      set_block_limits(&limits, i+i * BLOCK_DIMENSION, j+j*BLOCK_DIMENSION);
+      set_block_limits(&limits, i * BLOCK_DIMENSION, j*BLOCK_DIMENSION);
       if (has_repeated_values(board, limits)) {
         return false;
       }
@@ -200,51 +109,7 @@ static bool verify_blocks(cell_t board[][BOARD_DIMENSION]){
 }
 
 
-/*
-static bool verify_row(sudoku_t *sudoku, int index){
-  bool is_number_in_row[BOARD_DIMENSION + 1];
-  int number = 0;
-
-  //sets all values of the array to false
-  memset(is_number_in_row, 0, BOARD_DIMENSION * sizeof(bool));
-
-  for (size_t j = 0; j < BOARD_DIMENSION; j++) {
-    number = cell_get_number(&(sudoku->board[index][j]));
-
-    //VER SI ES MEJOR CHEQUEAR ACA SI ES 0 PORQUE YA PUEDO SALIR DE LA
-    //ITERACION
-    if (!is_number_in_row[number]) {
-      is_number_in_row[number] = true;
-    } else{
-      return false;
-    }
-  }
-
-  //PASARLO A FUNCION A PARTE
-  if (is_number_in_row[0]) {
-    return false;
-  }
-
-  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
-    if (!is_number_in_row[i]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-static bool verify_rows(sudoku_t *sudoku){
-  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
-    if (!verify_row(sudoku, i)) {
-      return false;
-    }
-  }
-  return true;
-}
-*/
-
-static bool verify_rows(cell_t board[][BOARD_DIMENSION]){
+static bool verify_rows(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
   limits_t limits;
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     set_row_limits(&limits, i);
@@ -258,10 +123,10 @@ static bool verify_rows(cell_t board[][BOARD_DIMENSION]){
 //MODULARIZAR, ESTAS 3 FUNCIONES SE PUEDEN CONVERTIR EN UNA SOLA
 //QUE RECIBA COMO PARAMETRO LA FUNCION PARA SETEAR LOS LIMITES
 //PARA EL CASO DE LAS FILAS Y LAS COLUMNAS
-static bool verify_columns(cell_t board[][BOARD_DIMENSION]){
+static bool verify_columns(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
   limits_t limits;
-  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
-    set_column_limits(&limits, i);
+  for (size_t j = 0; j < BOARD_DIMENSION; j++) {
+    set_column_limits(&limits, j);
     if (has_repeated_values(board, limits)) {
       return false;
     }
@@ -269,41 +134,8 @@ static bool verify_columns(cell_t board[][BOARD_DIMENSION]){
   return true;
 }
 
+
 /*
-bool verify_column(sudoku_t *sudoku, int index){
-  bool is_number_in_column[BOARD_DIMENSION + 1];
-  int number = 0;
-
-  //sets all values of the array to false
-  memset(is_number_in_column, 0, BOARD_DIMENSION * sizeof(bool));
-
-  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
-    number = cell_get_number(&(sudoku->board[i][index]));
-
-    //VER SI ES MEJOR CHEQUEAR ACA SI ES 0 PORQUE YA PUEDO SALIR DE LA
-    //ITERACION
-    if (!is_number_in_column[number]) {
-      is_number_in_column[number] = true;
-    } else{
-      return false;
-    }
-  }
-
-  //PASARLO A FUNCION A PARTE
-  if (is_number_in_column[0]) {
-    return false;
-  }
-
-  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
-    if (!is_number_in_column[i]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-
 //VER SI SE PUEDE MODULARIZAR CON veify_rows()
 static bool verify_columns(sudoku_t *sudoku){
   for (size_t j = 0; j < BOARD_DIMENSION; j++) {
@@ -330,47 +162,6 @@ void sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DI
 }
 
 
-//ADEMAS DE SACAR ESTA FUNCION DE ACA Y HACER UNA CLASE sudoku_parser
-//VER SI CONVIENE RECIBIR EL ARCHIVO QUE SE VA A USAR PARA INICIALIZAR,
-//CONVIENE PARA TESTING Y POR SI DESPUÉS SE QUIERE CAMBIAR EL ARCHIVO DEL
-//QUE SE LEE
-/*
-int sudoku_init_with_file(sudoku_t *sudoku){
-
-  FILE *sudoku_file =  fopen("sudoku.txt", "r");
-  if (!sudoku_file) {
-    return FILE_ERROR;
-  }
-
-  char *line;
-  size_t size;
-  char num[2];
-  num[1] = '\0';
-
-
-  //VER SI HAY QUE AGREGAR CHEQUEOS DE VALORES USADOS
-  //PARA INICIALIZAR
-  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
-    //VER SI SE PUEDE SOLUCIONAR ESTE COMENTARIO DE ABAJO
-    //fgets throws error for unused return value
-    line = NULL;
-    size = 0;
-    size = getline(&line, &size, sudoku_file);
-    for (size_t j = 0; j < BOARD_DIMENSION; j++) {
-      num[0] = line[2*j];
-      cell_set_as_default(&(sudoku->board[i][j]), atoi(num));
-    }
-    free(line);
-  }
-
-  fclose(sudoku_file);
-
-  //VER SI NO TIENE SENTIDO QUE RETORNE ALGO, TAL VEZ SE
-  //CAMBIE POR VOID
-  return SUCCESS;
-
-}
-*/
 void sudoku_release(sudoku_t *sudoku){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
@@ -415,37 +206,19 @@ void sudoku_reset(sudoku_t *sudoku){
 
 //Indicates if the current state of the board follows
 //the rules of the game
-
-//BORRAR INCLUDE
-#include <stdio.h>
-//BORRAR TODOS LOS PRINTS XQ SON PARA DEBUGGING
-bool sudoku_verify(sudoku_t *sudoku){
+bool sudoku_verify(const sudoku_t *sudoku){
   if (!verify_blocks(sudoku->board)) {
-    printf("RIP soudoku blocks (sudoku.c)\n");
     return false;
   }
   if (!verify_rows(sudoku->board)) {
-    printf("RIP soudoku rows (sudoku.c)\n");
     return false;
   }
   if (!verify_columns(sudoku->board)) {
-    printf("RIP soudoku columns (sudoku.c)\n");
     return false;
   }
-  printf("Sudoku ok (sudoku.c)\n");
   return  true;
 }
 
-/*
-void sudoku_get_board(sudoku_t *sudoku, int destiny[BOARD_DIMENSION][BOARD_DIMENSION]){
-  char board[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD];
-  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
-    for (size_t j = 0; j < BOARD_DIMENSION; j++) {
-      destiny[i][j] = cell_get_number(&(sudoku->board[i][j]));
-    }
-  }
-}
-*/
 
 static char int_to_char(int n){
   if (n == EMPTY_CELL_VALUE) {
@@ -455,7 +228,6 @@ static char int_to_char(int n){
 }
 
 
-//FALTA AGREGAR EL CASO DE LOS '+'
 //PASAR TODOS LOS NROS A CTES: SEPARACION_ENTRE '|' POR EJ
 static char select_char(size_t i, size_t j, int number){
   if (j == HORIZONTAL_DIM_PRINTED_BOARD) {
@@ -483,13 +255,10 @@ static char select_char(size_t i, size_t j, int number){
 
 //VER SI SE PUEDE CAMBIAR POR UNA UNICA FUNCION Q HAGA ESTO EN VEZ
 //DE TENES DOS FOR DISTINTOS
-void sudoku_get_board(sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
+void sudoku_get_board(const sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   int number = 0;
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
     for (size_t j = 0; j < HORIZONTAL_DIM_PRINTED_BOARD + 1; j++) {
-      //int number = cell_get_number(&(sudoku->board[i][j]));
-      //BORRAR, ES PARA DEBUGGING
-      //printf("%c, %d\n", select_char(i, j, number), number);
       buffer[i][j] = select_char(i, j, number);
     }
   }

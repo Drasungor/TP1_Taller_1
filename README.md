@@ -20,7 +20,9 @@ TO DO:
 - Arreglar bug que hace que cuando se pide un comando por segunda vez se cierre el server
 - Arreglar comando put que no anda
 - Arreglar la forma en la q se comunica cuando el comando escrito es invalido
-
+- IMPORTANTE: Agregar const a las funciones que reciban punteros que no van a ser modificados
+- Ver si hay que borrar limits_t de sudoku.c y poner la firma de la funcion original en distintas lineas
+- Ver qué hacer con el valor de retorno de getline cuando se lee de los archivos, no estoy manejando errores de memoria/lectura, investigar qué pasa si encuentra eof en vez de \n
 
 DUDAS:
 

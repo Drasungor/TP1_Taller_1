@@ -41,12 +41,12 @@ void sudoku_reset(sudoku_t *sudoku);
 
 //Indicates if the current state of the board follows
 //the rules of the game
-bool sudoku_verify(sudoku_t *sudoku);
+bool sudoku_verify(const sudoku_t *sudoku);
 
 //Copies the current state of the sudoku in the matrix
 
 //Copies the current state of the board in destiny
 //VER SI CONVIENE DEVOLVER UN PUNTERO CON MEMORIA DINAMICA
-void sudoku_get_board(sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]);
+void sudoku_get_board(const sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]);
 
 #endif
