@@ -417,12 +417,19 @@ void sudoku_reset(sudoku_t *sudoku){
 //the rules of the game
 bool sudoku_verify(sudoku_t *sudoku){
   if (!verify_blocks(sudoku->board)) {
+    printf("RIP soudoku blocks\n");
     return false;
   }
   if (!verify_rows(sudoku->board)) {
+    printf("RIP soudoku rows\n");
     return false;
   }
-  return  verify_columns(sudoku->board);
+  if (!verify_columns(sudoku->board)) {
+    printf("RIP soudoku columns\n");
+    return false;
+  }
+  printf("Sudoku ok (sudoku.c)\n");
+  return  true;
 }
 
 /*
