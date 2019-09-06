@@ -21,6 +21,7 @@ TO DO:
 - Agregar el codigo del TIME_WAIT
 - Ver si hay que mejorar la forma en la que se inicializa el sudoku con el archivo (como se acceden a los nros en la linea que se saca del archivo)
 - IMPORTANTE: Terminar de hacer el sudoku_handler_init
+- Borrar el struct limits_t y hacer la firma de la funcion en distintas lineas
 
 DUDAS:
 
