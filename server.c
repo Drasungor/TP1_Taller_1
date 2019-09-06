@@ -92,14 +92,17 @@ static void process_board(int source[9][9], char destination[VERTICAL_DIM_PRINTE
   initialize_numbers(source, destination);
 }
 */
-
+//BORRAR INCLUDE
+//#include <stdio.h>
 static int get(server_t *server){
   char board[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1];
   //int sudoku_handler_board[9][9];
   //sudoku_handler_get_board(&(server->sudoku_handler), sudoku_handler_board);
   sudoku_handler_get_board(&(server->sudoku_handler), board);
   //process_board(sudoku_handler_board, board);
-  if (!send_data(&(server->sckt), board, VERTICAL_DIM_PRINTED_BOARD * (HORIZONTAL_DIM_PRINTED_BOARD + 1) * sizeof(char))) {
+  if (send_data(&(server->sckt), board, VERTICAL_DIM_PRINTED_BOARD * (HORIZONTAL_DIM_PRINTED_BOARD + 1) * sizeof(char)) != SUCCESS) {
+    //BORRAR PRINT, ES DE DEBUGGING
+    //printf("Error in get send data\n");
     return SOCKET_ERROR;
   }
   return SUCCESS;
@@ -147,7 +150,8 @@ static int reset(server_t *server){
   return SUCCESS;
 }
 
-
+//BORRAR INCLUDE, ES PARA DEBUGGING
+//#include <stdio.h>
 //IMPORTANTE:
 //Está bien chequear que me den el comando adecuado?
 //xq yo se que el cliente soy yo, asique nunca me voy a mandar
@@ -157,6 +161,8 @@ static int process_command(server_t *server, char command){
   switch (command) {
     case GET_INDICATOR:
       program_state = get(server);
+      //BORRAR PRINT, ES PARA DEBUGGING
+      //printf("Get program state: %d\n", program_state);
       break;
     case PUT_INDICATOR:
       program_state = put(server);
@@ -193,7 +199,7 @@ void server_release(server_t *server){
 }
 
 //BORRAR INCLUDE
-#include <stdio.h>
+//#include <stdio.h>
 int server_operate(server_t *server){
   //PONER TODO EN UN LOOP DE WHILE IS CONNECTED O ALGO ASI
   int program_state = SUCCESS;
@@ -202,8 +208,8 @@ int server_operate(server_t *server){
     program_state = process_command(server, command);
     command = receive_command(&(server->sckt));
     //BORRAR PRINT, ES PARA DEBUGGEAR
-    printf("Program state: %d\n", program_state);
-    printf("Command: %c\n", command);
+    //printf("Program state: %d\n", program_state);
+    //printf("Command: %c\n", command);
   }
 
   //VA A SALIR SOLO CUANDO RECIBA UN ERROR, XQ LO VA A RECIBIR CUANDO CIERRE EL SOCKET

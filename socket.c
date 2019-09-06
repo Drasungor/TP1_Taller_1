@@ -110,7 +110,6 @@ void socket_release(socket_t *sckt){
     shutdown(sckt->fd, SHUT_RDWR);
     close(sckt->fd);
   }
-
 }
 
 int socket_bind_and_listen(socket_t *sckt, const char *service){
@@ -243,5 +242,7 @@ bool socket_receive(socket_t *sckt, void *buffer, size_t len){
     current_address += current_bytes_received;
     total_bytes_received += current_bytes_received;
   }
+  //BORRAR PRINT ES PAGA DEBUGGING
+  printf("Total bytes received: %d\n", total_bytes_received);
   return true;
 }
