@@ -31,3 +31,7 @@ int cell_set(cell_t *cell, int number){
 int cell_get_number(const cell_t *cell){
   return cell->number;
 }
+
+void cell_release(cell_t *cell){
+  //DO NOTHING
+}

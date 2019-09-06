@@ -197,6 +197,8 @@ int socket_send(socket_t *sckt, const void *buffer, size_t element_len, void (*c
 */
 
 
+//BORRA INCLUDE
+#include <stdio.h>
 //PREGUNTA: CONVIENE HACER QUE ENVIE UN ARRAY DE DATOS EN VEZ DEUN SOLO CONJUNTO DE DATOS?
 //VER SI CONVIENE QUE DEVUELVA UN INT (TAL VEZ SE DEVUELVE INT POR SI SE
 //AGREGAN DESPUÉS OTROS TIPOS DE ERRORES QUE SE QUIERAN DEVOLVER)
@@ -204,6 +206,8 @@ bool socket_send(socket_t *sckt, const void *buffer, size_t len){
   size_t total_bytes_sent = 0;
   size_t current_bytes_sent = 0;
   int fd = get_fd(sckt);
+  //BORRAR PRINT, ES PARA DEBUGGING
+  printf("fd: %d\n", fd);
   const char *current_address = buffer;
   //VER SI SACO EL RETURN DEL WHILE POR SI QUEDA MUY MAL
 
@@ -212,11 +216,16 @@ bool socket_send(socket_t *sckt, const void *buffer, size_t len){
     if (current_bytes_sent < 1) {
       return false;
     }
+    //BORRAR PRINT, ES PARA DEBUGGING
+    printf("current bytes sent: %ld\n", current_bytes_sent);
     current_address += current_bytes_sent;
     total_bytes_sent += current_bytes_sent;
   }
+  //BORRAR PRINT, ES PARA DEBUGGING
+  printf("Total bytes sent: %ld\n", total_bytes_sent);
   return true;
 }
+
 
 //VER SI SE PUEDE COMBINAR EN UNA UNICA FUNCION QUE RECIBA
 //Y QUE ENVIE, HAY PROBLEMA CON QUE UN BUFFER ES CONST Y EL OTRO NO

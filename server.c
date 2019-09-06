@@ -192,6 +192,8 @@ void server_release(server_t *server){
   socket_release(&(server->sckt));
 }
 
+//BORRAR INCLUDE
+#include <stdio.h>
 int server_operate(server_t *server){
   //PONER TODO EN UN LOOP DE WHILE IS CONNECTED O ALGO ASI
   int program_state = SUCCESS;
@@ -199,6 +201,9 @@ int server_operate(server_t *server){
   while ((program_state == SUCCESS) && (command != SOCKET_ERROR)) {
     program_state = process_command(server, command);
     command = receive_command(&(server->sckt));
+    //BORRAR PRINT, ES PARA DEBUGGEAR
+    printf("Program state: %d\n", program_state);
+    printf("Command: %c\n", command);
   }
 
   //VA A SALIR SOLO CUANDO RECIBA UN ERROR, XQ LO VA A RECIBIR CUANDO CIERRE EL SOCKET

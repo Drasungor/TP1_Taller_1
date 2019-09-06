@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include "remote_sudoku.h"
 #include "client.h"
@@ -86,12 +87,50 @@ static bool is_valid_server_command(const char *mode, int number_of_arguments){
   return true;
 }
 
+//CAMBIAR LA LOGICA DE ESTA FUNCION PORQUE ES MALISIMA
+static void comunicate_mode_error(const char *mode){
+  size_t mode_len = strlen(mode);
+  if (mode_len == strlen(CLIENT_MODE_ARGUMENT)) {
+    if (strncmp(mode, CLIENT_MODE_ARGUMENT, mode_len) == 0) {
+      printf("Uso: ./tp client <host> <puerto>\n");
+    }
+  }
+  if (mode_len == strlen(SERVER_MODE_ARGUMENT)) {
+    if (strncmp(mode, SERVER_MODE_ARGUMENT, mode_len) == 0) {
+      printf("Uso: ./tp server <puerto>\n");
+    }
+  } else {
+    printf("Modo no sportado, el primer parámatro debe ser sever o client\n");
+  }
+}
+
 int remote_sudoku_start(const char **arguments, int number_of_arguments){
+  //CAMBIAR ESTO PORQUE NO TIRA EL ERROR IMPRESO
+  //ADEMAS NO ESTA AL "MISMO NIVEL" QUE EL RESTO DE LAS COSAS
+  //DE LA FUNCION
+  if (number_of_arguments < 1) {
+    return ERROR;
+  }
   if (is_valid_client_command(arguments[0], number_of_arguments)) {
     return execute_as_client(arguments[1], arguments[2]);
   } else if (is_valid_server_command(arguments[0], number_of_arguments)) {
     return execute_as_server(arguments[1]);
   } else {
+    comunicate_mode_error(arguments[0]);
     return ERROR;
   }
+  /*
+  if (is_valid_client_command(arguments[0], number_of_arguments)) {
+    return execute_as_client(arguments[1], arguments[2]);
+  } else {
+  printf("Uso: ./tp client <host> <puerto>\n");
+    return ERROR;
+  }
+  if (is_valid_server_command(arguments[0], number_of_arguments)) {
+    return execute_as_server(arguments[1]);
+  } else {
+  printf("Uso: ./tp server <puerto>\n");
+  }
+  return ERROR;
+  */
 }

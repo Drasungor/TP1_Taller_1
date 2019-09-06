@@ -372,7 +372,11 @@ int sudoku_init_with_file(sudoku_t *sudoku){
 }
 */
 void sudoku_release(sudoku_t *sudoku){
-  //HAY QUE ITERAR TODO EL BOARD PARA LIBERAR TODODAS LAS CELDAS
+  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
+    for (size_t j = 0; j < BOARD_DIMENSION; j++) {
+      cell_release(&(sudoku->board[i][j]));
+    }
+  }
 }
 
 

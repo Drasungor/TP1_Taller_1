@@ -34,7 +34,7 @@ int cell_set(cell_t *cell, int number);
 //Returns the number holded by the cell
 int cell_get_number(const cell_t *cell);
 
-//HACER CELL_RELEASE
+void cell_release(cell_t *cell);
 
 
 #endif

@@ -5,7 +5,6 @@ TO DO:
 
 - See if functions return bools or ints to indicate errors (correct the ones that return ints if bool are chosen)
 - Hacer para socket un handler de cliente y un handler de server
-- Implementar sudoku_release (hay que hacer release a todas las celulas del tablero)
 - Arreglar el funcionamiento de sudoku_verify (se fija tambien que no haya casilleros vacíos, los cuales en realidad debería ignorar)
 - Agregar static a todas las funciones que no estén declaradas en el .h
 - Agregar la primitiva release a los TDA's que no la tengan
@@ -20,6 +19,8 @@ TO DO:
 - Imprimir todo el buffer de una con un printf, para eso hay que meterle un \0 al final del buffer que se recibe despues de recibir el numero
 - Arreglar bug que hace que cuando se pide un comando por segunda vez se cierre el server
 - Arreglar comando put que no anda
+- Arreglar la forma en la q se comunica cuando el comando escrito es invalido
+
 
 DUDAS:
 

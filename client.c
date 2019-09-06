@@ -80,6 +80,8 @@ static void print_message(char* message, size_t size){
 int print_anser(socket_t *sckt){
   uint32_t message_size;
   if (!socket_receive(sckt, &message_size, sizeof(uint32_t))) {
+    printf("%d\n", ntohl(message_size));
+    printf("HAY ERROR DE SOCKET EN RECEIVE\n");
     return SOCKET_ERROR;
   }
   message_size = ntohl(message_size);
