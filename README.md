@@ -22,6 +22,8 @@ TO DO:
 - Ver si hay que mejorar la forma en la que se inicializa el sudoku con el archivo (como se acceden a los nros en la linea que se saca del archivo)
 - IMPORTANTE: Terminar de hacer el sudoku_handler_init
 - Borrar el struct limits_t y hacer la firma de la funcion en distintas lineas
+- IMPORTANTE: Agregar static a todas las funciones auxiliares de los tdas
+
 
 DUDAS:
 

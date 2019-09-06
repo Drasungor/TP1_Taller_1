@@ -56,7 +56,7 @@ static void set_char(char matrix[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRIN
   }
 }
 
-
+/*
 //CAMBIAR, ES MUY INEFICIENTE
 static void initialize_limits(char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
   set_char(destination, 1, 2, '-');
@@ -64,14 +64,16 @@ static void initialize_limits(char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZ
   set_char(destination, 1, 6, '=');
   set_char(destination, 1, 12, 'U');
 }
+*/
 
-
+/*
 static char int_to_char(int n){
   if (n == 0) {
     return ' ';
   }
   return n+ 48;
 }
+*/
 
 static void initialize_numbers(int source[9][9], char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
   for (size_t i = 0; i < 9; i++) {
@@ -81,7 +83,7 @@ static void initialize_numbers(int source[9][9], char destination[VERTICAL_DIM_P
   }
 }
 
-
+/*
 //CAMBIAR LOS 9 POR CTES
 //translates the board returned by sudoku to the one that the server
 //has to return
@@ -89,12 +91,14 @@ static void process_board(int source[9][9], char destination[VERTICAL_DIM_PRINTE
   initialize_limits(destination);
   initialize_numbers(source, destination);
 }
+*/
 
 static int get(server_t *server){
-  char board[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD];
-  int sudoku_board[9][9];
-  sudoku_get_board(&(server->sudoku), sudoku_board);
-  process_board(sudoku_board, board);
+  char board[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1];
+  //int sudoku_board[9][9];
+  //sudoku_get_board(&(server->sudoku), sudoku_board);
+  sudoku_handler_get_board(&(server->sudoku), board);
+  //process_board(sudoku_board, board);
   if (!send_data(&(server->sckt), board, VERTICAL_DIM_PRINTED_BOARD * HORIZONTAL_DIM_PRINTED_BOARD * sizeof(char))) {
     return SOCKET_ERROR;
   }

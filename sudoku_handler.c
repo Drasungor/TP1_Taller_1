@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "sudoku_handler.h"
 
+#define SUCCESS 0
 #define INVALID_NUMBER -1
 #define OUT_OF_BOUNDS -2
 #define FILE_ERROR -3
@@ -13,7 +14,6 @@ static int char_to_int(char c){
 }
 
 int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
-  sudoku_init(&(sudoku_handler->sudoku));
   FILE *sudoku_file =  fopen("sudoku.txt", "r");
   if (!sudoku_file) {
     return FILE_ERROR;
@@ -21,9 +21,10 @@ int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
 
   char *line;
   size_t size;
-  char num[2];
-  num[1] = '\0';
-
+  //char num[2];
+  //num[1] = '\0';
+  int number = 0;
+  int board [BOARD_DIMENSION][BOARD_DIMENSION];
 
   //MODULARIZAR MUCHO
 
@@ -37,16 +38,18 @@ int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
     //HACER CHEQUEO POR SI FALLA GETLINE
     size = getline(&line, &size, sudoku_file);
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
-      num[0] = line[2*j];
+      number = line[2*j];
       //ESTOY USANDO CHARS, VER SI CONVIENE QUE SE GUARDEN CHARS EN VEZ DE INTS
       //SI NO SE PASA ACA DE CHAR A INT ENTONCES SE VA A TENER QUE PASAR DESPUÉS DE
       //INT A CHAR LOS NROS QUE LLEGUEN DEL CLIENTE, PERO DESPUÉS SE AHORRA EL TRABAJO
       //DE PASAR TODOS LOS CARACTERES A CHAR PARA DEVOLVER LA MATRIZ PARA IMPRIMIR
-      sudoku_set_number_as_default(sudoku_handler->sudoku, char_to_int(number), i, j);
+      //sudoku_set_number_as_default(sudoku_handler->sudoku, char_to_int(number), i, j);
+      board[i][j] = char_to_int(number);
     }
     free(line);
   }
   fclose(sudoku_file);
+  sudoku_init(&(sudoku_handler->sudoku), board);
   return SUCCESS;
 }
 
