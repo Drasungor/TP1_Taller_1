@@ -19,7 +19,6 @@ typedef struct {
 //it fails and returns 1, otherwise returns 0
 void sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIMENSION]);
 
-int sudoku_init_with_file(sudoku_t *sudoku);
 
 void sudoku_release(sudoku_t *sudoku);
 
@@ -31,6 +30,8 @@ void sudoku_release(sudoku_t *sudoku);
 //on success
 int sudoku_set_number(sudoku_t *sudoku, int number, int vertical_position, int horizontal_position);
 
+
+//VER SI HAY QUE BORRARLA
 //Works in the same way as sudoku_set_number but the
 //number set is not erased when sudoku_reset is called
 void sudoku_set_number_as_default(sudoku_t *sudoku, int number, int vertical_position, int horizontal_position);

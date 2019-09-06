@@ -415,17 +415,21 @@ void sudoku_reset(sudoku_t *sudoku){
 
 //Indicates if the current state of the board follows
 //the rules of the game
+
+//BORRAR INCLUDE
+#include <stdio.h>
+//BORRAR TODOS LOS PRINTS XQ SON PARA DEBUGGING
 bool sudoku_verify(sudoku_t *sudoku){
   if (!verify_blocks(sudoku->board)) {
-    printf("RIP soudoku blocks\n");
+    printf("RIP soudoku blocks (sudoku.c)\n");
     return false;
   }
   if (!verify_rows(sudoku->board)) {
-    printf("RIP soudoku rows\n");
+    printf("RIP soudoku rows (sudoku.c)\n");
     return false;
   }
   if (!verify_columns(sudoku->board)) {
-    printf("RIP soudoku columns\n");
+    printf("RIP soudoku columns (sudoku.c)\n");
     return false;
   }
   printf("Sudoku ok (sudoku.c)\n");

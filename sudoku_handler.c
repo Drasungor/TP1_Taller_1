@@ -70,6 +70,7 @@ void sudoku_handler_reset(sudoku_handler_t *sudoku_handler){
 #include <stdio.h>
 bool sudoku_handler_verify(sudoku_handler_t *sudoku_handler){
   //BORRAR IF Y PRINT, ES SOLO PARA DEBUFFING
+  printf("\n");
   if (sudoku_verify(&(sudoku_handler->sudoku))) {
     printf("Sudoku ok (sudoku_handler.c)\n");
   }
