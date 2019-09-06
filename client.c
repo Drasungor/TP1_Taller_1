@@ -76,11 +76,8 @@ static void print_message(char* message, size_t size){
   }
 }
 
-static int obtain_answer(socket_t *sckt, char indicator){
-  char indicator_copy = indicator;
-  if (!socket_send(sckt, &indicator_copy, sizeof(char))) {
-    return SOCKET_ERROR;
-  }
+
+int print_anser(socket_t *sckt){
   uint32_t message_size;
   if (!socket_receive(sckt, &message_size, sizeof(uint32_t))) {
     return SOCKET_ERROR;
@@ -91,6 +88,45 @@ static int obtain_answer(socket_t *sckt, char indicator){
     return SOCKET_ERROR;
   }
   print_message(message, message_size);
+  return SUCCESS;
+}
+
+bool receives_two_messages(char indicator){
+  return (indicator == PUT_INDICATOR)/* || (indicator == RESET_INDICATOR)*/;
+}
+
+//VER SI CONVIENE SACAR EL NOMBRE XQ TAMBIEN LE MANDA UNA
+//PETICIÓN
+static int obtain_answer(socket_t *sckt, char indicator){
+  char indicator_copy = indicator;
+  if (!socket_send(sckt, &indicator_copy, sizeof(char))) {
+    return SOCKET_ERROR;
+  }
+  /*
+  //VER SI CONVIENE HACER UNA FUNCION PRINT_ANSWER O ALGO ASI
+  uint32_t message_size;
+  if (!socket_receive(sckt, &message_size, sizeof(uint32_t))) {
+    return SOCKET_ERROR;
+  }
+  message_size = ntohl(message_size);
+  char message[message_size];
+  if (!socket_receive(sckt, message, message_size)) {
+    return SOCKET_ERROR;
+  }
+  print_message(message, message_size);
+  */
+  if (print_anser(sckt) != SUCCESS) {
+    return SOCKET_ERROR;
+  }
+  //VER SI SE PUEDE MEJOR LA FORMA DE RECIBIR DOS MENSAJES
+  //ESTO QUEDA BASTANTE MAL
+  /*
+  if (receives_two_messages(indicator)) {
+    if (print_anser(sckt) != SUCCESS) {
+      return SOCKET_ERROR;
+    }
+  }
+  */
   return SUCCESS;
 }
 
@@ -120,6 +156,7 @@ static int execute_command(socket_t *sckt, char *input, size_t size){
 static int process_input(socket_t *sckt){
   char *line = NULL;
   size_t size = 0;
+  int program_status = 0;
 
   size = getline(&line, &size, stdin);
   if (size == -1) {
@@ -133,7 +170,9 @@ static int process_input(socket_t *sckt){
     line[size-1] = '\0';
     size--;
   }
-  return execute_command(sckt, line, size);
+  program_status = execute_command(sckt, line, size);
+  free(line);
+  return program_status;
 }
 
 
