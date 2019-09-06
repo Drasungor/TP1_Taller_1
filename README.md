@@ -4,16 +4,10 @@
 TO DO:
 
 - See if functions return bools or ints to indicate errors (correct the ones that return ints if bool are chosen)
-- Achicar verify_block, leer comentarios de todo el codigo escrito
-- Ver si se pueden generalizar los verify en uno solo
-- Ver si es mejor devolver memoria dinamica en vez de pasar una matriz por parametro a sudoku_get_board
-- Cambiar el atoi por una función char_to_int para no tener que pasar las cosas a un array
 - Hacer para socket un handler de cliente y un handler de server
-- Cambiar sudoku_init_with_file a sudoku_init
 - Implementar sudoku_release (hay que hacer release a todas las celulas del tablero)
 - Arreglar el funcionamiento de sudoku_verify (se fija tambien que no haya casilleros vacíos, los cuales en realidad debería ignorar)
 - Agregar static a todas las funciones que no estén declaradas en el .h
-- Arreglar la forma en la que se mandan los mensajes del server al cliente, la cantidad de caracteres que se van a recibir tiene que estar concatenada con los caracteres, y tiene que estar al principio del buffer
 - Agregar la primitiva release a los TDA's que no la tengan
 - Escribir mensajes de error para que printee cuando se reciba un comando invalido
 - Sacar el chequeo de rango de posicion y de valor numerico del sudoku porque lo hace todo el cliente
@@ -24,8 +18,8 @@ TO DO:
 - Borrar el struct limits_t y hacer la firma de la funcion en distintas lineas
 - IMPORTANTE: Agregar static a todas las funciones auxiliares de los tdas
 - Imprimir todo el buffer de una con un printf, para eso hay que meterle un \0 al final del buffer que se recibe despues de recibir el numero
--Arreglar bug que hace que cuando se pide un comando por segunda vez se cierre el server
--Arreglar que no anda put
+- Arreglar bug que hace que cuando se pide un comando por segunda vez se cierre el server
+- Arreglar comando put que no anda
 
 DUDAS:
 
@@ -40,3 +34,4 @@ DUDAS:
 - Está mal incluir un header solo por los defines? (incluyo server.h en client para que solo esten definidos en un único lugar los caracteres de los comandos para no tenes que cambiarlos en distintos lugares en caso de alguna modificación)
 - IMPORTANTE: ver duda en verify de server.c
 - IMPORTANTE: que conviene: ¿Pasar un array como parametro y modificarlo para que guarde lo que queramos?¿O devolverlo con memoria dinamica? Ver sudoku_get_board como referencia
+- Revisar el release del server

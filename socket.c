@@ -100,6 +100,7 @@ void socket_init(socket_t *sckt){
   sckt->can_accept = false;
 }
 
+//REVISAR XQ SEGURAMENTE ESTA MAL LA PARTE DEL SERVER
 void socket_release(socket_t *sckt){
   if (sckt->is_server) {
     shutdown(sckt->client_fd, SHUT_RDWR);
