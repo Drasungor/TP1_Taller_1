@@ -6,8 +6,6 @@
 
 #define BLOCK_DIMENSION 3
 #define CHARACTERS_BY_LINE 18
-#define HORIZONTAL_DIM_PRINTED_BOARD 37
-#define VERTICAL_DIM_PRINTED_BOARD 19
 
 #define SUCCESS 0
 
@@ -466,7 +464,7 @@ char select_char(size_t i, size_t j, int number){
   return int_to_char(number);
 }
 
-void sudoku_get_board(sudoku_t *sudoku, char buffer[BOARD_DIMENSION][BOARD_DIMENSION + 1]){
+void sudoku_get_board(sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
     for (size_t j = 0; j < HORIZONTAL_DIM_PRINTED_BOARD + 1; j++) {
       int number = cell_get_number(&(sudoku->board[i][j]));

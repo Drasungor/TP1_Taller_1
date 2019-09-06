@@ -5,6 +5,8 @@
 #include "cell.h"
 
 #define BOARD_DIMENSION 9
+#define HORIZONTAL_DIM_PRINTED_BOARD 37
+#define VERTICAL_DIM_PRINTED_BOARD 19
 
 
 typedef struct {
@@ -44,6 +46,6 @@ bool sudoku_verify(sudoku_t *sudoku);
 
 //Copies the current state of the board in destiny
 //VER SI CONVIENE DEVOLVER UN PUNTERO CON MEMORIA DINAMICA
-void sudoku_get_board(sudoku_t *sudoku, char buffer[BOARD_DIMENSION][BOARD_DIMENSION + 1]);
+void sudoku_get_board(sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]);
 
 #endif

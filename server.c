@@ -1,7 +1,7 @@
 #define _POSIX_C_SOURCE 200112L
 #include <string.h>
 #include "server.h"
-#include "sudoku.h"
+#include "sudoku_handler.h"
 #include "socket.h"
 
 #define SUDOKU_VERIFIES "OK\n"
@@ -42,7 +42,7 @@ static char receive_command(socket_t *sckt){
   return command;
 }
 
-
+/*
 //VER SI CONVIENE SACAR LAS CONSTANTES XQ QUEDA UNA DEFINICION MUY LARGA
 static void set_char(char matrix[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD], size_t i_offset, size_t j_offset, char c){
   //VER SI CONVIENE CAMBIAR COMO FUNCIONA LA FUNCION XQ CÓMO QUEDA ESCRITO
@@ -55,7 +55,7 @@ static void set_char(char matrix[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRIN
     }
   }
 }
-
+*/
 /*
 //CAMBIAR, ES MUY INEFICIENTE
 static void initialize_limits(char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
@@ -74,7 +74,7 @@ static char int_to_char(int n){
   return n+ 48;
 }
 */
-
+/*
 static void initialize_numbers(int source[9][9], char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
   for (size_t i = 0; i < 9; i++) {
     for (size_t j = 0; j < 9; j++) {
@@ -82,10 +82,10 @@ static void initialize_numbers(int source[9][9], char destination[VERTICAL_DIM_P
     }
   }
 }
-
+*/
 /*
 //CAMBIAR LOS 9 POR CTES
-//translates the board returned by sudoku to the one that the server
+//translates the board returned by sudoku_handler to the one that the server
 //has to return
 static void process_board(int source[9][9], char destination[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD]){
   initialize_limits(destination);
@@ -95,10 +95,10 @@ static void process_board(int source[9][9], char destination[VERTICAL_DIM_PRINTE
 
 static int get(server_t *server){
   char board[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1];
-  //int sudoku_board[9][9];
-  //sudoku_get_board(&(server->sudoku), sudoku_board);
-  sudoku_handler_get_board(&(server->sudoku), board);
-  //process_board(sudoku_board, board);
+  //int sudoku_handler_board[9][9];
+  //sudoku_handler_get_board(&(server->sudoku_handler), sudoku_handler_board);
+  sudoku_handler_get_board(&(server->sudoku_handler), board);
+  //process_board(sudoku_handler_board, board);
   if (!send_data(&(server->sckt), board, VERTICAL_DIM_PRINTED_BOARD * HORIZONTAL_DIM_PRINTED_BOARD * sizeof(char))) {
     return SOCKET_ERROR;
   }
@@ -114,7 +114,7 @@ static int put(server_t *server){
   }
   //CAMBIAR EL LLAMADO AL ARRAY EN CADA POSICION POR EL NOMBRE DE UNA VARIABLE ASIGNADA ANTES
   //O PONER DIRECTAMENTE EL INDICE (PERO HACIENDO ESO TAL VEZ NO SE ENTIENDE FACIL AL LEER)
-  if (sudoku_set_number(&(server->sudoku), values[PUT_INDEX_NUMBER], values[PUT_INDEX_VERTICAL_POS], values[PUT_INDEX_HORIZONTAL_POS]) != SUCCESS) {
+  if (sudoku_handler_set_number(&(server->sudoku_handler), values[PUT_INDEX_NUMBER], values[PUT_INDEX_VERTICAL_POS], values[PUT_INDEX_HORIZONTAL_POS]) != SUCCESS) {
     if (send_data(&(server->sckt), message, strlen(message)) != SUCCESS) {
       return SOCKET_ERROR;
     }
@@ -128,7 +128,7 @@ static int put(server_t *server){
 
 static int verify(server_t *server){
   char *message = SUDOKU_VERIFIES;
-  if (!sudoku_verify(&(server->sudoku))) {
+  if (!sudoku_handler_verify(&(server->sudoku_handler))) {
     message = SUDOKU_DOESNT_VERIFY;
   }
   if (send_data(&(server->sckt), message, strlen(message)) != SUCCESS) {
@@ -139,7 +139,7 @@ static int verify(server_t *server){
 
 static int reset(server_t *server){
   //AGREGAR CHEQUEOS DE VALORES QUE DEVUELVEN LAS FUNCIONES
-  sudoku_reset(&(server->sudoku));
+  sudoku_handler_reset(&(server->sudoku_handler));
   get(server);
 
 
@@ -179,7 +179,7 @@ static int process_command(server_t *server, char command){
 
 int server_init(server_t *server, const char *service){
   //AGREGAR CHEQUEOS DE LO QUE DEVUELVEN LAS FUNCIONES PARA VER SI HAY QUE DEVOLVER ERROR
-  sudoku_init_with_file(&(server->sudoku));
+  sudoku_handler_init(&(server->sudoku_handler));
   socket_init(&(server->sckt));
   socket_bind_and_listen(&(server->sckt), service);
   socket_accept(&(server->sckt));
@@ -188,7 +188,7 @@ int server_init(server_t *server, const char *service){
 }
 
 void server_release(server_t *server){
-  sudoku_release(&(server->sudoku));
+  sudoku_handler_release(&(server->sudoku_handler));
   socket_release(&(server->sckt));
 }
 

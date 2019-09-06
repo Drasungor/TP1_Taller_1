@@ -2,7 +2,7 @@
 #define  _SERVER_H_
 
 
-#include "sudoku.h"
+#include "sudoku_handler.h"
 #include "socket.h"
 
 #define GET_INDICATOR 'G'
@@ -15,12 +15,9 @@
 #define INVALID_INDICATOR -2
 
 typedef struct{
-  sudoku_t sudoku;
+  sudoku_handler_t sudoku_handler;
   socket_t sckt;
 }server_t;
-
-
-
 
 int server_init(server_t *server, const char *service);
 
