@@ -320,19 +320,13 @@ static bool verify_columns(sudoku_t *sudoku){
 
 //CORREGIR ESTA ULTIMA LINEA YA QUE LA FUNCION NO HACE LO QUE DICE
 //it fails and returns 1, otherwise returns 0
-int sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIMENSION]){
-
-
-
-  //VER SI SE PUEDE CAMBIAR LA ITERACION POR UNA MACRO PARA NO REPETIRLA
-  //EN OTRAS PARTES DEL CODIGO
+void sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIMENSION]){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
       cell_init(&(sudoku->board[i][j]));
       cell_set_as_default(&(sudoku->board[i][j]), initial_numbers[i][j]);
     }
   }
-  return SUCCESS;
 }
 
 
@@ -438,25 +432,25 @@ void sudoku_get_board(sudoku_t *sudoku, int destiny[BOARD_DIMENSION][BOARD_DIMEN
 }
 */
 
-char int_to_char(int n){
+static char int_to_char(int n){
   if (n == EMPTY_CELL_VALUE) {
     return ' ';
   }
-  return n-48;
+  return n+48;
 }
 
-char select_char(size_t i, size_t j, int number){
+static char select_char(size_t i, size_t j, int number){
   if (j == HORIZONTAL_DIM_PRINTED_BOARD) {
     return '\n';
   }
   if (j % 12 == 0) {
     return 'U';
   }
-  if (j % 2 == 0) {
-    return '|';
-  }
   if (i % 6 == 0) {
     return '=';
+  }
+  if (j % 2 == 0) {
+    return '|';
   }
   if (i % 2 == 0) {
     return '-';
@@ -464,10 +458,14 @@ char select_char(size_t i, size_t j, int number){
   return int_to_char(number);
 }
 
+
+#include <stdio.h>
 void sudoku_get_board(sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
     for (size_t j = 0; j < HORIZONTAL_DIM_PRINTED_BOARD + 1; j++) {
       int number = cell_get_number(&(sudoku->board[i][j]));
+      //BORRAR, ES PARA DEBUGGING
+      //printf("%c, %d\n", select_char(i, j, number), number);
       buffer[i][j] = select_char(i, j, number);
     }
   }

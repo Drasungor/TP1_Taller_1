@@ -99,7 +99,7 @@ static int get(server_t *server){
   //sudoku_handler_get_board(&(server->sudoku_handler), sudoku_handler_board);
   sudoku_handler_get_board(&(server->sudoku_handler), board);
   //process_board(sudoku_handler_board, board);
-  if (!send_data(&(server->sckt), board, VERTICAL_DIM_PRINTED_BOARD * HORIZONTAL_DIM_PRINTED_BOARD * sizeof(char))) {
+  if (!send_data(&(server->sckt), board, VERTICAL_DIM_PRINTED_BOARD * (HORIZONTAL_DIM_PRINTED_BOARD + 1) * sizeof(char))) {
     return SOCKET_ERROR;
   }
   return SUCCESS;

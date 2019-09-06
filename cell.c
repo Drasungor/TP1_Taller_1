@@ -15,6 +15,7 @@ void cell_set_as_default(cell_t *cell, int number){
   if (number != EMPTY_CELL_VALUE) {
     cell->is_default = true;
   }
+  cell->number = number;
 }
 
 

@@ -17,7 +17,7 @@ typedef struct {
 //Initializes the game's beginning numbers
 //If a number is below 0 (empty space) or above 9
 //it fails and returns 1, otherwise returns 0
-int sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIMENSION]);
+void sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIMENSION]);
 
 int sudoku_init_with_file(sudoku_t *sudoku);
 
