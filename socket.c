@@ -197,7 +197,7 @@ int socket_send(socket_t *sckt, const void *buffer, size_t element_len, void (*c
 
 
 //BORRA INCLUDE
-#include <stdio.h>
+//#include <stdio.h>
 //PREGUNTA: CONVIENE HACER QUE ENVIE UN ARRAY DE DATOS EN VEZ DEUN SOLO CONJUNTO DE DATOS?
 //VER SI CONVIENE QUE DEVUELVA UN INT (TAL VEZ SE DEVUELVE INT POR SI SE
 //AGREGAN DESPUÉS OTROS TIPOS DE ERRORES QUE SE QUIERAN DEVOLVER)
@@ -206,7 +206,7 @@ bool socket_send(socket_t *sckt, const void *buffer, size_t len){
   size_t current_bytes_sent = 0;
   int fd = get_fd(sckt);
   //BORRAR PRINT, ES PARA DEBUGGING
-  printf("fd: %d\n", fd);
+  //printf("fd: %d\n", fd);
   const char *current_address = buffer;
   //VER SI SACO EL RETURN DEL WHILE POR SI QUEDA MUY MAL
 
@@ -216,12 +216,12 @@ bool socket_send(socket_t *sckt, const void *buffer, size_t len){
       return false;
     }
     //BORRAR PRINT, ES PARA DEBUGGING
-    printf("current bytes sent: %ld\n", current_bytes_sent);
+    //printf("current bytes sent: %ld\n", current_bytes_sent);
     current_address += current_bytes_sent;
     total_bytes_sent += current_bytes_sent;
   }
   //BORRAR PRINT, ES PARA DEBUGGING
-  printf("Total bytes sent: %ld\n", total_bytes_sent);
+  //printf("Total bytes sent: %ld\n", total_bytes_sent);
   return true;
 }
 
@@ -243,6 +243,6 @@ bool socket_receive(socket_t *sckt, void *buffer, size_t len){
     total_bytes_received += current_bytes_received;
   }
   //BORRAR PRINT ES PAGA DEBUGGING
-  printf("Total bytes received: %d\n", total_bytes_received);
+  //printf("Total bytes received: %d\n", total_bytes_received);
   return true;
 }
