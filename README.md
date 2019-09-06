@@ -24,7 +24,8 @@ TO DO:
 - Borrar el struct limits_t y hacer la firma de la funcion en distintas lineas
 - IMPORTANTE: Agregar static a todas las funciones auxiliares de los tdas
 - Imprimir todo el buffer de una con un printf, para eso hay que meterle un \0 al final del buffer que se recibe despues de recibir el numero
-
+-Arreglar bug que hace que cuando se pide un comando por segunda vez se cierre el server
+-Arreglar que no anda put
 
 DUDAS:
 
