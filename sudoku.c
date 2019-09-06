@@ -439,6 +439,9 @@ static char int_to_char(int n){
   return n+48;
 }
 
+
+//FALTA AGREGAR EL CASO DE LOS '+'
+//PASAR TODOS LOS NROS A CTES: SEPARACION_ENTRE '|' POR EJ
 static char select_char(size_t i, size_t j, int number){
   if (j == HORIZONTAL_DIM_PRINTED_BOARD) {
     return '\n';
@@ -449,24 +452,36 @@ static char select_char(size_t i, size_t j, int number){
   if (i % 6 == 0) {
     return '=';
   }
-  if (j % 2 == 0) {
-    return '|';
+  if ((i % 2 == 0) && (j % 4 == 0)) {
+    return '+';
   }
   if (i % 2 == 0) {
     return '-';
   }
-  return int_to_char(number);
+  if (j % 4 == 0) {
+    return '|';
+  }
+  //return int_to_char(number);
+  //CAMBIAR EL ESPACIO POR EMPTI_CELL_CHAR O ALGO ASI
+  return ' ';
 }
 
-
-#include <stdio.h>
+//VER SI SE PUEDE CAMBIAR POR UNA UNICA FUNCION Q HAGA ESTO EN VEZ
+//DE TENES DOS FOR DISTINTOS
 void sudoku_get_board(sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
+  int number = 0;
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
     for (size_t j = 0; j < HORIZONTAL_DIM_PRINTED_BOARD + 1; j++) {
-      int number = cell_get_number(&(sudoku->board[i][j]));
+      //int number = cell_get_number(&(sudoku->board[i][j]));
       //BORRAR, ES PARA DEBUGGING
       //printf("%c, %d\n", select_char(i, j, number), number);
       buffer[i][j] = select_char(i, j, number);
+    }
+  }
+  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
+    for (size_t j = 0; j < BOARD_DIMENSION + 1; j++) {
+      number = cell_get_number(&(sudoku->board[i][j]));
+      buffer[1 + i * 2][2 + j * 4] = int_to_char(number);
     }
   }
 }
