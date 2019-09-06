@@ -479,7 +479,7 @@ void sudoku_get_board(sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][
     }
   }
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
-    for (size_t j = 0; j < BOARD_DIMENSION + 1; j++) {
+    for (size_t j = 0; j < BOARD_DIMENSION; j++) {
       number = cell_get_number(&(sudoku->board[i][j]));
       buffer[1 + i * 2][2 + j * 4] = int_to_char(number);
     }
