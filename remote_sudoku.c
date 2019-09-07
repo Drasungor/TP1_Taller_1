@@ -92,15 +92,15 @@ static void comunicate_mode_error(const char *mode){
   size_t mode_len = strlen(mode);
   if (mode_len == strlen(CLIENT_MODE_ARGUMENT)) {
     if (strncmp(mode, CLIENT_MODE_ARGUMENT, mode_len) == 0) {
-      printf("Uso: ./tp client <host> <puerto>\n");
+      fprintf(stderr, "Uso: ./tp client <host> <puerto>\n");
     }
   }
   if (mode_len == strlen(SERVER_MODE_ARGUMENT)) {
     if (strncmp(mode, SERVER_MODE_ARGUMENT, mode_len) == 0) {
-      printf("Uso: ./tp server <puerto>\n");
+      fprintf(stderr, "Uso: ./tp server <puerto>\n");
     }
   } else {
-    printf("Modo no sportado, el primer parámatro debe ser sever o client\n");
+    fprintf(stderr, "Modo no sportado, el primer parámatro debe ser sever o client\n");
   }
 }
 

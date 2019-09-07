@@ -35,7 +35,7 @@ static void iterate_matrix(void *matrix, limit_t limit, visit_t v, void* extra){
 }
 */
 
-void set_block_limits(limits_t *limits, size_t first_i, size_t first_j){
+static void set_block_limits(limits_t *limits, size_t first_i, size_t first_j){
   limits->first_i = first_i;
   limits->last_i = first_i + BLOCK_DIMENSION;
   limits->first_j = first_j;
@@ -43,21 +43,21 @@ void set_block_limits(limits_t *limits, size_t first_i, size_t first_j){
 }
 
 
-void set_row_limits(limits_t *limits, size_t i){
+static void set_row_limits(limits_t *limits, size_t i){
   limits->first_i = i;
   limits->last_i = i + 1;
   limits->first_j = 0;
   limits->last_j = BOARD_DIMENSION;
 }
 
-void set_column_limits(limits_t *limits, size_t j){
+static void set_column_limits(limits_t *limits, size_t j){
   limits->first_i = 0;
   limits->last_i = BOARD_DIMENSION;
   limits->first_j = j;
   limits->last_j = j + 1;
 }
 
-bool is_in_array(int array[], size_t data_size, int n){
+static bool is_in_array(int array[], size_t data_size, int n){
   for (size_t i = 0; i < data_size; i++) {
     if (array[i] == n) {
       return true;
@@ -66,7 +66,7 @@ bool is_in_array(int array[], size_t data_size, int n){
   return false;
 }
 
-void add_to_checker_array(int array[], size_t* data_size, int n){
+static void add_to_checker_array(int array[], size_t* data_size, int n){
   if (n != EMPTY_CELL_VALUE) {
     array[*data_size] = n;
     (*data_size)++;
@@ -76,7 +76,7 @@ void add_to_checker_array(int array[], size_t* data_size, int n){
 //checks if the area delimited has repeated values
 //that go from 1 to 9
 //VER SI HAY QUE AGREGARLE CONST A limits_t PARA SER CONSISTENTE
-bool has_repeated_values(const cell_t matrix[][BOARD_DIMENSION], limits_t limits){
+static bool has_repeated_values(const cell_t matrix[][BOARD_DIMENSION], limits_t limits){
   int found_numbers[BOARD_DIMENSION];
   size_t data_size = 0;
   int aux = 0;
