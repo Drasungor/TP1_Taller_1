@@ -39,3 +39,4 @@ DUDAS:
 - IMPORTANTE: que conviene: ¿Pasar un array como parametro y modificarlo para que guarde lo que queramos?¿O devolverlo con memoria dinamica? Ver sudoku_get_board como referencia
 - Revisar el release del server
 - Ver qué hacer con la ejecución del programa si hay un error de sockets o de memoria dinamica
+- Ver qué pasa con el getline que recibe los comandos de stdin cuando sudoku.txt no termina en un barra n
