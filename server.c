@@ -24,10 +24,12 @@ static int send_data(socket_t *sckt, void *message, uint32_t len){
   //CORREGIR, EL NUMERO SE TIENE QUE MANDAR EN LA MISMA TIRA DE BYTES QUE
   //EL STRING QUE HAY QUE IMPRIMIR
   uint32_t number_to_send = htonl(len);
-  if (!socket_send(sckt, &number_to_send, sizeof(uint32_t))) {
+  //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+  if (socket_send(sckt, &number_to_send, sizeof(uint32_t)) != SUCCESS) {
     return SOCKET_ERROR;
   }
-  if (!socket_send(sckt, message, len)) {
+  //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+  if (socket_send(sckt, message, len) != SUCCESS) {
     return SOCKET_ERROR;
   }
   return SUCCESS;
@@ -36,7 +38,8 @@ static int send_data(socket_t *sckt, void *message, uint32_t len){
 
 static char receive_command(socket_t *sckt){
   char command = 0;
-  if (!socket_receive(sckt, &command, sizeof(char))) {
+  //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+  if (socket_receive(sckt, &command, sizeof(char)) != SUCCESS) {
     return SOCKET_ERROR;
   }
   return command;
@@ -59,7 +62,8 @@ static int put(server_t *server){
   char *message = NON_MODIFIABLE_CELL_MESSAGE;
   uint8_t values[PUT_BYTES_RECEIVED-1];
 
-  if (!socket_receive(&(server->sckt), values, (PUT_BYTES_RECEIVED-1) * sizeof(uint8_t))) {
+  //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+  if (socket_receive(&(server->sckt), values, (PUT_BYTES_RECEIVED-1) * sizeof(uint8_t)) != SUCCESS) {
     return SOCKET_ERROR;
   }
   //CAMBIAR EL LLAMADO AL ARRAY EN CADA POSICION POR EL NOMBRE DE UNA VARIABLE ASIGNADA ANTES

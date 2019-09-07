@@ -58,14 +58,14 @@ static bool is_valid_position(int position){
 
 
 static bool is_valid_number(int n){
-  return (n >= 0) && (n <= 9);
+  return (n >= 1) && (n <= 9);
 }
 
 //Indicates if the input is a valid format for the command put
 //VER SI NO HACE FALTA RECIBIR SIZE DE TODO EL INPUT
 //VER SI ESTA MAL QUE LA FUNCION QUE DICE SI ES VALIDO EL COMANDO
 //DEVUELVA EN EL ARRAY LAS COORDENADAS
-static int is_valid_put(char *input, size_t size, uint8_t data[3]){
+static int put_command_validation(char *input, size_t size, uint8_t data[3]){
 
   //HACER CHEQUEO DEL CASO EN EL Q NO SE TENGAN LOS SUFICIENTES PEDAZOS
   //DEL COMANDO
@@ -112,7 +112,8 @@ static void print_message(char* message, size_t size){
 
 static int print_answer(socket_t *sckt){
   uint32_t message_size;
-  if (!socket_receive(sckt, &message_size, sizeof(uint32_t))) {
+  //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+  if (socket_receive(sckt, &message_size, sizeof(uint32_t)) != SUCCESS) {
     return SOCKET_ERROR;
   }
   message_size = ntohl(message_size);
@@ -120,7 +121,8 @@ static int print_answer(socket_t *sckt){
   //SACAR ESTA ADICION DE CARACTER DE ESTA FUNCION XQ NO
   //ESTA AL MISMO NIVEL QUE EL RESTO DE LAS OPERACIONES
   message[message_size] = '\0';
-  if (!socket_receive(sckt, message, message_size)) {
+  //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+  if (socket_receive(sckt, message, message_size) != SUCCESS) {
     return SOCKET_ERROR;
   }
   printf("%s", message);
@@ -133,7 +135,8 @@ static int print_answer(socket_t *sckt){
 //PETICIÓN
 static int obtain_answer(socket_t *sckt, char indicator){
   char indicator_copy = indicator;
-  if (!socket_send(sckt, &indicator_copy, sizeof(char))) {
+  //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+  if (socket_send(sckt, &indicator_copy, sizeof(char)) != SUCCESS) {
     return SOCKET_ERROR;
   }
   //QUEDA MEDIO RARO QUE SE ENVIE UN MENSAJE Y QUE HAYA UNA
@@ -152,10 +155,12 @@ static int obtain_answer(socket_t *sckt, char indicator){
 //TENER ESTA FUNCION A PARTE QUEDA MEDIO RARO, MODIFICAR
 static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
   char indicator = PUT_INDICATOR;
-  if (!socket_send(sckt, &indicator, sizeof(char))) {
+  //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+  if (socket_send(sckt, &indicator, sizeof(char)) != SUCCESS) {
     return SOCKET_ERROR;
   }
-  if (!socket_send(sckt, coordinates, 3 * sizeof(uint8_t))) {
+  //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+  if (socket_send(sckt, coordinates, 3 * sizeof(uint8_t)) != SUCCESS) {
     return SOCKET_ERROR;
   }
   if (print_answer(sckt) != SUCCESS) {
@@ -167,9 +172,10 @@ static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
 //If the input is a valid command it executes it, otherwise returns error
 static int execute_command(socket_t *sckt, char *input, size_t size){
   int program_status = 0;
+  uint8_t data[3];
+  int put_validation = put_command_validation(input, size, data);
   //CAMBIAR, NO DEBERIA TENERSTE ESTE ARRAY SOLO PARA UNA DE LAS FUNCIONES
   //QUE SE VAN A LLAMAR
-  uint8_t data[3];
 
   if (strings_are_equal(VERIFY_COMMAND, input, size)) {
     program_status = obtain_answer(sckt, VERIFY_INDICATOR);
@@ -179,8 +185,15 @@ static int execute_command(socket_t *sckt, char *input, size_t size){
     program_status = obtain_answer(sckt, GET_INDICATOR);
   } else if (strings_are_equal(EXIT_COMMAND, input, size)) {
     program_status = EXIT_PROGRAM;
-  } else if (is_valid_put(input, size, data) == 0) {
-    program_status = obtain_answer_for_put(sckt, data);
+  } else if (put_validation != INVALID_COMMAND) {
+    if (put_validation == SUCCESS) {
+      program_status = obtain_answer_for_put(sckt, data);
+    } else {
+      program_status = put_validation;
+    }
+    //VER SI ESTE ELSE NO HACE DALTA XQ put_validation YA PUEDE ESTAR
+    //GUARDANDO INVALID_COMMAND, PERO TAL VEZ NO SE ENTIENDE DEMASIADO
+    //SI SE HACE ASÍ
   } else {
     program_status = INVALID_COMMAND;
   }
@@ -212,8 +225,6 @@ static int process_input(socket_t *sckt){
 }
 
 
-
-
 int client_init(client_t *client, const char *host, const char *service){
   socket_init(&(client->sckt));
   if (socket_connect(&(client->sckt), host, service) != SUCCESS) {
@@ -230,9 +241,6 @@ int client_operate(client_t *client){
   int program_state = 0;
   do {
     program_state = process_input(&(client->sckt));
-    //IMPLEMENTAR, INDICA AL USUARIO EL ERROR QUE
-    //COMETIO AL PONER EL INPUT, SE BASA EN EL VALOR DE
-    //PROGRAM STATE
     print_error(program_state);
   } while (program_state != EXIT_PROGRAM );
   //CAMBIAR PORQUE NO SE ESTA MOSTRANDO CUANDO FALLA EL PROGRAMA

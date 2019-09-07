@@ -26,19 +26,22 @@ int main(int argc, char const *argv[]) {
       return 1;
     }
     char buf[30];
-    if (!socket_receive(&sckt, buf, 2)) {
+    //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+    if (socket_receive(&sckt, buf, 2) != SUCCESS) {
       printf("Error en receive\n");
       socket_release(&sckt);
       return 1;
     }
-    if (!socket_receive(&sckt, buf+2, 2)) {
+    //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+    if (socket_receive(&sckt, buf+2, 2) != SUCCESS) {
       printf("Error en receive\n");
       socket_release(&sckt);
       return 1;
     }
     buf[4] = '\0';
     printf("%s\n", buf);
-    if (!socket_send(&sckt, buf, 4)) {
+    //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+    if (socket_send(&sckt, buf, 4) != SUCCESS) {
       printf("Error en send\n");
       socket_release(&sckt);
       return 1;
@@ -49,13 +52,15 @@ int main(int argc, char const *argv[]) {
       socket_release(&sckt);
       return 1;
     }
-    if (!socket_send(&sckt, argv[3], 4)) {
+    //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+    if (socket_send(&sckt, argv[3], 4) != SUCCESS) {
       printf("Error en send\n");
       socket_release(&sckt);
       return 1;
     }
     char mensaje[5];
-    if (!socket_receive(&sckt, mensaje, 4)) {
+    //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+    if (socket_receive(&sckt, mensaje, 4) != SUCCESS) {
       printf("Error en receive\n");
       socket_release(&sckt);
       return 1;
