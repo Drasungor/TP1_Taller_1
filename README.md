@@ -13,12 +13,9 @@ TO DO:
 - Hacer .h con constantes generales para el tp (chequeo de errores y caracteres q importan tanto para el cliente como para el server)
 - Agregar el codigo del TIME_WAIT
 - Ver si hay que mejorar la forma en la que se inicializa el sudoku con el archivo (como se acceden a los nros en la linea que se saca del archivo)
-- IMPORTANTE: Terminar de hacer el sudoku_handler_init
 - Borrar el struct limits_t y hacer la firma de la funcion en distintas lineas
 - IMPORTANTE: Agregar static a todas las funciones auxiliares de los tdas
 - Imprimir todo el buffer de una con un printf, para eso hay que meterle un \0 al final del buffer que se recibe despues de recibir el numero
-- Arreglar bug que hace que cuando se pide un comando por segunda vez se cierre el server
-- Arreglar comando put que no anda
 - Arreglar la forma en la q se comunica cuando el comando escrito es invalido
 - IMPORTANTE: Agregar const a las funciones que reciban punteros que no van a ser modificados
 - Ver si hay que borrar limits_t de sudoku.c y poner la firma de la funcion original en distintas lineas
@@ -41,3 +38,4 @@ DUDAS:
 - IMPORTANTE: ver duda en verify de server.c
 - IMPORTANTE: que conviene: ¿Pasar un array como parametro y modificarlo para que guarde lo que queramos?¿O devolverlo con memoria dinamica? Ver sudoku_get_board como referencia
 - Revisar el release del server
+- Ver qué hacer con la ejecución del programa si hay un error de sockets o de memoria dinamica

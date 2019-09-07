@@ -5,6 +5,21 @@
 #include "client.h"
 #include "socket.h"
 
+//If there is an error it prints a message that describes it
+//VER SI CONVIENE PONER TODOS LOS PRINTS DE ERRORES ACÁ
+//LOS DE CADA MODO DE EJECUCION NO ESTÁN ACÁ
+static void print_error(int program_status){
+  if (program_status == SOCKET_ERROR) {
+    fprintf(stderr, "Error de conexión\n");
+  }
+  if (program_status == INVALID_NUMBER) {
+    fprintf(stderr, "Error en el valor ingresado. Rango soportado: [1,9]\n");
+  }
+  if (program_status == INVALID_COORDINATES) {
+    fprintf(stderr, "Error en los índices. Rango soportado: [1,9]\n");
+  }
+}
+
 static bool strings_are_equal(char *command, char *input, size_t size){
   //VER SI CONVIENE PONERLO TODO EN UNA SOLA LINEA
   if (strlen(command) != size) {
@@ -67,17 +82,6 @@ static int is_valid_put(char *input, size_t size, uint8_t data[3]){
   return 0;
 }
 
-/*
-int send_indicator(socket_t *sckt, char indicator){
-  char indicator_copy = indicator;
-  if (!socket_send(sckt, &indicator_copy)) {
-  }
-  if (!socket_send(sckt, &indicator, sizeof(char))) {
-    return SOCKET_ERROR;
-  }
-  return SUCCESS;
-}
-*/
 
 static void print_message(char* message, size_t size){
   for (size_t i = 0; i < size; i++) {
@@ -86,7 +90,7 @@ static void print_message(char* message, size_t size){
 }
 
 
-int print_answer(socket_t *sckt){
+static int print_answer(socket_t *sckt){
   uint32_t message_size;
   if (!socket_receive(sckt, &message_size, sizeof(uint32_t))) {
     printf("%d\n", ntohl(message_size));
@@ -204,7 +208,7 @@ int client_operate(client_t *client){
     //IMPLEMENTAR, INDICA AL USUARIO EL ERROR QUE
     //COMETIO AL PONER EL INPUT, SE BASA EN EL VALOR DE
     //PROGRAM STATE
-    //comunicate_error(program_state);
+    print_error(program_state);
   } while (program_state != EXIT_PROGRAM );
   //CAMBIAR PORQUE NO SE ESTA MOSTRANDO CUANDO FALLA EL PROGRAMA
   return SUCCESS;
