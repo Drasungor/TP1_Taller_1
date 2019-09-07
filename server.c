@@ -108,6 +108,7 @@ static int get(server_t *server){
   return SUCCESS;
 }
 
+
 static int put(server_t *server){
   char *message = NON_MODIFIABLE_CELL_MESSAGE;
   uint8_t values[PUT_BYTES_RECEIVED-1];
@@ -125,7 +126,6 @@ static int put(server_t *server){
     //HACER CHEQUEO DE VALOR DE RETORNO DE GET
     get(server);
   }
-
   return SUCCESS;
 }
 

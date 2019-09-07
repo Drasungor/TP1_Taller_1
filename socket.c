@@ -235,7 +235,7 @@ bool socket_receive(socket_t *sckt, void *buffer, size_t len){
   char *current_address = buffer;
 
   while (current_bytes_received < len) {
-    current_bytes_received = recv(fd, current_address, len - current_bytes_received, MSG_NOSIGNAL);
+    current_bytes_received = recv(fd, current_address, len - total_bytes_received, MSG_NOSIGNAL);
     if (current_bytes_received < 1) {
       return false;
     }

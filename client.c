@@ -27,13 +27,16 @@ static bool is_valid_number(int n){
 }
 
 //Indicates if the input is a valid format for the command put
-static int is_valid_put(char *input, size_t size){
+//VER SI NO HACE FALTA RECIBIR SIZE DE TODO EL INPUT
+//VER SI ESTA MAL QUE LA FUNCION QUE DICE SI ES VALIDO EL COMANDO
+//DEVUELVA EN EL ARRAY LAS COORDENADAS
+static int is_valid_put(char *input, size_t size, uint8_t data[3]){
 
   //HACER CHEQUEO DEL CASO EN EL Q NO SE TENGAN LOS SUFICIENTES PEDAZOS
   //DEL COMANDO
 
   char *first_word = strtok(input, " ");
-  if (!strings_are_equal(VERIFY_COMMAND, first_word, size)) {
+  if (!strings_are_equal(PUT_COMMAND, first_word, strlen(first_word))) {
     return INVALID_COMMAND;
   }
   char *number = strtok(NULL, " ");
@@ -52,9 +55,15 @@ static int is_valid_put(char *input, size_t size){
   if ((coordinates == NULL) || (coordinates[1] != ',')) {
     return INVALID_COMMAND;
   }
-  if (!(is_valid_position(atoi(strtok(coordinates, ","))) && is_valid_position(atoi(strtok(NULL, "\0"))))) {
+  uint8_t i = atoi(strtok(coordinates, ","));
+  uint8_t j = atoi(strtok(NULL, "\0"));
+  if (!(is_valid_position(i) && is_valid_position(j))) {
     return INVALID_COORDINATES;
   }
+  //VER SI ESTO ESTA MAL, BUSCAR OTRA FORMA DE HACERLO
+  data[0] = atoi(number);
+  data[1] = i;
+  data[2] = j;
   return 0;
 }
 
@@ -77,7 +86,7 @@ static void print_message(char* message, size_t size){
 }
 
 
-int print_anser(socket_t *sckt){
+int print_answer(socket_t *sckt){
   uint32_t message_size;
   if (!socket_receive(sckt, &message_size, sizeof(uint32_t))) {
     printf("%d\n", ntohl(message_size));
@@ -93,9 +102,6 @@ int print_anser(socket_t *sckt){
   return SUCCESS;
 }
 
-bool receives_two_messages(char indicator){
-  return (indicator == PUT_INDICATOR)/* || (indicator == RESET_INDICATOR)*/;
-}
 
 //VER SI CONVIENE SACAR EL NOMBRE XQ TAMBIEN LE MANDA UNA
 //PETICIÓN
@@ -104,38 +110,37 @@ static int obtain_answer(socket_t *sckt, char indicator){
   if (!socket_send(sckt, &indicator_copy, sizeof(char))) {
     return SOCKET_ERROR;
   }
-  /*
-  //VER SI CONVIENE HACER UNA FUNCION PRINT_ANSWER O ALGO ASI
-  uint32_t message_size;
-  if (!socket_receive(sckt, &message_size, sizeof(uint32_t))) {
+  if (print_answer(sckt) != SUCCESS) {
     return SOCKET_ERROR;
   }
-  message_size = ntohl(message_size);
-  char message[message_size];
-  if (!socket_receive(sckt, message, message_size)) {
-    return SOCKET_ERROR;
-  }
-  print_message(message, message_size);
-  */
-  if (print_anser(sckt) != SUCCESS) {
-    return SOCKET_ERROR;
-  }
+
   //VER SI SE PUEDE MEJOR LA FORMA DE RECIBIR DOS MENSAJES
   //ESTO QUEDA BASTANTE MAL
-  /*
-  if (receives_two_messages(indicator)) {
-    if (print_anser(sckt) != SUCCESS) {
-      return SOCKET_ERROR;
-    }
-  }
-  */
+
   return SUCCESS;
 }
 
+//TENER ESTA FUNCION A PARTE QUEDA MEDIO RARO, MODIFICAR
+static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
+  char indicator = PUT_INDICATOR;
+  if (!socket_send(sckt, &indicator, sizeof(char))) {
+    return SOCKET_ERROR;
+  }
+  if (!socket_send(sckt, coordinates, 3 * sizeof(uint8_t))) {
+    return SOCKET_ERROR;
+  }
+  if (print_answer(sckt) != SUCCESS) {
+    return SOCKET_ERROR;
+  }
+  return SUCCESS;
+}
 
 //If the input is a valid command it executes it, otherwise returns error
 static int execute_command(socket_t *sckt, char *input, size_t size){
   int program_status = 0;
+  //CAMBIAR, NO DEBERIA TENERSTE ESTE ARRAY SOLO PARA UNA DE LAS FUNCIONES
+  //QUE SE VAN A LLAMAR
+  uint8_t data[3];
 
   if (strings_are_equal(VERIFY_COMMAND, input, size)) {
     program_status = obtain_answer(sckt, VERIFY_INDICATOR);
@@ -145,8 +150,8 @@ static int execute_command(socket_t *sckt, char *input, size_t size){
     program_status = obtain_answer(sckt, GET_INDICATOR);
   } else if (strings_are_equal(EXIT_COMMAND, input, size)) {
     program_status = EXIT_PROGRAM;
-  } else if (is_valid_put(input, size) == 0) {
-    program_status = obtain_answer(sckt, PUT_INDICATOR);
+  } else if (is_valid_put(input, size, data) == 0) {
+    program_status = obtain_answer_for_put(sckt, data);
   } else {
     program_status = INVALID_COMMAND;
   }
