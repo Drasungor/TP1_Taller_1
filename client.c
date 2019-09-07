@@ -5,6 +5,26 @@
 #include "client.h"
 #include "socket.h"
 
+
+#define GET_INDICATOR 'G'
+#define PUT_INDICATOR 'P'
+#define VERIFY_INDICATOR 'V'
+#define RESET_INDICATOR 'R'
+#define GET_COMMAND "get"
+#define PUT_COMMAND "put"
+#define VERIFY_COMMAND "verify"
+#define RESET_COMMAND "reset"
+#define EXIT_COMMAND "exit"
+
+#define SUCCESS 0
+#define SOCKET_ERROR -1
+#define MEMORY_ERROR -2
+#define INVALID_COMMAND -3
+#define INVALID_NUMBER -4
+#define INVALID_COORDINATES -5
+#define EXIT_PROGRAM -6
+
+
 //If there is an error it prints a message that describes it
 //VER SI CONVIENE PONER TODOS LOS PRINTS DE ERRORES ACÁ
 //LOS DE CADA MODO DE EJECUCION NO ESTÁN ACÁ

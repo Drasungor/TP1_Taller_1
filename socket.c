@@ -8,6 +8,17 @@
 #include "socket.h"
 
 
+#define SUCCESS 0
+#define CONNECTION_ERROR -1
+#define BINDING_ERROR -2
+#define LISTEN_ERROR -3
+#define INVALID_ACTION -4
+#define ACCEPT_ERROR -5
+//CAMBIAR EL NOMBRE DE SOCKET_ERROR, ES MALISIMO
+#define SOCKET_ERROR -6
+#define CLOSED_SOCKET -6
+
+
 typedef int (*linking_function_t) (int socket_fd, const struct sockaddr *addr, socklen_t addr_len);
 
 //Gets a socket and executes the linking function.

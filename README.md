@@ -22,6 +22,7 @@ TO DO:
 - Ver qué hacer con el valor de retorno de getline cuando se lee de los archivos, no estoy manejando errores de memoria/lectura, investigar qué pasa si encuentra eof en vez de \n
 - Revisar partes de codigo que hay que mejorar
 - Cambiar el chequeo de devolucion de send en todos los lugares donde se haya usado xq ahora devuelve un int
+- Ver qué pasa con el getline que recibe los comandos de stdin cuando sudoku.txt no termina en un barra n
 
 
 DUDAS:
@@ -39,4 +40,3 @@ DUDAS:
 - IMPORTANTE: que conviene: ¿Pasar un array como parametro y modificarlo para que guarde lo que queramos?¿O devolverlo con memoria dinamica? Ver sudoku_get_board como referencia
 - Revisar el release del server
 - Ver qué hacer con la ejecución del programa si hay un error de sockets o de memoria dinamica
-- Ver qué pasa con el getline que recibe los comandos de stdin cuando sudoku.txt no termina en un barra n
