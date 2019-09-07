@@ -23,6 +23,9 @@ TO DO:
 - IMPORTANTE: Agregar const a las funciones que reciban punteros que no van a ser modificados
 - Ver si hay que borrar limits_t de sudoku.c y poner la firma de la funcion original en distintas lineas
 - Ver qué hacer con el valor de retorno de getline cuando se lee de los archivos, no estoy manejando errores de memoria/lectura, investigar qué pasa si encuentra eof en vez de \n
+- Revisar partes de codigo que hay que mejorar
+
+
 
 DUDAS:
 
