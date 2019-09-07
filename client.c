@@ -82,27 +82,29 @@ static int is_valid_put(char *input, size_t size, uint8_t data[3]){
   return 0;
 }
 
-
+/*
 static void print_message(char* message, size_t size){
   for (size_t i = 0; i < size; i++) {
     printf("%c", message[i]);
   }
 }
-
+*/
 
 static int print_answer(socket_t *sckt){
   uint32_t message_size;
   if (!socket_receive(sckt, &message_size, sizeof(uint32_t))) {
-    printf("%d\n", ntohl(message_size));
-    printf("HAY ERROR DE SOCKET EN RECEIVE\n");
     return SOCKET_ERROR;
   }
   message_size = ntohl(message_size);
-  char message[message_size];
+  char message[message_size+1];
+  //SACAR ESTA ADICION DE CARACTER DE ESTA FUNCION XQ NO
+  //ESTA AL MISMO NIVEL QUE EL RESTO DE LAS OPERACIONES
+  message[message_size] = '\0';
   if (!socket_receive(sckt, message, message_size)) {
     return SOCKET_ERROR;
   }
-  print_message(message, message_size);
+  printf("%s", message);
+  //print_message(message, message_size);
   return SUCCESS;
 }
 
@@ -114,6 +116,9 @@ static int obtain_answer(socket_t *sckt, char indicator){
   if (!socket_send(sckt, &indicator_copy, sizeof(char))) {
     return SOCKET_ERROR;
   }
+  //QUEDA MEDIO RARO QUE SE ENVIE UN MENSAJE Y QUE HAYA UNA
+  //FUNCION QUE SE LLAME print_answer QUE PRINTEE UNA RESPUESTA
+  //QUE NO ES OBVIO POR EL NOMBRE QUE SE RECIBIÓ
   if (print_answer(sckt) != SUCCESS) {
     return SOCKET_ERROR;
   }
