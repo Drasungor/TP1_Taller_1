@@ -162,7 +162,7 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len){
 
 //VER SI SE PUEDE COMBINAR EN UNA UNICA FUNCION QUE RECIBA
 //Y QUE ENVIE, HAY PROBLEMA CON QUE UN BUFFER ES CONST Y EL OTRO NO
-bool socket_receive(socket_t *sckt, void *buffer, size_t len){
+int socket_receive(socket_t *sckt, void *buffer, size_t len){
   int total_bytes_received = 0;
   int current_bytes_received = 0;
   int fd = get_fd(sckt);
@@ -170,11 +170,14 @@ bool socket_receive(socket_t *sckt, void *buffer, size_t len){
 
   while (current_bytes_received < len) {
     current_bytes_received = recv(fd, current_address, len - total_bytes_received, MSG_NOSIGNAL);
-    if (current_bytes_received < 1) {
-      return false;
+    if (current_bytes_received == 0) {
+      return CLOSED_SOCKET;
+    }
+    if (current_bytes_received == -1) {
+      return SOCKET_ERROR;
     }
     current_address += current_bytes_received;
     total_bytes_received += current_bytes_received;
   }
-  return true;
+  return SUCCESS;
 }
