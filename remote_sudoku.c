@@ -13,6 +13,7 @@
 #define NUMBER_ARGUMENTS_CLIENT 3
 #define NUMBER_ARGUMENTS_SERVER 2
 
+
 static int execute_as_client(const char *host, const char *port){
   //int program_state = 0;
   client_t client;
