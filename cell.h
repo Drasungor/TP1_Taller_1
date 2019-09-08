@@ -12,17 +12,11 @@ typedef struct{
 }cell_t;
 
 
-//VER SI ADEMAS SE DEBERIA INICIALIZAR EL NUMERO EN 0
-//PERO TAL VEZ ES INNECESARIO
 void cell_init(cell_t *cell);
 
 
 //Sets the value of the cell and indicates it is one
 //of the default values that the board begins with
-
-//VER SI ESTÁ MAL HABLAR DEL SUDOKU A NIVEL DE CELDA EN
-//LA DESCRIPCIÓN DE LA FUNCIÓN
-
 void cell_set_as_default(cell_t *cell, int number);
 
 

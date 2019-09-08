@@ -119,19 +119,5 @@ int remote_sudoku_start(const char **arguments, int number_of_arguments){
     comunicate_mode_error(arguments[0]);
     return ERROR;
   }
-  /*
-  if (is_valid_client_command(arguments[0], number_of_arguments)) {
-    return execute_as_client(arguments[1], arguments[2]);
-  } else {
-  printf("Uso: ./tp client <host> <puerto>\n");
-    return ERROR;
-  }
-  if (is_valid_server_command(arguments[0], number_of_arguments)) {
-    return execute_as_server(arguments[1]);
-  } else {
-  printf("Uso: ./tp server <puerto>\n");
-  }
-  return ERROR;
-  */
   return SUCCESS;
 }
