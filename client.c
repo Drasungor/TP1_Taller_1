@@ -138,15 +138,24 @@ static int print_answer(socket_t *sckt){
   uint32_t message_size;
   int program_status = socket_receive(sckt, &message_size, sizeof(uint32_t));
   if (program_status != SUCCESS) {
+    //BORRAR PRINT
+    printf("ROMPIO RECEIVE DE LEN EN CLIENT\n");
     return program_status;
   }
   message_size = ntohl(message_size);
   char message[message_size+1];
   program_status = socket_receive(sckt, message, message_size);
   if (program_status != SUCCESS) {
+    //BORRAR PRINT
+    printf("ROMPIO RECEIVE DEL MENSAJE EN CLIENT\n");
     return program_status;
   }
   print_message(message, message_size);
+  /*
+  for (size_t i = 0; i < message_size; i++) {
+    printf("%c", message[i]);
+  }
+  */
   return SUCCESS;
 }
 
@@ -157,7 +166,8 @@ static int obtain_answer(socket_t *sckt, char indicator){
   char indicator_copy = indicator;
   int program_status = socket_send(sckt, &indicator_copy, sizeof(char));
   if (program_status != SUCCESS) {
-    return program_status;
+    //VER SI HAY QUE MODIFICAR ESTO UN POCO PARA QUE TAMBIEN RECIBA CLOSED SOCKET
+    return SOCKET_ERROR;
   }
   if (print_answer(sckt) != SUCCESS) {
     return SOCKET_ERROR;
