@@ -38,6 +38,9 @@ static void print_error(int program_status){
   if (program_status == INVALID_COORDINATES) {
     fprintf(stderr, "Error en los índices. Rango soportado: [1,9]\n");
   }
+  if (program_status == MEMORY_ERROR) {
+    fprintf(stderr, "Error en la asignación de memoria dinámica\n");
+  }
 }
 
 static bool strings_are_equal(char *command, char *input, size_t size){
@@ -240,12 +243,52 @@ void client_release(client_t *client){
   socket_release(&(client->sckt));
 }
 
+/*
+static bool finished_in_unexpected_error(int program_status){
+  return (program_state != EXIT_PROGRAM) && (program_state != END_OF_FILE)
+}
+*/
+
+static bool is_program_terminanting_error(int program_status){
+  if (program_status == SOCKET_ERROR) {
+    return true;
+  }
+  if (program_status == MEMORY_ERROR) {
+    return true;
+  }
+  if (program_status == SOCKET_ERROR) {
+    return true;
+  }
+  return false;
+}
+
+static bool is_program_terminanting_value(int program_status){
+  if (program_status == EXIT_PROGRAM) {
+    return true;
+  }
+  if (program_status == END_OF_FILE) {
+    return true;
+  }
+  if (program_status == CLOSED_SOCKET) {
+    return true;
+  }
+  return false;
+}
+
+static bool should_kill_program(int program_status){
+  return is_program_terminanting_value(program_status) || is_program_terminanting_error(program_status);
+}
+
 int client_operate(client_t *client){
-  int program_state = 0;
+  int program_status = 0;
   do {
-    program_state = process_input(&(client->sckt));
-    print_error(program_state);
-  } while ((program_state != EXIT_PROGRAM) && (program_state != END_OF_FILE));
+    program_status = process_input(&(client->sckt));
+    print_error(program_status);
+  } while (!should_kill_program(program_status));
+  //} while (program_status == SUCCESS);
   //CAMBIAR PORQUE NO SE ESTA MOSTRANDO CUANDO FALLA EL PROGRAMA
-  return SUCCESS;
+  if (is_program_terminanting_error(program_status)) {
+    return 1;
+  }
+  return 0;
 }
