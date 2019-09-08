@@ -15,13 +15,25 @@
 #define VERTICAL_DIM_PRINTED_BOARD 19
 
 
+//BORRAR INCLUDE
+#include <stdio.h>
 static int send_data(socket_t *sckt, void *message, uint32_t len){
   uint32_t number_to_send = htonl(len);
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
   if (socket_send(sckt, &number_to_send, sizeof(uint32_t)) != SUCCESS) {
+    //BORRAR PRINT
+    printf("ROMPIO SEND EN EL SERVER\n");
     return SOCKET_ERROR;
   }
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+
+  /*
+  //BORRAR FOR CON EL PRINT
+  char *asdasd = message;
+  for (size_t i = 0; i < len; i++) {
+    printf("%c", asdasd[i]);
+  }
+  */
   if (socket_send(sckt, message, len) != SUCCESS) {
     return SOCKET_ERROR;
   }
@@ -48,7 +60,6 @@ static int get(server_t *server){
   return SUCCESS;
 }
 
-
 static int put(server_t *server){
   char *message = NON_MODIFIABLE_CELL_MESSAGE;
   uint8_t values[PUT_BYTES_RECEIVED-1];
@@ -59,6 +70,7 @@ static int put(server_t *server){
   }
   //CAMBIAR EL LLAMADO AL ARRAY EN CADA POSICION POR EL NOMBRE DE UNA VARIABLE ASIGNADA ANTES
   //O PONER DIRECTAMENTE EL INDICE (PERO HACIENDO ESO TAL VEZ NO SE ENTIENDE FACIL AL LEER)
+
   if (sudoku_handler_set_number(&(server->sudoku_handler), values[PUT_INDEX_NUMBER], values[PUT_INDEX_VERTICAL_POS], values[PUT_INDEX_HORIZONTAL_POS]) != SUCCESS) {
     if (send_data(&(server->sckt), message, strlen(message)) != SUCCESS) {
       return SOCKET_ERROR;
