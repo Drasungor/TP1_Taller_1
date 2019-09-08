@@ -21,32 +21,20 @@ int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
 
   char *line;
   size_t size;
-  //char num[2];
-  //num[1] = '\0';
   int number = 0;
   int board [BOARD_DIMENSION][BOARD_DIMENSION];
 
   //MODULARIZAR MUCHO
-
-  //VER SI HAY QUE AGREGAR CHEQUEOS DE VALORES USADOS
-  //PARA INICIALIZAR
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
-    //VER SI SE PUEDE SOLUCIONAR ESTE COMENTARIO DE ABAJO
-    //fgets throws error for unused return value
     line = NULL;
     size = 0;
-    //HACER CHEQUEO POR SI FALLA GETLINE
     size = getline(&line, &size, sudoku_file);
     if (size == -1) {
+      free(line);
       return MEMORY_ERROR;
     }
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
       number = line[2*j];
-      //ESTOY USANDO CHARS, VER SI CONVIENE QUE SE GUARDEN CHARS EN VEZ DE INTS
-      //SI NO SE PASA ACA DE CHAR A INT ENTONCES SE VA A TENER QUE PASAR DESPUÉS DE
-      //INT A CHAR LOS NROS QUE LLEGUEN DEL CLIENTE, PERO DESPUÉS SE AHORRA EL TRABAJO
-      //DE PASAR TODOS LOS CARACTERES A CHAR PARA DEVOLVER LA MATRIZ PARA IMPRIMIR
-      //sudoku_set_number_as_default(sudoku_handler->sudoku, char_to_int(number), i, j);
       board[i][j] = char_to_int(number);
     }
     free(line);

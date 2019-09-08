@@ -23,18 +23,6 @@ typedef struct{
 }limits_t;
 
 
-
-/*
-static void iterate_matrix(void *matrix, limit_t limit, visit_t v, void* extra){
-  for (size_t i = limit.first_i; i < limit.last_i+1; i++) {
-    for (size_t i = limit.first_j; i < limit.last_j+1; i++) {
-      if (!v()) {
-      }
-    }
-  }
-}
-*/
-
 static void set_block_limits(limits_t *limits, size_t first_i, size_t first_j){
   limits->first_i = first_i;
   limits->last_i = first_i + BLOCK_DIMENSION;
@@ -75,7 +63,6 @@ static void add_to_checker_array(int array[], size_t* data_size, int n){
 
 //checks if the area delimited has repeated values
 //that go from 1 to 9
-//VER SI HAY QUE AGREGARLE CONST A limits_t PARA SER CONSISTENTE
 static bool has_repeated_values(const cell_t matrix[][BOARD_DIMENSION], limits_t limits){
   int found_numbers[BOARD_DIMENSION];
   size_t data_size = 0;
@@ -120,9 +107,6 @@ static bool verify_rows(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
   return true;
 }
 
-//MODULARIZAR, ESTAS 3 FUNCIONES SE PUEDEN CONVERTIR EN UNA SOLA
-//QUE RECIBA COMO PARAMETRO LA FUNCION PARA SETEAR LOS LIMITES
-//PARA EL CASO DE LAS FILAS Y LAS COLUMNAS
 static bool verify_columns(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
   limits_t limits;
   for (size_t j = 0; j < BOARD_DIMENSION; j++) {
@@ -135,23 +119,7 @@ static bool verify_columns(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION])
 }
 
 
-/*
-//VER SI SE PUEDE MODULARIZAR CON veify_rows()
-static bool verify_columns(sudoku_t *sudoku){
-  for (size_t j = 0; j < BOARD_DIMENSION; j++) {
-    if (!verify_column(sudoku, j)) {
-      return false;
-    }
-  }
-  return true;
-}
-*/
 
-//Initializes the game's beginning numbers
-//If a number is below 0 (empty space) or above 9
-
-//CORREGIR ESTA ULTIMA LINEA YA QUE LA FUNCION NO HACE LO QUE DICE
-//it fails and returns 1, otherwise returns 0
 void sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIMENSION]){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
@@ -182,6 +150,7 @@ int sudoku_set_number(sudoku_t *sudoku, int number, int vertical_position, int h
 }
 
 
+/*
 //VER SI ESTA FUNCION ES INUTIL, XQ LAS DEFAULT SE INICIALIZAN AL
 //INICIALIZAR EL SUDOKU, NO HAY X Q HACERLO UNA PRIMITIVA DE sudoku_t
 
@@ -190,7 +159,7 @@ int sudoku_set_number(sudoku_t *sudoku, int number, int vertical_position, int h
 void sudoku_set_number_as_default(sudoku_t *sudoku, int number, int vertical_position, int horizontal_position){
   cell_set_as_default(&(sudoku->board[vertical_position-1][horizontal_position-1]), number);
 }
-
+*/
 
 //Sets all player set cells to 0
 void sudoku_reset(sudoku_t *sudoku){
@@ -228,7 +197,6 @@ static char int_to_char(int n){
 }
 
 
-//PASAR TODOS LOS NROS A CTES: SEPARACION_ENTRE '|' POR EJ
 static char select_char(size_t i, size_t j, int number){
   if (j == HORIZONTAL_DIM_PRINTED_BOARD) {
     return '\n';
@@ -248,13 +216,10 @@ static char select_char(size_t i, size_t j, int number){
   if (j % 4 == 0) {
     return '|';
   }
-  //return int_to_char(number);
-  //CAMBIAR EL ESPACIO POR EMPTI_CELL_CHAR O ALGO ASI
   return ' ';
 }
 
-//VER SI SE PUEDE CAMBIAR POR UNA UNICA FUNCION Q HAGA ESTO EN VEZ
-//DE TENES DOS FOR DISTINTOS
+
 void sudoku_get_board(const sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   int number = 0;
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {

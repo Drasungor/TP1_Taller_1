@@ -24,6 +24,7 @@
 #define INVALID_COORDINATES -5
 #define EXIT_PROGRAM -6
 #define END_OF_FILE -7
+#define CLOSED_SOCKET -8
 
 //If there is an error it prints a message that describes it
 //VER SI CONVIENE PONER TODOS LOS PRINTS DE ERRORES ACÁ
@@ -44,7 +45,6 @@ static void print_error(int program_status){
 }
 
 static bool strings_are_equal(char *command, char *input, size_t size){
-  //VER SI CONVIENE PONERLO TODO EN UNA SOLA LINEA
   if (strlen(command) != size) {
     return false;
   }
@@ -52,6 +52,34 @@ static bool strings_are_equal(char *command, char *input, size_t size){
     return false;
   }
   return true;
+}
+
+
+static bool is_program_terminanting_error(int program_status){
+  if (program_status == SOCKET_ERROR) {
+    return true;
+  }
+  if (program_status == MEMORY_ERROR) {
+    return true;
+  }
+  return false;
+}
+
+static bool is_program_terminanting_value(int program_status){
+  if (program_status == EXIT_PROGRAM) {
+    return true;
+  }
+  if (program_status == END_OF_FILE) {
+    return true;
+  }
+  if (program_status == CLOSED_SOCKET) {
+    return true;
+  }
+  return false;
+}
+
+static bool should_kill_program(int program_status){
+  return is_program_terminanting_value(program_status) || is_program_terminanting_error(program_status);
 }
 
 
@@ -65,9 +93,6 @@ static bool is_valid_number(int n){
 }
 
 //Indicates if the input is a valid format for the command put
-//VER SI NO HACE FALTA RECIBIR SIZE DE TODO EL INPUT
-//VER SI ESTA MAL QUE LA FUNCION QUE DICE SI ES VALIDO EL COMANDO
-//DEVUELVA EN EL ARRAY LAS COORDENADAS
 static int put_command_validation(char *input, size_t size, uint8_t data[3]){
 
   //HACER CHEQUEO DEL CASO EN EL Q NO SE TENGAN LOS SUFICIENTES PEDAZOS
@@ -88,7 +113,6 @@ static int put_command_validation(char *input, size_t size, uint8_t data[3]){
   if ((nexus == NULL) || (!strings_are_equal("in", nexus, strlen(nexus)))) {
     return INVALID_COMMAND;
   }
-  //VER SI LE MANDO UN STRING "VACIO"
   char *coordinates = strtok(NULL, "\0");
   if ((coordinates == NULL) || (coordinates[1] != ',')) {
     return INVALID_COMMAND;
@@ -105,31 +129,24 @@ static int put_command_validation(char *input, size_t size, uint8_t data[3]){
   return 0;
 }
 
-/*
 static void print_message(char* message, size_t size){
-  for (size_t i = 0; i < size; i++) {
-    printf("%c", message[i]);
-  }
+  message[size] = '\0';
+  printf("%s", message);
 }
-*/
 
 static int print_answer(socket_t *sckt){
   uint32_t message_size;
-  //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  if (socket_receive(sckt, &message_size, sizeof(uint32_t)) != SUCCESS) {
-    return SOCKET_ERROR;
+  int program_status = socket_receive(sckt, &message_size, sizeof(uint32_t));
+  if (program_status != SUCCESS) {
+    return program_status;
   }
   message_size = ntohl(message_size);
   char message[message_size+1];
-  //SACAR ESTA ADICION DE CARACTER DE ESTA FUNCION XQ NO
-  //ESTA AL MISMO NIVEL QUE EL RESTO DE LAS OPERACIONES
-  message[message_size] = '\0';
-  //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  if (socket_receive(sckt, message, message_size) != SUCCESS) {
-    return SOCKET_ERROR;
+  program_status = socket_receive(sckt, message, message_size);
+  if (program_status != SUCCESS) {
+    return program_status;
   }
-  printf("%s", message);
-  //print_message(message, message_size);
+  print_message(message, message_size);
   return SUCCESS;
 }
 
@@ -138,24 +155,16 @@ static int print_answer(socket_t *sckt){
 //PETICIÓN
 static int obtain_answer(socket_t *sckt, char indicator){
   char indicator_copy = indicator;
-  //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  if (socket_send(sckt, &indicator_copy, sizeof(char)) != SUCCESS) {
-    return SOCKET_ERROR;
+  int program_status = socket_send(sckt, &indicator_copy, sizeof(char));
+  if (program_status != SUCCESS) {
+    return program_status;
   }
-  //QUEDA MEDIO RARO QUE SE ENVIE UN MENSAJE Y QUE HAYA UNA
-  //FUNCION QUE SE LLAME print_answer QUE PRINTEE UNA RESPUESTA
-  //QUE NO ES OBVIO POR EL NOMBRE QUE SE RECIBIÓ
   if (print_answer(sckt) != SUCCESS) {
     return SOCKET_ERROR;
   }
-
-  //VER SI SE PUEDE MEJOR LA FORMA DE RECIBIR DOS MENSAJES
-  //ESTO QUEDA BASTANTE MAL
-
   return SUCCESS;
 }
 
-//TENER ESTA FUNCION A PARTE QUEDA MEDIO RARO, MODIFICAR
 static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
   char indicator = PUT_INDICATOR;
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
@@ -194,15 +203,18 @@ static int execute_command(socket_t *sckt, char *input, size_t size){
     } else {
       program_status = put_validation;
     }
-    //VER SI ESTE ELSE NO HACE DALTA XQ put_validation YA PUEDE ESTAR
-    //GUARDANDO INVALID_COMMAND, PERO TAL VEZ NO SE ENTIENDE DEMASIADO
-    //SI SE HACE ASÍ
   } else {
     program_status = INVALID_COMMAND;
   }
   return program_status;
 }
 
+void clean_input(char* input, size_t *size){
+  if (input[*size-1] == '\n') {
+    input[*size-1] = '\0';
+    (*size)--;
+  }
+}
 
 //VER SI CAMBIO EL NOMBRE POR process_command
 static int process_input(socket_t *sckt){
@@ -219,12 +231,7 @@ static int process_input(socket_t *sckt){
     free(line);
     return MEMORY_ERROR;
   }
-
-  //VER SI ESTE IF ESTÁ A OTRO NIVEL Y DEBERÍA SER PASADO A UNA FUNCIÓN
-  if (line[size-1] == '\n') {
-    line[size-1] = '\0';
-    size--;
-  }
+  clean_input(line, &size);
   program_status = execute_command(sckt, line, size);
   free(line);
   return program_status;
@@ -243,41 +250,6 @@ void client_release(client_t *client){
   socket_release(&(client->sckt));
 }
 
-/*
-static bool finished_in_unexpected_error(int program_status){
-  return (program_state != EXIT_PROGRAM) && (program_state != END_OF_FILE)
-}
-*/
-
-static bool is_program_terminanting_error(int program_status){
-  if (program_status == SOCKET_ERROR) {
-    return true;
-  }
-  if (program_status == MEMORY_ERROR) {
-    return true;
-  }
-  if (program_status == SOCKET_ERROR) {
-    return true;
-  }
-  return false;
-}
-
-static bool is_program_terminanting_value(int program_status){
-  if (program_status == EXIT_PROGRAM) {
-    return true;
-  }
-  if (program_status == END_OF_FILE) {
-    return true;
-  }
-  if (program_status == CLOSED_SOCKET) {
-    return true;
-  }
-  return false;
-}
-
-static bool should_kill_program(int program_status){
-  return is_program_terminanting_value(program_status) || is_program_terminanting_error(program_status);
-}
 
 int client_operate(client_t *client){
   int program_status = 0;

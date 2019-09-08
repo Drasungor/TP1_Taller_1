@@ -31,18 +31,14 @@ static int execute_as_client(const char *host, const char *port){
   if (client_init(&client, host, port) != SUCCESS) {
     return ERROR;
   }
-  client_operate(&client);
-  /*
   if (client_operate(&client) != SUCCESS) {
     return ERROR;
   }
-  */
   client_release(&client);
   return SUCCESS;
 }
 
 static int execute_as_server(const char *port){
-  //int program_state = 0;
   server_t server;
   //VER QUE CONSTANTES VOY A USAR PARA DEVOLVER A MAIN
   //VER SI SE PUEDEN UNIFICAR ESTOS CHEQUEOS DE ERRORES
@@ -72,7 +68,6 @@ static bool is_valid_client_command(const char *mode, int number_of_arguments){
 }
 
 
-//VER SI CONVIENE HACERLA UNA MISMA FUNCION (CON LA DE CLIENT) CON MAS PARAMETROS
 static bool is_valid_server_command(const char *mode, int number_of_arguments){
   if (number_of_arguments != NUMBER_ARGUMENTS_SERVER) {
     return false;
@@ -104,11 +99,16 @@ static void comunicate_mode_error(const char *mode){
   }
 }
 
+
+bool has_enough_arguments(int number_of_arguments){
+  return number_of_arguments >= 1;
+}
+
 int remote_sudoku_start(const char **arguments, int number_of_arguments){
   //CAMBIAR ESTO PORQUE NO TIRA EL ERROR IMPRESO
   //ADEMAS NO ESTA AL "MISMO NIVEL" QUE EL RESTO DE LAS COSAS
   //DE LA FUNCION
-  if (number_of_arguments < 1) {
+  if (!has_enough_arguments(number_of_arguments)) {
     return ERROR;
   }
   if (is_valid_client_command(arguments[0], number_of_arguments)) {
@@ -133,4 +133,5 @@ int remote_sudoku_start(const char **arguments, int number_of_arguments){
   }
   return ERROR;
   */
+  return SUCCESS;
 }

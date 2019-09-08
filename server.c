@@ -16,13 +16,6 @@
 
 
 static int send_data(socket_t *sckt, void *message, uint32_t len){
-  //uint32_t number_of_chars = strlen(message);
-
-  //ESTÁ MAL LLAMAR A htonl ACÁ? NO ESTÁ A OTRO NIVEL ESTA FUNCIÓN?
-  //uint32_t number_to_send = htonl(number_of_chars);
-
-  //CORREGIR, EL NUMERO SE TIENE QUE MANDAR EN LA MISMA TIRA DE BYTES QUE
-  //EL STRING QUE HAY QUE IMPRIMIR
   uint32_t number_to_send = htonl(len);
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
   if (socket_send(sckt, &number_to_send, sizeof(uint32_t)) != SUCCESS) {
@@ -47,10 +40,8 @@ static char receive_command(socket_t *sckt){
 
 static int get(server_t *server){
   char board[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1];
-  //int sudoku_handler_board[9][9];
-  //sudoku_handler_get_board(&(server->sudoku_handler), sudoku_handler_board);
   sudoku_handler_get_board(&(server->sudoku_handler), board);
-  //process_board(sudoku_handler_board, board);
+  //HACER CHEQUEO POR SI EL SOCKET ESTÁ CERRADO
   if (send_data(&(server->sckt), board, VERTICAL_DIM_PRINTED_BOARD * (HORIZONTAL_DIM_PRINTED_BOARD + 1) * sizeof(char)) != SUCCESS) {
     return SOCKET_ERROR;
   }

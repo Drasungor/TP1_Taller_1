@@ -14,7 +14,6 @@
 #define LISTEN_ERROR -3
 #define INVALID_ACTION -4
 #define ACCEPT_ERROR -5
-//CAMBIAR EL NOMBRE DE SOCKET_ERROR, ES MALISIMO
 #define SOCKET_ERROR -6
 #define CLOSED_SOCKET -6
 
@@ -28,7 +27,6 @@ static bool process_info_to_link(struct addrinfo* info, int *socket_fd, linking_
   int link_value = 0;
   bool is_linked = false;
 
-  //VER SI SE PUEDE SACAR LA "ESCALERA DE LLAVES"
   while ((info != NULL) && (!is_linked)) {
     *socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
     if (*socket_fd != -1) {
@@ -171,8 +169,6 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len){
 }
 
 
-//VER SI SE PUEDE COMBINAR EN UNA UNICA FUNCION QUE RECIBA
-//Y QUE ENVIE, HAY PROBLEMA CON QUE UN BUFFER ES CONST Y EL OTRO NO
 int socket_receive(socket_t *sckt, void *buffer, size_t len){
   int total_bytes_received = 0;
   int current_bytes_received = 0;

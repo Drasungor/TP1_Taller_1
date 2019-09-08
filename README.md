@@ -23,7 +23,8 @@ TO DO:
 - Revisar partes de codigo que hay que mejorar
 - Cambiar el chequeo de devolucion de send en todos los lugares donde se haya usado xq ahora devuelve un int
 - Ver qué pasa con el getline que recibe los comandos de stdin cuando sudoku.txt no termina en un barra n
-- Nunca se imprime si hay un error en el comando de put en client xq nunca se le asigna el valor a program_status, aique si falla nunca se comunica el error a client_operate
+
+
 
 DUDAS:
 
