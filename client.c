@@ -23,7 +23,7 @@
 #define INVALID_NUMBER -4
 #define INVALID_COORDINATES -5
 #define EXIT_PROGRAM -6
-
+#define END_OF_FILE -7
 
 //If there is an error it prints a message that describes it
 //VER SI CONVIENE PONER TODOS LOS PRINTS DE ERRORES ACÁ
@@ -208,9 +208,12 @@ static int process_input(socket_t *sckt){
   int program_status = 0;
 
   size = getline(&line, &size, stdin);
+  if (feof(stdin)) {
+    free(line);
+    return END_OF_FILE;
+  }
   if (size == -1) {
     free(line);
-    //NO ES MEMORY ERROR, VER TPS DE ALGO 2
     return MEMORY_ERROR;
   }
 
@@ -242,7 +245,7 @@ int client_operate(client_t *client){
   do {
     program_state = process_input(&(client->sckt));
     print_error(program_state);
-  } while (program_state != EXIT_PROGRAM );
+  } while ((program_state != EXIT_PROGRAM) && (program_state != END_OF_FILE));
   //CAMBIAR PORQUE NO SE ESTA MOSTRANDO CUANDO FALLA EL PROGRAMA
   return SUCCESS;
 }

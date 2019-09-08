@@ -1,0 +1,12 @@
+get
+put 1 in 1,1
+put 2 in 2,2
+put 3 in 3,3
+put 4 in 4,4
+put 5 in 5,5
+put 6 in 6,6
+put 7 in 7,7
+put 8 in 8,8
+put 9 in 9,9
+reset
+exit

@@ -7,7 +7,7 @@
 #define INVALID_NUMBER -1
 #define OUT_OF_BOUNDS -2
 #define FILE_ERROR -3
-
+#define MEMORY_ERROR -4
 
 static int char_to_int(char c){
   return c - 48;
@@ -37,6 +37,9 @@ int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
     size = 0;
     //HACER CHEQUEO POR SI FALLA GETLINE
     size = getline(&line, &size, sudoku_file);
+    if (size == -1) {
+      return MEMORY_ERROR;
+    }
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
       number = line[2*j];
       //ESTOY USANDO CHARS, VER SI CONVIENE QUE SE GUARDEN CHARS EN VEZ DE INTS
