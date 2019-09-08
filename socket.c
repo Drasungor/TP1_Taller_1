@@ -10,12 +10,12 @@
 
 #define SUCCESS 0
 #define CONNECTION_ERROR -1
-#define BINDING_ERROR -1
-#define LISTEN_ERROR -2
-#define INVALID_ACTION -1
+#define BINDING_ERROR -2
+#define LISTEN_ERROR -3
+#define INVALID_ACTION -4
 #define ACCEPT_ERROR -5
-#define COMMUNICATION_ERROR -2
-#define CLOSED_SOCKET -3
+#define COMMUNICATION_ERROR -6
+#define CLOSED_SOCKET -7
 
 
 typedef int (*linking_function_t) (int socket_fd, const struct sockaddr *addr, socklen_t addr_len);
@@ -63,7 +63,7 @@ void socket_init(socket_t *sckt){
   sckt->is_client = false;
   sckt->is_server = false;
   sckt->client_fd = 0;
-  sckt->can_accept = false;
+  //sckt->can_accept = false;
 }
 
 void socket_release(socket_t *sckt){
@@ -125,7 +125,6 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
   if (sckt->is_server) {
     return false;
   }
-
   int info_result = 0;
   bool is_connected = false;
   int socket_fd = 0;
@@ -148,8 +147,9 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
   return SUCCESS;
 }
 
+
 int socket_send(socket_t *sckt, const void *buffer, size_t len){
-  if ((!sckt->is_client) || (!sckt->is_server)) {
+  if ((!sckt->is_client) && (!sckt->is_server)) {
     return INVALID_ACTION;
   }
   size_t total_bytes_sent = 0;
@@ -161,8 +161,13 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len){
     if (current_bytes_sent == 0) {
       return CLOSED_SOCKET;
     }
+    /*
     if (current_bytes_sent == -1) {
-      return SOCKET_ERROR;
+      return COMMUNICATION_ERROR;
+    }
+    */
+    if (current_bytes_sent < 0) {
+      return COMMUNICATION_ERROR;
     }
     current_address += current_bytes_sent;
     total_bytes_sent += current_bytes_sent;
@@ -172,7 +177,7 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len){
 
 
 int socket_receive(socket_t *sckt, void *buffer, size_t len){
-  if ((!sckt->is_client) || (!sckt->is_server)) {
+  if ((!sckt->is_client) && (!sckt->is_server)) {
     return INVALID_ACTION;
   }
   int total_bytes_received = 0;
@@ -185,8 +190,13 @@ int socket_receive(socket_t *sckt, void *buffer, size_t len){
     if (current_bytes_received == 0) {
       return CLOSED_SOCKET;
     }
+    /*
     if (current_bytes_received == -1) {
-      return SOCKET_ERROR;
+      return COMMUNICATION_ERROR;
+    }
+    */
+    if (current_bytes_received < 0) {
+      return COMMUNICATION_ERROR;
     }
     current_address += current_bytes_received;
     total_bytes_received += current_bytes_received;
