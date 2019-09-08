@@ -23,6 +23,9 @@ int server_init(server_t *server, const char *service);
 
 void server_release(server_t *server);
 
+//Answers to the clients' petitions
+//Returns -1 if there is a socket error, otherwise returns 0
+//Operates while the client is connected and no error is caused
 int server_operate(server_t *server);
 
 

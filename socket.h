@@ -9,15 +9,12 @@
 
 
 
-
-//VER SI HAY QUE CAMBIAR ATRIBUTOS DEL STRUCT PORQUE PUEDE SER QUE ESTO SEA MUY ASQUEROSO
+//all attributes are private
 typedef struct{
   int fd;
-  //VER SI NO VALE LA PENA GUARDARLO PARA INICIALIZARLO UNA SOLA VEZ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-  //struct addrinfo hints;
   bool is_client;
   bool is_server;
-  bool can_accept;
+  //bool can_accept;
   int client_fd;
 }socket_t;
 
@@ -29,17 +26,23 @@ void socket_init(socket_t *sckt);
 
 void socket_release(socket_t *sckt);
 
+//Tries to bind to the service and sets the socket as a server,
+//listening to any pending connection
 //If it fails the file descriptor value must be ignored
-//AGREGAR MAS COMENTARIOS, VER SI CONVIENE DEJAR FD EN 0 SI FALLA
 int socket_bind_and_listen(socket_t *sckt, const char *service);
 
+//Accepts a pending connection
 int socket_accept(socket_t *sckt);
 
+//Connects to the service of the specified host
 int socket_connect(socket_t *sckt, const char *host, const char *service);
 
-//int socket_send(socket_t *sckt);
+//Sends len bytes of the buffer received
+//It fails if the socket is not connected or did not accept a connection,
+//
 int socket_send(socket_t *sckt, const void *buffer, size_t len);
 
+//Receives len bytes and places them in the buffer
 int socket_receive(socket_t *sckt, void *buffer, size_t len);
 
 #endif

@@ -10,12 +10,12 @@
 
 #define SUCCESS 0
 #define CONNECTION_ERROR -1
-#define BINDING_ERROR -2
-#define LISTEN_ERROR -3
-#define INVALID_ACTION -4
+#define BINDING_ERROR -1
+#define LISTEN_ERROR -2
+#define INVALID_ACTION -1
 #define ACCEPT_ERROR -5
-#define SOCKET_ERROR -6
-#define CLOSED_SOCKET -6
+#define COMMUNICATION_ERROR -2
+#define CLOSED_SOCKET -3
 
 
 typedef int (*linking_function_t) (int socket_fd, const struct sockaddr *addr, socklen_t addr_len);
@@ -59,14 +59,13 @@ static void set_hints(struct addrinfo *hints){
 }
 
 void socket_init(socket_t *sckt){
-  sckt->fd = 0;
+  sckt->fd = -1;
   sckt->is_client = false;
   sckt->is_server = false;
   sckt->client_fd = 0;
   sckt->can_accept = false;
 }
 
-//REVISAR XQ SEGURAMENTE ESTA MAL LA PARTE DEL SERVER
 void socket_release(socket_t *sckt){
   if (sckt->is_server) {
     shutdown(sckt->client_fd, SHUT_RDWR);
@@ -106,13 +105,13 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
   if (listen_value != 0) {
     return LISTEN_ERROR;
   }
-  sckt->can_accept = true;
+  //sckt->can_accept = true;
   sckt->is_server = true;
   return SUCCESS;
 }
 
 int socket_accept(socket_t *sckt){
-  if (!sckt->can_accept) {
+  if (!sckt->is_server) {
     return INVALID_ACTION;
   }
   sckt->client_fd = accept(sckt->fd, NULL, NULL);
@@ -150,6 +149,9 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
 }
 
 int socket_send(socket_t *sckt, const void *buffer, size_t len){
+  if ((!sckt->is_client) || (!sckt->is_server)) {
+    return INVALID_ACTION;
+  }
   size_t total_bytes_sent = 0;
   size_t current_bytes_sent = 0;
   int fd = get_fd(sckt);
@@ -170,6 +172,9 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len){
 
 
 int socket_receive(socket_t *sckt, void *buffer, size_t len){
+  if ((!sckt->is_client) || (!sckt->is_server)) {
+    return INVALID_ACTION;
+  }
   int total_bytes_received = 0;
   int current_bytes_received = 0;
   int fd = get_fd(sckt);
