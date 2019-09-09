@@ -25,7 +25,7 @@ typedef int (*linking_function_t) (int socket_fd,
 
 
 
-static bool process_info_to_link(struct addrinfo* info,
+static bool _process_info_to_link(struct addrinfo* info,
                                  int *socket_fd,
                                  linking_function_t link){
   int link_value = 0;
@@ -48,7 +48,7 @@ static bool process_info_to_link(struct addrinfo* info,
 
 
 
-static int get_fd(socket_t *sckt){
+static int _get_fd(socket_t *sckt){
   if (sckt->is_server) {
     return sckt->client_fd;
   }
@@ -56,7 +56,7 @@ static int get_fd(socket_t *sckt){
 }
 
 
-static void set_hints(struct addrinfo *hints){
+static void _set_hints(struct addrinfo *hints){
   memset(hints, 0, sizeof(struct addrinfo));
   hints->ai_family = AF_INET;
   hints->ai_socktype = SOCK_STREAM;
@@ -91,14 +91,14 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
   int socket_fd = 0;
   struct addrinfo *result;
   struct addrinfo hints;
-  set_hints(&hints);
+  _set_hints(&hints);
   hints.ai_flags = AI_PASSIVE;
 
   info_result = getaddrinfo(NULL, service, &hints, &result);
   if (info_result != 0) {
     return info_result;
   }
-  is_bound = process_info_to_link(result, &socket_fd, bind);
+  is_bound = _process_info_to_link(result, &socket_fd, bind);
   freeaddrinfo(result);
   if (!is_bound) {
     return BINDING_ERROR;
@@ -132,14 +132,14 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
   int socket_fd = 0;
   struct addrinfo *result;
   struct addrinfo hints;
-  set_hints(&hints);
+  _set_hints(&hints);
   hints.ai_flags = 0;
 
   info_result = getaddrinfo(host, service, &hints, &result);
   if (info_result != 0) {
     return info_result;
   }
-  is_connected = process_info_to_link(result, &socket_fd, connect);
+  is_connected = _process_info_to_link(result, &socket_fd, connect);
   freeaddrinfo(result);
   if (!is_connected) {
     return CONNECTION_ERROR;
@@ -157,7 +157,7 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len){
   }
   size_t total_bytes_sent = 0;
   size_t current_bytes_sent = 0;
-  int fd = get_fd(sckt);
+  int fd = _get_fd(sckt);
   const char *current_address = buffer;
   while (total_bytes_sent < len) {
     current_bytes_sent = send(fd,
@@ -184,7 +184,7 @@ int socket_receive(socket_t *sckt, void *buffer, size_t len){
   }
   int total_bytes_received = 0;
   int current_bytes_received = 0;
-  int fd = get_fd(sckt);
+  int fd = _get_fd(sckt);
   char *current_address = buffer;
 
   while (total_bytes_received < len) {
