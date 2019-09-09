@@ -32,14 +32,11 @@
 static void print_error(int program_status){
   if (program_status == SOCKET_ERROR) {
     fprintf(stderr, "Error de conexión\n");
-  }
-  if (program_status == INVALID_NUMBER) {
+  } else if (program_status == INVALID_NUMBER) {
     fprintf(stderr, "Error en el valor ingresado. Rango soportado: [1,9]\n");
-  }
-  if (program_status == INVALID_COORDINATES) {
+  } else if (program_status == INVALID_COORDINATES) {
     fprintf(stderr, "Error en los índices. Rango soportado: [1,9]\n");
-  }
-  if (program_status == MEMORY_ERROR) {
+  } else if (program_status == MEMORY_ERROR) {
     fprintf(stderr, "Error en la asignación de memoria dinámica\n");
   }
 }
@@ -56,6 +53,7 @@ static bool strings_are_equal(char *command, char *input, size_t size){
 
 
 static bool is_program_terminanting_error(int program_status){
+  /*
   if (program_status == SOCKET_ERROR) {
     return true;
   }
@@ -63,6 +61,8 @@ static bool is_program_terminanting_error(int program_status){
     return true;
   }
   return false;
+  */
+  return (program_status == SOCKET_ERROR) || (program_status == MEMORY_ERROR);
 }
 
 static bool is_program_terminanting_value(int program_status){
@@ -150,8 +150,6 @@ static int print_answer(socket_t *sckt){
 }
 
 
-//VER SI CONVIENE SACAR EL NOMBRE XQ TAMBIEN LE MANDA UNA
-//PETICIÓN
 static int obtain_answer_simple(socket_t *sckt, char indicator){
   char indicator_copy = indicator;
   int program_status = socket_send(sckt, &indicator_copy, sizeof(char));
@@ -165,28 +163,9 @@ static int obtain_answer_simple(socket_t *sckt, char indicator){
   return SUCCESS;
 }
 
-/*
-static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
-  char indicator = PUT_INDICATOR;
-  //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  if (socket_send(sckt, &indicator, sizeof(char)) != SUCCESS) {
-    return SOCKET_ERROR;
-  }
-  //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  if (socket_send(sckt, coordinates, 3 * sizeof(uint8_t)) != SUCCESS) {
-    return SOCKET_ERROR;
-  }
-  if (print_answer(sckt) != SUCCESS) {
-    return SOCKET_ERROR;
-  }
-  return SUCCESS;
-}
-*/
 
 //Receives
-//static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
 static int obtain_answer_for_put(socket_t *sckt, char *input, size_t input_size){
-
   //VER SI ESTE BLOQUE DE CODIGO DEBERIA IR EN OTRO LADO
   uint8_t data[3];
   int put_validation = put_command_validation(input, input_size, data);
@@ -220,53 +199,22 @@ static char get_command_indicator(char *input, size_t size){
     return GET_INDICATOR;
   } else if (strings_are_equal(EXIT_COMMAND, input, size)) {
     return EXIT_INDICATOR;
-  }/* else if (strings_are_equal(PUT_COMMAND, input, size)){
-    return PUT_INDICATOR;
   }
-  */
   return NOT_SIMPLE_COMMAND;
 }
 
 //If the input is a valid command it executes it, otherwise returns error
 static int execute_command(socket_t *sckt, char *input, size_t size){
-  //int program_status = 0;
-  //uint8_t data[3];
-  //int put_validation = put_command_validation(input, size, data);
-  //CAMBIAR, NO DEBERIA TENERSTE ESTE ARRAY SOLO PARA UNA DE LAS FUNCIONES
-  //QUE SE VAN A LLAMAR
-  /*
-  if (strings_are_equal(VERIFY_COMMAND, input, size)) {
-    program_status = obtain_answer_simple(sckt, VERIFY_INDICATOR);
-  } else if (strings_are_equal(RESET_COMMAND, input, size)) {
-    program_status = obtain_answer_simple(sckt, RESET_INDICATOR);
-  } else if (strings_are_equal(GET_COMMAND, input, size)) {
-    program_status = obtain_answer_simple(sckt, GET_INDICATOR);
-  } else if (strings_are_equal(EXIT_COMMAND, input, size)) {
-    program_status = EXIT_PROGRAM;
-  } else if (put_validation != INVALID_COMMAND) {
-    if (put_validation == SUCCESS) {
-      program_status = obtain_answer_for_put(sckt, data);
-    } else {
-      program_status = put_validation;
-    }
-  } else {
-    program_status = INVALID_COMMAND;
-  }
-  */
   char indicator = get_command_indicator(input, size);
   if (indicator == NOT_SIMPLE_COMMAND) {
-    //return indicator;
     //VER SI CONVIENE CALCULAR input len ANTES Y AHORRARSE
     //DESPUES TODOS LOS CALCULOS DE NUEVO
     return obtain_answer_for_put(sckt, input, strlen(input));
   } else if (indicator == EXIT_INDICATOR) {
     return EXIT_PROGRAM;
-  } /*else if (indicator == PUT_INDICATOR) {
-    return obtain_answer_for_put(sckt);
-  } */else {
+  } else {
     return obtain_answer_simple(sckt, indicator);
   }
-  //return program_status;
 }
 
 
