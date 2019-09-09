@@ -23,7 +23,7 @@ typedef struct{
 }limits_t;
 
 
-static void set_block_limits(limits_t *limits, size_t first_i, size_t first_j){
+static void _set_block_limits(limits_t *limits, size_t first_i, size_t first_j){
   limits->first_i = first_i;
   limits->last_i = first_i + BLOCK_DIMENSION;
   limits->first_j = first_j;
@@ -31,21 +31,21 @@ static void set_block_limits(limits_t *limits, size_t first_i, size_t first_j){
 }
 
 
-static void set_row_limits(limits_t *limits, size_t i){
+static void _set_row_limits(limits_t *limits, size_t i){
   limits->first_i = i;
   limits->last_i = i + 1;
   limits->first_j = 0;
   limits->last_j = BOARD_DIMENSION;
 }
 
-static void set_column_limits(limits_t *limits, size_t j){
+static void _set_column_limits(limits_t *limits, size_t j){
   limits->first_i = 0;
   limits->last_i = BOARD_DIMENSION;
   limits->first_j = j;
   limits->last_j = j + 1;
 }
 
-static bool is_in_array(int array[], size_t data_size, int n){
+static bool _is_in_array(int array[], size_t data_size, int n){
   for (size_t i = 0; i < data_size; i++) {
     if (array[i] == n) {
       return true;
@@ -54,7 +54,7 @@ static bool is_in_array(int array[], size_t data_size, int n){
   return false;
 }
 
-static void add_to_checker_array(int array[], size_t* data_size, int n){
+static void _add_to_checker_array(int array[], size_t* data_size, int n){
   if (n != EMPTY_CELL_VALUE) {
     array[*data_size] = n;
     (*data_size)++;
@@ -63,7 +63,7 @@ static void add_to_checker_array(int array[], size_t* data_size, int n){
 
 //checks if the area delimited has repeated values
 //that go from 1 to 9
-static bool has_repeated_values(const cell_t matrix[BOARD_DIMENSION]
+static bool _has_repeated_values(const cell_t matrix[BOARD_DIMENSION]
                                                    [BOARD_DIMENSION],
                                 limits_t limits){
   int found_numbers[BOARD_DIMENSION];
@@ -73,8 +73,8 @@ static bool has_repeated_values(const cell_t matrix[BOARD_DIMENSION]
   for (size_t i = limits.first_i; i < limits.last_i; i++) {
     for (size_t j = limits.first_j; j < limits.last_j; j++) {
       aux = cell_get_number(&matrix[i][j]);
-      if (!is_in_array(found_numbers, data_size, aux)) {
-        add_to_checker_array(found_numbers, &data_size, aux);
+      if (!_is_in_array(found_numbers, data_size, aux)) {
+        _add_to_checker_array(found_numbers, &data_size, aux);
       } else {
         return true;
       }
@@ -84,12 +84,12 @@ static bool has_repeated_values(const cell_t matrix[BOARD_DIMENSION]
 }
 
 
-static bool verify_blocks(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
+static bool _verify_blocks(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
   limits_t limits;
   for (size_t i = 0; i < BLOCK_DIMENSION; i++) {
     for (size_t j = 0; j < BLOCK_DIMENSION; j++) {
-      set_block_limits(&limits, i * BLOCK_DIMENSION, j*BLOCK_DIMENSION);
-      if (has_repeated_values(board, limits)) {
+      _set_block_limits(&limits, i * BLOCK_DIMENSION, j*BLOCK_DIMENSION);
+      if (_has_repeated_values(board, limits)) {
         return false;
       }
     }
@@ -98,29 +98,37 @@ static bool verify_blocks(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
 }
 
 
-static bool verify_rows(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
+static bool _verify_rows(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
   limits_t limits;
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
-    set_row_limits(&limits, i);
-    if (has_repeated_values(board, limits)) {
+    _set_row_limits(&limits, i);
+    if (_has_repeated_values(board, limits)) {
       return false;
     }
   }
   return true;
 }
 
-static bool verify_columns(const cell_t board[BOARD_DIMENSION]
+static bool _verify_columns(const cell_t board[BOARD_DIMENSION]
                                              [BOARD_DIMENSION]){
   limits_t limits;
   for (size_t j = 0; j < BOARD_DIMENSION; j++) {
-    set_column_limits(&limits, j);
-    if (has_repeated_values(board, limits)) {
+    _set_column_limits(&limits, j);
+    if (_has_repeated_values(board, limits)) {
       return false;
     }
   }
   return true;
 }
 
+
+
+static char _int_to_char(int n){
+  if (n == EMPTY_CELL_VALUE) {
+    return ' ';
+  }
+  return n+48;
+}
 
 
 void sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION]
@@ -173,32 +181,26 @@ void sudoku_reset(sudoku_t *sudoku){
 //Indicates if the current state of the board follows
 //the rules of the game
 bool sudoku_verify(const sudoku_t *sudoku){
-  if (!verify_blocks(sudoku->board)) {
+  if (!_verify_blocks(sudoku->board)) {
     return false;
   }
-  if (!verify_rows(sudoku->board)) {
+  if (!_verify_rows(sudoku->board)) {
     return false;
   }
-  if (!verify_columns(sudoku->board)) {
+  if (!_verify_columns(sudoku->board)) {
     return false;
   }
   return  true;
 }
 
 
-static char int_to_char(int n){
-  if (n == EMPTY_CELL_VALUE) {
-    return ' ';
-  }
-  return n+48;
-}
 
 //This function can't be reduced to 15 lines because it's necessary
 //to have an inf for each character that has to be present in the
 //matrix
 
 //VER SI CONVIENE CAMBIAR POR vertical_position Y horizontal_position
-static char select_char(size_t i, size_t j){
+static char _select_char(size_t i, size_t j){
   if (j == HORIZONTAL_DIM_PRINTED_BOARD) {
     return '\n';
   }
@@ -220,23 +222,23 @@ static char select_char(size_t i, size_t j){
   return ' ';
 }
 
-static void set_delimiters(char buffer[VERTICAL_DIM_PRINTED_BOARD]
+static void _set_delimiters(char buffer[VERTICAL_DIM_PRINTED_BOARD]
                                       [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
     for (size_t j = 0; j < HORIZONTAL_DIM_PRINTED_BOARD + 1; j++) {
-      buffer[i][j] = select_char(i, j);
+      buffer[i][j] = _select_char(i, j);
     }
   }
 }
 
-static void set_numbers(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION],
+static void _set_numbers(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION],
                         char buffer[VERTICAL_DIM_PRINTED_BOARD]
                                    [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   int number = 0;
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
       number = cell_get_number(&(board[i][j]));
-      buffer[1 + i * 2][2 + j * 4] = int_to_char(number);
+      buffer[1 + i * 2][2 + j * 4] = _int_to_char(number);
     }
   }
 }
@@ -244,7 +246,7 @@ static void set_numbers(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION],
 void sudoku_get_board(const sudoku_t *sudoku,
                       char buffer[VERTICAL_DIM_PRINTED_BOARD]
                                  [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
-  set_delimiters(buffer);
+  _set_delimiters(buffer);
   /*
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
     for (size_t j = 0; j < HORIZONTAL_DIM_PRINTED_BOARD + 1; j++) {
@@ -252,7 +254,7 @@ void sudoku_get_board(const sudoku_t *sudoku,
     }
   }
   */
-  set_numbers(sudoku->board, buffer);
+  _set_numbers(sudoku->board, buffer);
   /*
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
