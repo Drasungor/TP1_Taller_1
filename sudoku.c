@@ -217,7 +217,7 @@ int sudoku_set_number(sudoku_t *sudoku,
 }
 
 
-//Sets all player set cells to 0
+//Sets all player set cells to the EMPTY_CELL_VALUE
 void sudoku_reset(sudoku_t *sudoku){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
