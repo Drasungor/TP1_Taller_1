@@ -209,6 +209,8 @@ static int execute_command(socket_t *sckt, char *input, size_t size){
   return program_status;
 }
 
+
+
 void clean_input(char* input, size_t *size){
   if (input[*size-1] == '\n') {
     input[*size-1] = '\0';
@@ -217,6 +219,12 @@ void clean_input(char* input, size_t *size){
 }
 
 
+//This function can't be reduced to 15 lines because initialization
+//and error/values checking are irreducible
+//The ifs can't be united because one ends in returning 1 in main
+//and the other one ends returning 0 because it's not an error
+//This funcion reads a line from stdin and tries to execute the
+//command that in holds, if there is one
 static int process_input(socket_t *sckt){
   char *line = NULL;
   size_t size = 0;
