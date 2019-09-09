@@ -17,7 +17,7 @@
 #define RESET_COMMAND "reset"
 #define EXIT_COMMAND "exit"
 #define PUT_COMMAND_FORMAT "put %d in %d,%d"
-#define NUMBER_OF_INPUTS_PUT 4
+#define NUMBER_OF_INPUTS_PUT 3
 
 
 #define SUCCESS 0
@@ -157,8 +157,6 @@ static int put_command_validation(char *input, size_t size, uint8_t data[3]){
                            &number,
                            &vertical_position,
                            &horizontal_position);
-
-  //VER SI SE CAMBIA EL 4 POR UNA CTE
   if ((values_read < NUMBER_OF_INPUTS_PUT) || (values_read == EOF)) {
     printf("ES COMANDO INVALIDO (client.c)\n");
     return INVALID_COMMAND;
