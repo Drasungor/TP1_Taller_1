@@ -63,7 +63,9 @@ static void add_to_checker_array(int array[], size_t* data_size, int n){
 
 //checks if the area delimited has repeated values
 //that go from 1 to 9
-static bool has_repeated_values(const cell_t matrix[][BOARD_DIMENSION], limits_t limits){
+static bool has_repeated_values(const cell_t matrix[BOARD_DIMENSION]
+                                                   [BOARD_DIMENSION],
+                                limits_t limits){
   int found_numbers[BOARD_DIMENSION];
   size_t data_size = 0;
   int aux = 0;
@@ -107,7 +109,8 @@ static bool verify_rows(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
   return true;
 }
 
-static bool verify_columns(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
+static bool verify_columns(const cell_t board[BOARD_DIMENSION]
+                                             [BOARD_DIMENSION]){
   limits_t limits;
   for (size_t j = 0; j < BOARD_DIMENSION; j++) {
     set_column_limits(&limits, j);
@@ -120,7 +123,8 @@ static bool verify_columns(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION])
 
 
 
-void sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION][BOARD_DIMENSION]){
+void sudoku_init(sudoku_t *sudoku, int initial_numbers[BOARD_DIMENSION]
+                                                      [BOARD_DIMENSION]){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
       cell_init(&(sudoku->board[i][j]));
@@ -145,8 +149,12 @@ void sudoku_release(sudoku_t *sudoku){
 //or the value that is trying to be changed is one of
 //the default non zero ones. Returns 1 on error and 0
 //on success
-int sudoku_set_number(sudoku_t *sudoku, int number, int vertical_position, int horizontal_position){
-  return cell_set(&(sudoku->board[vertical_position-1][horizontal_position-1]), number);
+int sudoku_set_number(sudoku_t *sudoku,
+                      int number,
+                      int vertical_position,
+                      int horizontal_position){
+  return cell_set(&(sudoku->board[vertical_position-1][horizontal_position-1]),
+                  number);
 }
 
 
@@ -212,7 +220,8 @@ static char select_char(size_t i, size_t j){
   return ' ';
 }
 
-static void set_delimiters(char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
+static void set_delimiters(char buffer[VERTICAL_DIM_PRINTED_BOARD]
+                                      [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
     for (size_t j = 0; j < HORIZONTAL_DIM_PRINTED_BOARD + 1; j++) {
       buffer[i][j] = select_char(i, j);
@@ -220,7 +229,9 @@ static void set_delimiters(char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DI
   }
 }
 
-static void set_numbers(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION], char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
+static void set_numbers(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION],
+                        char buffer[VERTICAL_DIM_PRINTED_BOARD]
+                                   [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   int number = 0;
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
@@ -230,7 +241,9 @@ static void set_numbers(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION], ch
   }
 }
 
-void sudoku_get_board(const sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
+void sudoku_get_board(const sudoku_t *sudoku,
+                      char buffer[VERTICAL_DIM_PRINTED_BOARD]
+                                 [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   set_delimiters(buffer);
   /*
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
