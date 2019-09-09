@@ -185,7 +185,9 @@ static char int_to_char(int n){
   return n+48;
 }
 
-
+//This function can't be reduced to 15 lines because it's necessary
+//to have an inf for each character that has to be present in the
+//matrix
 static char select_char(size_t i, size_t j, int number){
   if (j == HORIZONTAL_DIM_PRINTED_BOARD) {
     return '\n';
@@ -208,18 +210,39 @@ static char select_char(size_t i, size_t j, int number){
   return ' ';
 }
 
-
-void sudoku_get_board(const sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
-  int number = 0;
+static void set_delimiters(char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
     for (size_t j = 0; j < HORIZONTAL_DIM_PRINTED_BOARD + 1; j++) {
       buffer[i][j] = select_char(i, j, number);
     }
   }
+}
+
+voir set_values(int board[BOARD_DIMENSION][BOARD_DIMENSION], char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
       number = cell_get_number(&(sudoku->board[i][j]));
       buffer[1 + i * 2][2 + j * 4] = int_to_char(number);
     }
   }
+}
+
+void sudoku_get_board(const sudoku_t *sudoku, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
+  int number = 0;
+  set_delimiters(buffer);
+  /*
+  for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
+    for (size_t j = 0; j < HORIZONTAL_DIM_PRINTED_BOARD + 1; j++) {
+      buffer[i][j] = select_char(i, j, number);
+    }
+  }
+  */
+  /*
+  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
+    for (size_t j = 0; j < BOARD_DIMENSION; j++) {
+      number = cell_get_number(&(sudoku->board[i][j]));
+      buffer[1 + i * 2][2 + j * 4] = int_to_char(number);
+    }
+  }
+  */
 }
