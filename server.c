@@ -74,9 +74,9 @@ static int _put(server_t *server){
   //(PERO HACIENDO ESO TAL VEZ NO SE ENTIENDE FACIL AL LEER)
   program_status = sudoku_handler_set_number(&(server->sudoku_handler),
 //VER SI CONVIENE USAR CONSTANTES
-                                                 values[0],
-                                                 values[1],
-                                                 values[2]);
+                                             values[0],
+                                             values[1],
+                                             values[2]);
   if (program_status != SUCCESS) {
     program_status = _send_data(&(server->sckt), message, strlen(message));
     if (program_status != SUCCESS) {
@@ -105,10 +105,8 @@ static int _verify(server_t *server){
 }
 
 static int _reset(server_t *server){
-  //AGREGAR CHEQUEOS DE VALORES QUE DEVUELVEN LAS FUNCIONES
   sudoku_handler_reset(&(server->sudoku_handler));
   return _get(server);
-  //return SUCCESS;
 }
 
 //This function can't be reduced to 15 lines because all the indicators have
@@ -148,7 +146,6 @@ int server_init(server_t *server, const char *service){
     return program_state;
   }
   return socket_accept(&(server->sckt));
-  //return SUCCESS;
 }
 
 void server_release(server_t *server){
@@ -158,7 +155,6 @@ void server_release(server_t *server){
 
 
 int server_operate(server_t *server){
-  //PONER TODO EN UN LOOP DE WHILE IS CONNECTED O ALGO ASI
   int program_state = SUCCESS;
   char command = _receive_command(&(server->sckt));
   while ((program_state == SUCCESS) && (command != SOCKET_ERROR)) {

@@ -157,7 +157,7 @@ static bool _verify_rows(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
 }
 
 static bool _verify_columns(const cell_t board[BOARD_DIMENSION]
-                                             [BOARD_DIMENSION]){
+                                              [BOARD_DIMENSION]){
   limits_t limits;
   for (size_t j = 0; j < BOARD_DIMENSION; j++) {
     _set_column_limits(&limits, j);
@@ -206,7 +206,7 @@ static char _select_char(size_t i, size_t j){
 }
 
 static void _set_delimiters(char buffer[VERTICAL_DIM_PRINTED_BOARD]
-                                      [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
+                                       [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
     for (size_t j = 0; j < HORIZONTAL_DIM_PRINTED_BOARD + 1; j++) {
       buffer[i][j] = _select_char(i, j);
@@ -215,8 +215,8 @@ static void _set_delimiters(char buffer[VERTICAL_DIM_PRINTED_BOARD]
 }
 
 static void _set_numbers(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION],
-                        char buffer[VERTICAL_DIM_PRINTED_BOARD]
-                                   [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
+                         char buffer[VERTICAL_DIM_PRINTED_BOARD]
+                                    [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   int number = 0;
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {

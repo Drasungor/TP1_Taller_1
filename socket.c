@@ -26,8 +26,8 @@ typedef int (*linking_function_t) (int socket_fd,
 
 
 static bool _process_info_to_link(struct addrinfo* info,
-                                 int *socket_fd,
-                                 linking_function_t link){
+                                  int *socket_fd,
+                                  linking_function_t link){
   int link_value = 0;
   bool is_linked = false;
 

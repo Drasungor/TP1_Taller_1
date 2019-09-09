@@ -19,7 +19,7 @@ static int _char_to_int(char c){
 //This function can't be reduced to 15 lines due to variable
 //initialization and error checking
 static int _board_file_to_matrix(FILE *file,
-                                int matrix[BOARD_DIMENSION][BOARD_DIMENSION]){
+                                 int matrix[BOARD_DIMENSION][BOARD_DIMENSION]){
   char *line;
   size_t size;
   int number = 0;
