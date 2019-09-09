@@ -14,7 +14,6 @@ typedef struct{
   int fd;
   bool is_client;
   bool is_server;
-  //bool can_accept;
   int client_fd;
 }socket_t;
 

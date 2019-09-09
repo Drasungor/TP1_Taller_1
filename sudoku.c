@@ -150,17 +150,6 @@ int sudoku_set_number(sudoku_t *sudoku, int number, int vertical_position, int h
 }
 
 
-/*
-//VER SI ESTA FUNCION ES INUTIL, XQ LAS DEFAULT SE INICIALIZAN AL
-//INICIALIZAR EL SUDOKU, NO HAY X Q HACERLO UNA PRIMITIVA DE sudoku_t
-
-//Works in the same way as sudoku_set_number but the
-//number set is not erased when sudoku_reset is called
-void sudoku_set_number_as_default(sudoku_t *sudoku, int number, int vertical_position, int horizontal_position){
-  cell_set_as_default(&(sudoku->board[vertical_position-1][horizontal_position-1]), number);
-}
-*/
-
 //Sets all player set cells to 0
 void sudoku_reset(sudoku_t *sudoku){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
