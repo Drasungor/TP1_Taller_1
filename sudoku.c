@@ -65,7 +65,7 @@ static void _add_to_checker_array(int array[], size_t* data_size, int n){
 //that go from 1 to 9
 static bool _has_repeated_values(const cell_t matrix[BOARD_DIMENSION]
                                                    [BOARD_DIMENSION],
-                                limits_t limits){
+                                 limits_t limits){
   int found_numbers[BOARD_DIMENSION];
   size_t data_size = 0;
   int aux = 0;
@@ -82,8 +82,41 @@ static bool _has_repeated_values(const cell_t matrix[BOARD_DIMENSION]
   }
   return false;
 }
+/*
+static bool _has_repeated_values(const cell_t matrix[BOARD_DIMENSION]
+                                                    [BOARD_DIMENSION],
+                                 size_t first_i,
+                                 size_t last_i,
+                                 size_t first_j,
+                                 size_t last_j){
+  int found_numbers[BOARD_DIMENSION];
+  size_t data_size = 0;
+  int aux = 0;
 
-
+  for (size_t i = first_i; i < last_i; i++) {
+    for (size_t j = first_j; j < last_j; j++) {
+      aux = cell_get_number(&matrix[i][j]);
+      if (!_is_in_array(found_numbers, data_size, aux)) {
+        _add_to_checker_array(found_numbers, &data_size, aux);
+      } else {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+*/
+/*
+static bool _verify_block(const cell_t matrix[BOARD_DIMENSION][BOARD_DIMENSION],
+                          size_t first_i,
+                          size_t first_j){
+    return !_has_repeated_values(matrix,
+                                 first_i,
+                                 first_i + BLOCK_DIMENSION,
+                                 first_j,
+                                 first_j + BLOCK_DIMENSION);
+}
+*/
 static bool _verify_blocks(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
   limits_t limits;
   for (size_t i = 0; i < BLOCK_DIMENSION; i++) {
@@ -96,6 +129,20 @@ static bool _verify_blocks(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION])
   }
   return true;
 }
+
+/*
+static bool _verify_blocks(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
+  limits_t limits;
+  for (size_t i = 0; i < BLOCK_DIMENSION; i++) {
+    for (size_t j = 0; j < BLOCK_DIMENSION; j++) {
+      if (!_verify_block(board, i * BLOCK_DIMENSION, j * BLOCK_DIMENSION)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+*/
 
 
 static bool _verify_rows(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
@@ -129,8 +176,6 @@ static char _int_to_char(int n){
   }
   return n+48;
 }
-
-
 
 
 //This function can't be reduced to 15 lines because it's necessary

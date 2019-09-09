@@ -127,7 +127,6 @@ static int _print_answer(socket_t *sckt){
     return program_status;
   }
   message_size = ntohl(message_size);
-  //message_size++;
   char message[MAX_RECEIVABLE_LENGHT + 1];
   program_status = socket_receive(sckt, message, message_size);
   if (program_status != SUCCESS) {
@@ -142,8 +141,6 @@ static int _obtain_answer_simple(socket_t *sckt, char indicator){
   char indicator_copy = indicator;
   int program_status = socket_send(sckt, &indicator_copy, sizeof(char));
   if (program_status != SUCCESS) {
-    //VER SI HAY QUE MODIFICAR ESTO UN POCO PARA QUE
-    //TAMBIEN RECIBA CLOSED SOCKET
     return program_status;
   }
   return _print_answer(sckt);
@@ -158,8 +155,8 @@ static int _obtain_answer_simple(socket_t *sckt, char indicator){
 
 //Receives
 static int _obtain_answer_for_put(socket_t *sckt,
-                                 char *input,
-                                 size_t input_size){
+                                  char *input,
+                                  size_t input_size){
   uint8_t data[3];
   int put_validation = _put_command_validation(input, input_size, data);
   if (put_validation != SUCCESS) {
