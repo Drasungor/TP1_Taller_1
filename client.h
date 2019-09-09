@@ -5,6 +5,7 @@
 
 
 
+//all attributes are private
 typedef struct{
   socket_t sckt;
 }client_t;

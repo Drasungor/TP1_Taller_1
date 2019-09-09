@@ -3,6 +3,7 @@
 
 #include "sudoku.h"
 
+//all attributes are private
 typedef struct{
   sudoku_t sudoku;
 }sudoku_handler_t;

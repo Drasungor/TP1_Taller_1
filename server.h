@@ -14,6 +14,7 @@
 #define SOCKET_ERROR -1
 #define INVALID_INDICATOR -2
 
+//all attributes are private
 typedef struct{
   sudoku_handler_t sudoku_handler;
   socket_t sckt;

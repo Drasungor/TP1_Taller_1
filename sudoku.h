@@ -9,6 +9,7 @@
 #define VERTICAL_DIM_PRINTED_BOARD 19
 
 
+//all attributes are private
 typedef struct {
   cell_t board[BOARD_DIMENSION][BOARD_DIMENSION];
 }sudoku_t;

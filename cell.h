@@ -6,6 +6,7 @@
 #define EMPTY_CELL_VALUE 0
 
 
+//all attributes are private
 typedef struct{
   int number;
   bool is_default;
