@@ -17,18 +17,32 @@
 #define INVALID_CLIENT_ERROR_MESSAGE "Uso: ./tp client <host> <puerto>\n"
 #define INVALID_SERVER_ERROR_MESSAGE "Uso: ./tp server <puerto>\n"
 
-
+static bool strings_are_equal(char *str_1, char *str_2, size_t str_1_size){
+  if (str_1_size != strlen(str_2)) {
+    return false;
+  }
+  if (strncmp(host, LOCALHOST_MODE_ARGUMENT, host_len) != 0) {
+    return false
+  }
+  return true;
+}
 
 static int execute_as_client(const char *host, const char *port){
   client_t client;
   //VER SI CONVIENE HACER UNA FUNCION A PARTE QUE HAGA EL CHEQUEO DE
   //SI SON EL MISMO STRING
   size_t host_len = strlen(host);
+  /*
   if (host_len == strlen(LOCALHOST_MODE_ARGUMENT)) {
     if (strncmp(host, LOCALHOST_MODE_ARGUMENT, host_len) == 0) {
       host = NULL;
     }
   }
+  */
+  if (strings_are_equal(host, LOCALHOST_MODE_ARGUMENT, host_len)) {
+    host = NULL;
+  }
+  //ESPECIFICAR EL TIPO DE ERROR QUE SE TIENE QUE DEVOLVER
   if (client_init(&client, host, port) != SUCCESS) {
     return ERROR;
   }
@@ -55,11 +69,16 @@ static bool is_valid_client_command(const char *mode, int number_of_arguments){
   if (number_of_arguments != NUMBER_ARGUMENTS_CLIENT) {
     return false;
   }
+  /*
   size_t client_mode_lenght = strlen(CLIENT_MODE_ARGUMENT);
   if (strlen(mode) != client_mode_lenght) {
     return false;
   }
   if (strncmp(mode, CLIENT_MODE_ARGUMENT, client_mode_lenght) != 0) {
+    return false;
+  }
+  */
+  if (!strings_are_equal(CLIENT_MODE_ARGUMENT, mode, strlen(CLIENT_MODE_ARGUMENT))) {
     return false;
   }
   return true;
@@ -70,6 +89,7 @@ static bool is_valid_server_command(const char *mode, int number_of_arguments){
   if (number_of_arguments != NUMBER_ARGUMENTS_SERVER) {
     return false;
   }
+  /*
   size_t server_mode_lenght = strlen(SERVER_MODE_ARGUMENT);
   if (strlen(mode) != server_mode_lenght) {
     return false;
@@ -77,9 +97,16 @@ static bool is_valid_server_command(const char *mode, int number_of_arguments){
   if (strncmp(mode, SERVER_MODE_ARGUMENT, server_mode_lenght) != 0) {
     return false;
   }
+  */
+  if (!strings_are_equal(SERVER_MODE_ARGUMENT, mode, strlen(SERVER_MODE_ARGUMENT))) {
+    return false;
+  }
   return true;
 }
 
+
+//VER SI ESTA FUNCION COMENTADA ES MEJOR QUE LA OTRA strings_are_equal
+/*
 static bool strings_are_equal(const char *string_1, const char *string_2){
   size_t string_1_len = strlen(string_1);
   if (string_1_len == strlen(string_2)) {
@@ -87,11 +114,19 @@ static bool strings_are_equal(const char *string_1, const char *string_2){
   }
   return false;
 }
+*/
 
 static void comunicate_mode_error(const char *mode){
+  /*
   if (strings_are_equal(mode, CLIENT_MODE_ARGUMENT)) {
     fprintf(stderr, INVALID_CLIENT_ERROR_MESSAGE);
   } else if (strings_are_equal(mode, SERVER_MODE_ARGUMENT)){
+    fprintf(stderr, INVALID_SERVER_ERROR_MESSAGE);
+  }
+  */
+  if (strings_are_equal(mode, CLIENT_MODE_ARGUMENT, strlen(mode))) {
+    fprintf(stderr, INVALID_CLIENT_ERROR_MESSAGE);
+  } else if (strings_are_equal(mode, SERVER_MODE_ARGUMENT, strlen(mode))){
     fprintf(stderr, INVALID_SERVER_ERROR_MESSAGE);
   }
 }
@@ -105,9 +140,19 @@ static bool has_viable_arguments(const char **arguments, int number_of_arguments
     fprintf(stderr, INVALID_MODE_ERROR_MESSAGE);
     return false;
   }
+  /*
   if (strings_are_equal(arguments[0], CLIENT_MODE_ARGUMENT)) {
     return true;
   } else if (strings_are_equal(arguments[0], SERVER_MODE_ARGUMENT)){
+    return true;
+  } else {
+    fprintf(stderr, INVALID_MODE_ERROR_MESSAGE);
+    return false;
+  }
+  */
+  if (strings_are_equal(arguments[0], CLIENT_MODE_ARGUMENT, strlen(arguments[0]))) {
+    return true;
+  } else if (strings_are_equal(arguments[0], SERVER_MODE_ARGUMENT, strlen(arguments[0])){
     return true;
   } else {
     fprintf(stderr, INVALID_MODE_ERROR_MESSAGE);
