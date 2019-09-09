@@ -62,7 +62,11 @@ static int put(server_t *server){
   //CAMBIAR EL LLAMADO AL ARRAY EN CADA POSICION POR EL NOMBRE
   //DE UNA VARIABLE ASIGNADA ANTES O PONER DIRECTAMENTE EL INDICE
   //(PERO HACIENDO ESO TAL VEZ NO SE ENTIENDE FACIL AL LEER)
-  int program_status = sudoku_handler_set_number(&(server->sudoku_handler), values[PUT_INDEX_NUMBER], values[PUT_INDEX_VERTICAL_POS], values[PUT_INDEX_HORIZONTAL_POS]);
+  int program_status = sudoku_handler_set_number(&(server->sudoku_handler),
+//VER SI CONVIENE USAR CONSTANTES
+                                                 values[0],
+                                                 values[1],
+                                                 values[2]);
   if (program_status != SUCCESS) {
     if (send_data(&(server->sckt), message, strlen(message)) != SUCCESS) {
       return SOCKET_ERROR;
@@ -120,7 +124,8 @@ static int process_command(server_t *server, char command){
 
 
 int server_init(server_t *server, const char *service){
-  //AGREGAR CHEQUEOS DE LO QUE DEVUELVEN LAS FUNCIONES PARA VER SI HAY QUE DEVOLVER ERROR
+  //AGREGAR CHEQUEOS DE LO QUE DEVUELVEN LAS FUNCIONES PARA
+  //VER SI HAY QUE DEVOLVER ERROR
   sudoku_handler_init(&(server->sudoku_handler));
   socket_init(&(server->sckt));
   socket_bind_and_listen(&(server->sckt), service);
@@ -144,8 +149,8 @@ int server_operate(server_t *server){
     command = receive_command(&(server->sckt));
   }
 
-  //VA A SALIR SOLO CUANDO RECIBA UN ERROR, XQ LO VA A RECIBIR CUANDO CIERRE EL SOCKET
-  //DEL CLIENTE
+  //VA A SALIR SOLO CUANDO RECIBA UN ERROR, XQ LO VA A RECIBIR
+  //CUANDO CIERRE EL SOCKET DEL CLIENTE
 
   return SUCCESS;
 }
