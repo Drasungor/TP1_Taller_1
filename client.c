@@ -184,21 +184,22 @@ static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
 */
 
 //Receives
-static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
+//static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
+static int obtain_answer_for_put(socket_t *sckt, char *input, size_t input_size){
 
   //VER SI ESTE BLOQUE DE CODIGO DEBERIA IR EN OTRO LADO
   uint8_t data[3];
-  int put_validation = put_command_validation(input, size, data);
+  int put_validation = put_command_validation(input, input_size, data);
   if (put_validation != SUCCESS) {
     return put_validation;
   }
-
+  char indicator = PUT_INDICATOR;
 
   if (socket_send(sckt, &indicator, sizeof(char)) != SUCCESS) {
     return SOCKET_ERROR;
   }
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  if (socket_send(sckt, coordinates, 3 * sizeof(uint8_t)) != SUCCESS) {
+  if (socket_send(sckt, data, 3 * sizeof(uint8_t)) != SUCCESS) {
     return SOCKET_ERROR;
   }
   if (print_answer(sckt) != SUCCESS) {
@@ -255,7 +256,9 @@ static int execute_command(socket_t *sckt, char *input, size_t size){
   char indicator = get_command_indicator(input, size);
   if (indicator == NOT_SIMPLE_COMMAND) {
     //return indicator;
-    return obtain_answer_for_put(sckt);
+    //VER SI CONVIENE CALCULAR input len ANTES Y AHORRARSE
+    //DESPUES TODOS LOS CALCULOS DE NUEVO
+    return obtain_answer_for_put(sckt, input, strlen(input));
   } else if (indicator == EXIT_INDICATOR) {
     return EXIT_PROGRAM;
   } /*else if (indicator == PUT_INDICATOR) {
