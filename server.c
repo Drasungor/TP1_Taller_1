@@ -15,25 +15,13 @@
 #define VERTICAL_DIM_PRINTED_BOARD 19
 
 
-//BORRAR INCLUDE
-#include <stdio.h>
 static int send_data(socket_t *sckt, void *message, uint32_t len){
   uint32_t number_to_send = htonl(len);
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
   if (socket_send(sckt, &number_to_send, sizeof(uint32_t)) != SUCCESS) {
-    //BORRAR PRINT
-    printf("ROMPIO SEND EN EL SERVER\n");
     return SOCKET_ERROR;
   }
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-
-  /*
-  //BORRAR FOR CON EL PRINT
-  char *asdasd = message;
-  for (size_t i = 0; i < len; i++) {
-    printf("%c", asdasd[i]);
-  }
-  */
   if (socket_send(sckt, message, len) != SUCCESS) {
     return SOCKET_ERROR;
   }

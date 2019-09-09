@@ -20,9 +20,9 @@
 
 typedef int (*linking_function_t) (int socket_fd, const struct sockaddr *addr, socklen_t addr_len);
 
-//Gets a socket and executes the linking function.
-//Returns true if it succeeds and false if it fails,
-//in which case the socked_fd value must be ignored
+
+
+
 static bool process_info_to_link(struct addrinfo* info, int *socket_fd, linking_function_t link){
   int link_value = 0;
   bool is_linked = false;
@@ -63,7 +63,6 @@ void socket_init(socket_t *sckt){
   sckt->is_client = false;
   sckt->is_server = false;
   sckt->client_fd = 0;
-  //sckt->can_accept = false;
 }
 
 void socket_release(socket_t *sckt){
@@ -105,7 +104,6 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
   if (listen_value != 0) {
     return LISTEN_ERROR;
   }
-  //sckt->can_accept = true;
   sckt->is_server = true;
   return SUCCESS;
 }
@@ -161,11 +159,6 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len){
     if (current_bytes_sent == 0) {
       return CLOSED_SOCKET;
     }
-    /*
-    if (current_bytes_sent == -1) {
-      return COMMUNICATION_ERROR;
-    }
-    */
     if (current_bytes_sent < 0) {
       return COMMUNICATION_ERROR;
     }
@@ -190,11 +183,6 @@ int socket_receive(socket_t *sckt, void *buffer, size_t len){
     if (current_bytes_received == 0) {
       return CLOSED_SOCKET;
     }
-    /*
-    if (current_bytes_received == -1) {
-      return COMMUNICATION_ERROR;
-    }
-    */
     if (current_bytes_received < 0) {
       return COMMUNICATION_ERROR;
     }

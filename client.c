@@ -216,7 +216,7 @@ void clean_input(char* input, size_t *size){
   }
 }
 
-//VER SI CAMBIO EL NOMBRE POR process_command
+
 static int process_input(socket_t *sckt){
   char *line = NULL;
   size_t size = 0;
@@ -257,8 +257,6 @@ int client_operate(client_t *client){
     program_status = process_input(&(client->sckt));
     print_error(program_status);
   } while (!should_kill_program(program_status));
-  //} while (program_status == SUCCESS);
-  //CAMBIAR PORQUE NO SE ESTA MOSTRANDO CUANDO FALLA EL PROGRAMA
   if (is_program_terminanting_error(program_status)) {
     return 1;
   }
