@@ -16,19 +16,9 @@ static int char_to_int(char c){
 }
 
 
-//ASEGURARSE QUE DONDE SE LLAMA A sudoku_handler_init SE CHEQUEA EL VALOR DE RETORNO
-int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
-  FILE *sudoku_file =  fopen(BOARD_FILE_NAME, "r");
-  if (!sudoku_file) {
-    return FILE_ERROR;
-  }
 
-  char *line;
-  size_t size;
-  int number = 0;
-  int board [BOARD_DIMENSION][BOARD_DIMENSION];
 
-  //MODULARIZAR MUCHO
+int board_file_to_matrix(FILE *file, int matrix[BOARD_DIMENSION][BOARD_DIMENSION]){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     line = NULL;
     size = 0;
@@ -43,7 +33,45 @@ int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
     }
     free(line);
   }
+  return SUCCESS;
+}
+
+
+//ASEGURARSE QUE DONDE SE LLAMA A sudoku_handler_init SE CHEQUEA EL VALOR DE RETORNO
+int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
+  FILE *board_file =  fopen(BOARD_FILE_NAME, "r");
+  if (!board_file) {
+    return FILE_ERROR;
+  }
+
+  char *line;
+  size_t size;
+  int number = 0;
+  int board [BOARD_DIMENSION][BOARD_DIMENSION];
+  int program_state = board_file_to_matrix(board_file, board);
+
   fclose(sudoku_file);
+  if (program_state != SUCCESS) {
+    return program_state;
+  }
+  //MODULARIZAR MUCHO
+  /*
+  for (size_t i = 0; i < BOARD_DIMENSION; i++) {
+    line = NULL;
+    size = 0;
+    size = getline(&line, &size, sudoku_file);
+    if (size == -1) {
+      free(line);
+      return MEMORY_ERROR;
+    }
+    for (size_t j = 0; j < BOARD_DIMENSION; j++) {
+      number = line[2*j];
+      board[i][j] = char_to_int(number);
+    }
+    free(line);
+  }
+  */
+  //fclose(sudoku_file);
   sudoku_init(&(sudoku_handler->sudoku), board);
   return SUCCESS;
 }
