@@ -12,10 +12,13 @@
 #define RESET_INDICATOR 'R'
 #define EXIT_INDICATOR 'E'
 #define GET_COMMAND "get"
-#define PUT_COMMAND "put"
+//#define PUT_COMMAND "put"
 #define VERIFY_COMMAND "verify"
 #define RESET_COMMAND "reset"
 #define EXIT_COMMAND "exit"
+#define PUT_COMMAND_FORMAT "put %d in %d,%d"
+#define NUMBER_OF_INPUTS_PUT 4
+
 
 #define SUCCESS 0
 #define SOCKET_ERROR -1
@@ -103,6 +106,7 @@ static bool is_valid_number(int n){
 }
 
 //Indicates if the input is a valid format for the command put
+/*
 static int put_command_validation(char *input, size_t size, uint8_t data[3]){
   char *first_word = strtok(input, " ");
   if (first_word == NULL) {
@@ -137,6 +141,49 @@ static int put_command_validation(char *input, size_t size, uint8_t data[3]){
   data[2] = j;
   return SUCCESS;
 }
+*/
+
+
+static int put_command_validation(char *input, size_t size, uint8_t data[3]){
+  //char *command;
+  int number;
+  //char *nexus;
+  int vertical_position;
+  int horizontal_position;
+
+  int values_read = sscanf(input,
+                           PUT_COMMAND_FORMAT,/*
+                           command,*/
+                           &number,
+                           &vertical_position,
+                           &horizontal_position);
+
+  //VER SI SE CAMBIA EL 4 POR UNA CTE
+  if ((values_read < NUMBER_OF_INPUTS_PUT) || (values_read == EOF)) {
+    printf("ES COMANDO INVALIDO (client.c)\n");
+    return INVALID_COMMAND;
+  }
+  /*
+  if (!strings_are_equal(PUT_COMMAND, command, strlen(command))) {
+    return INVALID_COMMAND;
+  }
+  */
+  if (!is_valid_number(number)) {
+    return INVALID_NUMBER;
+  }
+  //uint8_t i = atoi(strtok(coordinates, ","));
+  //uint8_t j = atoi(strtok(NULL, "\0"));
+  if (!(is_valid_position(vertical_position) &&
+        is_valid_position(horizontal_position))) {
+    return INVALID_COORDINATES;
+  }
+  //VER SI ESTO ESTA MAL, BUSCAR OTRA FORMA DE HACERLO
+  data[0] = number;
+  data[1] = vertical_position;
+  data[2] = horizontal_position;
+  return SUCCESS;
+}
+
 
 static void print_message(char* message, size_t size){
   message[size] = '\0';
