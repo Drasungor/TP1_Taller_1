@@ -18,7 +18,7 @@
 #define INVALID_CLIENT_ERROR_MESSAGE "Uso: ./tp client <host> <puerto>\n"
 #define INVALID_SERVER_ERROR_MESSAGE "Uso: ./tp server <puerto>\n"
 
-static bool strings_are_equal(const char *str_1,
+static bool _strings_are_equal(const char *str_1,
                               const char *str_2,
                               size_t str_1_size){
   if (str_1_size != strlen(str_2)) {
@@ -30,12 +30,10 @@ static bool strings_are_equal(const char *str_1,
   return true;
 }
 
-static int execute_as_client(const char *host, const char *port){
+static int _execute_as_client(const char *host, const char *port){
   client_t client;
-  //VER SI CONVIENE HACER UNA FUNCION A PARTE QUE HAGA EL CHEQUEO DE
-  //SI SON EL MISMO STRING
   size_t host_len = strlen(host);
-  if (strings_are_equal(host, LOCALHOST_MODE_ARGUMENT, host_len)) {
+  if (_strings_are_equal(host, LOCALHOST_MODE_ARGUMENT, host_len)) {
     host = NULL;
   }
   //ESPECIFICAR EL TIPO DE ERROR QUE SE TIENE QUE DEVOLVER
@@ -49,7 +47,7 @@ static int execute_as_client(const char *host, const char *port){
   return SUCCESS;
 }
 
-static int execute_as_server(const char *port){
+static int _execute_as_server(const char *port){
   server_t server;
   if (server_init(&server, port) != SUCCESS) {
     return ERROR;
@@ -61,30 +59,21 @@ static int execute_as_server(const char *port){
   return SUCCESS;
 }
 
-static bool is_valid_client_command(const char *mode, int number_of_arguments){
+static bool _is_valid_client_command(const char *mode, int number_of_arguments){
   if (number_of_arguments != NUMBER_ARGUMENTS_CLIENT) {
     return false;
   }
-  /*
-  size_t client_mode_lenght = strlen(CLIENT_MODE_ARGUMENT);
-  if (strlen(mode) != client_mode_lenght) {
-    return false;
-  }
-  if (strncmp(mode, CLIENT_MODE_ARGUMENT, client_mode_lenght) != 0) {
-    return false;
-  }
-  */
-  return strings_are_equal(CLIENT_MODE_ARGUMENT,
+  return _strings_are_equal(CLIENT_MODE_ARGUMENT,
                            mode,
                            strlen(CLIENT_MODE_ARGUMENT));
 }
 
 
-static bool is_valid_server_command(const char *mode, int number_of_arguments){
+static bool _is_valid_server_command(const char *mode, int number_of_arguments){
   if (number_of_arguments != NUMBER_ARGUMENTS_SERVER) {
     return false;
   }
-  return strings_are_equal(SERVER_MODE_ARGUMENT,
+  return _strings_are_equal(SERVER_MODE_ARGUMENT,
                            mode,
                            strlen(SERVER_MODE_ARGUMENT));
 }
@@ -101,10 +90,10 @@ static bool strings_are_equal(const char *string_1, const char *string_2){
 }
 */
 
-static void comunicate_mode_error(const char *mode){
-  if (strings_are_equal(mode, CLIENT_MODE_ARGUMENT, strlen(mode))) {
+static void _comunicate_mode_error(const char *mode){
+  if (_strings_are_equal(mode, CLIENT_MODE_ARGUMENT, strlen(mode))) {
     fprintf(stderr, INVALID_CLIENT_ERROR_MESSAGE);
-  } else if (strings_are_equal(mode, SERVER_MODE_ARGUMENT, strlen(mode))){
+  } else if (_strings_are_equal(mode, SERVER_MODE_ARGUMENT, strlen(mode))){
     fprintf(stderr, INVALID_SERVER_ERROR_MESSAGE);
   }
 }
@@ -113,18 +102,18 @@ static void comunicate_mode_error(const char *mode){
 //Returns if the received arguments are potential valid arguments.
 //If not it prints an error message
 //VER SI HAY QUE CAMBIAR EL NOMBRE, NO ES MUY CLARO
-static bool has_viable_arguments(const char **arguments,
+static bool _has_viable_arguments(const char **arguments,
                                  int number_of_arguments){
   if (number_of_arguments < 1) {
     fprintf(stderr, "Modo no sportado, el primer parámatro debe "
                     "ser server o client\n");
     return false;
   }
-  if (strings_are_equal(arguments[0],
+  if (_strings_are_equal(arguments[0],
                         CLIENT_MODE_ARGUMENT,
                         strlen(arguments[0]))) {
     return true;
-  } else if (strings_are_equal(arguments[0],
+  } else if (_strings_are_equal(arguments[0],
                                SERVER_MODE_ARGUMENT,
                                strlen(arguments[0]))){
     return true;
@@ -137,15 +126,15 @@ static bool has_viable_arguments(const char **arguments,
 
 
 int remote_sudoku_start(const char **arguments, int number_of_arguments){
-  if (!has_viable_arguments(arguments, number_of_arguments)) {
+  if (!_has_viable_arguments(arguments, number_of_arguments)) {
     return ERROR;
   }
-  if (is_valid_client_command(arguments[0], number_of_arguments)) {
-    return execute_as_client(arguments[1], arguments[2]);
-  } else if (is_valid_server_command(arguments[0], number_of_arguments)) {
-    return execute_as_server(arguments[1]);
+  if (_is_valid_client_command(arguments[0], number_of_arguments)) {
+    return _execute_as_client(arguments[1], arguments[2]);
+  } else if (_is_valid_server_command(arguments[0], number_of_arguments)) {
+    return _execute_as_server(arguments[1]);
   } else {
-    comunicate_mode_error(arguments[0]);
+    _comunicate_mode_error(arguments[0]);
     return ERROR;
   }
   return SUCCESS;
