@@ -27,8 +27,6 @@
 #define CLOSED_SOCKET -8
 
 //If there is an error it prints a message that describes it
-//VER SI CONVIENE PONER TODOS LOS PRINTS DE ERRORES ACÁ
-//LOS DE CADA MODO DE EJECUCION NO ESTÁN ACÁ
 static void print_error(int program_status){
   if (program_status == SOCKET_ERROR) {
     fprintf(stderr, "Error de conexión\n");
@@ -94,10 +92,6 @@ static bool is_valid_number(int n){
 
 //Indicates if the input is a valid format for the command put
 static int put_command_validation(char *input, size_t size, uint8_t data[3]){
-
-  //HACER CHEQUEO DEL CASO EN EL Q NO SE TENGAN LOS SUFICIENTES PEDAZOS
-  //DEL COMANDO
-
   char *first_word = strtok(input, " ");
   if (first_word == NULL) {
     return INVALID_COMMAND;
@@ -141,8 +135,6 @@ static int print_answer(socket_t *sckt){
   uint32_t message_size;
   int program_status = socket_receive(sckt, &message_size, sizeof(uint32_t));
   if (program_status != SUCCESS) {
-    //BORRAR PRINT
-    printf("ROMPIO RECEIVE DE LEN EN CLIENT\n");
     return program_status;
   }
   message_size = ntohl(message_size);
@@ -154,11 +146,6 @@ static int print_answer(socket_t *sckt){
     return program_status;
   }
   print_message(message, message_size);
-  /*
-  for (size_t i = 0; i < message_size; i++) {
-    printf("%c", message[i]);
-  }
-  */
   return SUCCESS;
 }
 
