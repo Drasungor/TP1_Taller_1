@@ -124,7 +124,7 @@ static int put_command_validation(char *input, size_t size, uint8_t data[3]){
   data[0] = atoi(number);
   data[1] = i;
   data[2] = j;
-  return 0;
+  return SUCCESS;
 }
 
 static void print_message(char* message, size_t size){
@@ -142,8 +142,6 @@ static int print_answer(socket_t *sckt){
   char message[message_size+1];
   program_status = socket_receive(sckt, message, message_size);
   if (program_status != SUCCESS) {
-    //BORRAR PRINT
-    printf("ROMPIO RECEIVE DEL MENSAJE EN CLIENT\n");
     return program_status;
   }
   print_message(message, message_size);
@@ -166,6 +164,7 @@ static int obtain_answer_simple(socket_t *sckt, char indicator){
   return SUCCESS;
 }
 
+/*
 static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
   char indicator = PUT_INDICATOR;
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
@@ -181,6 +180,29 @@ static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
   }
   return SUCCESS;
 }
+*/
+
+//Receives
+static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
+  /*
+  int put_validation = put_command_validation(input, size, data);
+  if (put_validation != SUCCESS) {
+    return put_validation;
+  }
+  */
+  if (socket_send(sckt, &indicator, sizeof(char)) != SUCCESS) {
+    return SOCKET_ERROR;
+  }
+  //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+  if (socket_send(sckt, coordinates, 3 * sizeof(uint8_t)) != SUCCESS) {
+    return SOCKET_ERROR;
+  }
+  if (print_answer(sckt) != SUCCESS) {
+    return SOCKET_ERROR;
+  }
+  return SUCCESS;
+}
+
 
 //Returns the indicator associated to the command given
 //If the command does not exist ir returns INVALID_COMMAND
@@ -193,9 +215,10 @@ static char get_command_indicator(char *input, size_t size){
     return GET_INDICATOR;
   } else if (strings_are_equal(EXIT_COMMAND, input, size)) {
     return EXIT_INDICATOR;
-  } else if (strings_are_equal(PUT_COMMAND, input, size)){
+  }/* else if (strings_are_equal(PUT_COMMAND, input, size)){
     return PUT_INDICATOR;
   }
+  */
   return INVALID_COMMAND;
 }
 
@@ -225,13 +248,15 @@ static int execute_command(socket_t *sckt, char *input, size_t size){
     program_status = INVALID_COMMAND;
   }
   */
+  if () {
+  }
   char indicator = get_command_indicator(input, size);
   if (indicator == INVALID_COMMAND) {
     return indicator;
   } else if (indicator == EXIT_INDICATOR) {
     return EXIT_PROGRAM;
   } else if (indicator == PUT_INDICATOR) {
-    return execute_put();
+    return obtain_answer_for_put(sckt);
   } else {
     return obtain_answer_simple(sckt, indicator);
   }
