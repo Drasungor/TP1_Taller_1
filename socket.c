@@ -18,12 +18,16 @@
 #define CLOSED_SOCKET -7
 
 
-typedef int (*linking_function_t) (int socket_fd, const struct sockaddr *addr, socklen_t addr_len);
+typedef int (*linking_function_t) (int socket_fd,
+                                   const struct sockaddr *addr,
+                                   socklen_t addr_len);
 
 
 
 
-static bool process_info_to_link(struct addrinfo* info, int *socket_fd, linking_function_t link){
+static bool process_info_to_link(struct addrinfo* info,
+                                 int *socket_fd,
+                                 linking_function_t link){
   int link_value = 0;
   bool is_linked = false;
 
@@ -156,7 +160,10 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len){
   int fd = get_fd(sckt);
   const char *current_address = buffer;
   while (total_bytes_sent < len) {
-    current_bytes_sent = send(fd, current_address, len - total_bytes_sent, MSG_NOSIGNAL);
+    current_bytes_sent = send(fd,
+                              current_address,
+                              len - total_bytes_sent,
+                              MSG_NOSIGNAL);
     if (current_bytes_sent == 0) {
       return CLOSED_SOCKET;
     }
@@ -181,7 +188,10 @@ int socket_receive(socket_t *sckt, void *buffer, size_t len){
   char *current_address = buffer;
 
   while (total_bytes_received < len) {
-    current_bytes_received = recv(fd, current_address, len - total_bytes_received, MSG_NOSIGNAL);
+    current_bytes_received = recv(fd,
+                                  current_address,
+                                  len - total_bytes_received,
+                                  MSG_NOSIGNAL);
     if (current_bytes_received == 0) {
       return CLOSED_SOCKET;
     }
