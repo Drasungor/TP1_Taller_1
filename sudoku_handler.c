@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "sudoku_handler.h"
 
+#define BOARD_FILE_NAME "board.txt"
+
 #define SUCCESS 0
 #define INVALID_NUMBER -1
 #define OUT_OF_BOUNDS -2
@@ -13,8 +15,10 @@ static int char_to_int(char c){
   return c - 48;
 }
 
+
+//ASEGURARSE QUE DONDE SE LLAMA A sudoku_handler_init SE CHEQUEA EL VALOR DE RETORNO
 int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
-  FILE *sudoku_file =  fopen("sudoku.txt", "r");
+  FILE *sudoku_file =  fopen(BOARD_FILE_NAME, "r");
   if (!sudoku_file) {
     return FILE_ERROR;
   }
