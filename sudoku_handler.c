@@ -27,14 +27,14 @@ static int board_file_to_matrix(FILE *file, int matrix[BOARD_DIMENSION][BOARD_DI
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     line = NULL;
     size = 0;
-    size = getline(&line, &size, sudoku_file);
+    size = getline(&line, &size, file);
     if (size == -1) {
       free(line);
       return MEMORY_ERROR;
     }
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
       number = line[2*j];
-      board[i][j] = char_to_int(number);
+      matrix[i][j] = char_to_int(number);
     }
     free(line);
   }
