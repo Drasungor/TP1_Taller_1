@@ -13,11 +13,14 @@
 #define NUMBER_ARGUMENTS_CLIENT 3
 #define NUMBER_ARGUMENTS_SERVER 2
 
-#define INVALID_MODE_ERROR_MESSAGE "Modo no sportado, el primer parámatro debe ser sever o client\n"
+#define INVALID_MODE_ERROR_MESSAGE "Modo no sportado, el primer parámatro debe \
+                                    ser sever o client\n"
 #define INVALID_CLIENT_ERROR_MESSAGE "Uso: ./tp client <host> <puerto>\n"
 #define INVALID_SERVER_ERROR_MESSAGE "Uso: ./tp server <puerto>\n"
 
-static bool strings_are_equal(const char *str_1, const char *str_2, size_t str_1_size){
+static bool strings_are_equal(const char *str_1,
+                              const char *str_2,
+                              size_t str_1_size){
   if (str_1_size != strlen(str_2)) {
     return false;
   }
@@ -78,10 +81,9 @@ static bool is_valid_client_command(const char *mode, int number_of_arguments){
     return false;
   }
   */
-  if (!strings_are_equal(CLIENT_MODE_ARGUMENT, mode, strlen(CLIENT_MODE_ARGUMENT))) {
-    return false;
-  }
-  return true;
+  return strings_are_equal(CLIENT_MODE_ARGUMENT,
+                           mode,
+                           strlen(CLIENT_MODE_ARGUMENT));
 }
 
 
@@ -98,10 +100,9 @@ static bool is_valid_server_command(const char *mode, int number_of_arguments){
     return false;
   }
   */
-  if (!strings_are_equal(SERVER_MODE_ARGUMENT, mode, strlen(SERVER_MODE_ARGUMENT))) {
-    return false;
-  }
-  return true;
+  return strings_are_equal(SERVER_MODE_ARGUMENT,
+                           mode,
+                           strlen(SERVER_MODE_ARGUMENT));
 }
 
 
@@ -135,7 +136,8 @@ static void comunicate_mode_error(const char *mode){
 //Returns if the received arguments are potential valid arguments.
 //If not it prints an error message
 //VER SI HAY QUE CAMBIAR EL NOMBRE, NO ES MUY CLARO
-static bool has_viable_arguments(const char **arguments, int number_of_arguments){
+static bool has_viable_arguments(const char **arguments,
+                                 int number_of_arguments){
   if (number_of_arguments < 1) {
     fprintf(stderr, INVALID_MODE_ERROR_MESSAGE);
     return false;
@@ -150,9 +152,18 @@ static bool has_viable_arguments(const char **arguments, int number_of_arguments
     return false;
   }
   */
-  if (strings_are_equal(arguments[0], CLIENT_MODE_ARGUMENT, strlen(arguments[0]))) {
+  /*
+  bool is_equal_to_client = strings_are_equal(arguments[0],
+                                              CLIENT_MODE_ARGUMENT,
+                                              strlen(arguments[0]));
+  */
+  if (strings_are_equal(arguments[0],
+                        CLIENT_MODE_ARGUMENT,
+                        strlen(arguments[0]))) {
     return true;
-  } else if (strings_are_equal(arguments[0], SERVER_MODE_ARGUMENT, strlen(arguments[0]))){
+  } else if (strings_are_equal(arguments[0],
+                               SERVER_MODE_ARGUMENT,
+                               strlen(arguments[0]))){
     return true;
   } else {
     fprintf(stderr, INVALID_MODE_ERROR_MESSAGE);
