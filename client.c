@@ -26,6 +26,7 @@
 #define EXIT_PROGRAM -6
 #define END_OF_FILE -7
 #define CLOSED_SOCKET -8
+#define NOT_SIMPLE_COMMAND -9
 
 //If there is an error it prints a message that describes it
 static void print_error(int program_status){
@@ -184,12 +185,15 @@ static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
 
 //Receives
 static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
-  /*
+
+  //VER SI ESTE BLOQUE DE CODIGO DEBERIA IR EN OTRO LADO
+  uint8_t data[3];
   int put_validation = put_command_validation(input, size, data);
   if (put_validation != SUCCESS) {
     return put_validation;
   }
-  */
+
+
   if (socket_send(sckt, &indicator, sizeof(char)) != SUCCESS) {
     return SOCKET_ERROR;
   }
@@ -219,14 +223,14 @@ static char get_command_indicator(char *input, size_t size){
     return PUT_INDICATOR;
   }
   */
-  return INVALID_COMMAND;
+  return NOT_SIMPLE_COMMAND;
 }
 
 //If the input is a valid command it executes it, otherwise returns error
 static int execute_command(socket_t *sckt, char *input, size_t size){
-  int program_status = 0;
-  uint8_t data[3];
-  int put_validation = put_command_validation(input, size, data);
+  //int program_status = 0;
+  //uint8_t data[3];
+  //int put_validation = put_command_validation(input, size, data);
   //CAMBIAR, NO DEBERIA TENERSTE ESTE ARRAY SOLO PARA UNA DE LAS FUNCIONES
   //QUE SE VAN A LLAMAR
   /*
@@ -248,22 +252,18 @@ static int execute_command(socket_t *sckt, char *input, size_t size){
     program_status = INVALID_COMMAND;
   }
   */
-  if () {
-  }
   char indicator = get_command_indicator(input, size);
-  if (indicator == INVALID_COMMAND) {
-    return indicator;
+  if (indicator == NOT_SIMPLE_COMMAND) {
+    //return indicator;
+    return obtain_answer_for_put(sckt);
   } else if (indicator == EXIT_INDICATOR) {
     return EXIT_PROGRAM;
-  } else if (indicator == PUT_INDICATOR) {
+  } /*else if (indicator == PUT_INDICATOR) {
     return obtain_answer_for_put(sckt);
-  } else {
+  } */else {
     return obtain_answer_simple(sckt, indicator);
   }
-
-
-
-  return program_status;
+  //return program_status;
 }
 
 
