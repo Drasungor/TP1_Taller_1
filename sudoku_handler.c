@@ -83,7 +83,7 @@ void sudoku_handler_release(sudoku_handler_t *sudoku_handler){
 }
 
 //CAMBIAR i y j POR NOMBRES MAS CLAROS, ACA Y EN sudoku_t
-int sudoku_handler_set_number(sudoku_handler_t *sudoku_handler, int number, int i, int j){
+int sudoku_handler_set_number(sudoku_handler_t *sudoku_handler, int number, int vertical_position, int horizontal_position){
   return sudoku_set_number(&(sudoku_handler->sudoku), number, i, j);
 }
 
@@ -97,6 +97,4 @@ bool sudoku_handler_verify(sudoku_handler_t *sudoku_handler){
 
 void sudoku_handler_get_board(sudoku_handler_t *sudoku_handler, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   sudoku_get_board(&(sudoku_handler->sudoku), buffer);
-
-
 }
