@@ -89,7 +89,9 @@ static int reset(server_t *server){
   return SUCCESS;
 }
 
-
+//This function can't be reduced to 15 lines because all the indicators have
+//to be checked and it makes no sense to separate the indicator checking in
+//different functions
 static int process_command(server_t *server, char command){
   int program_state = SUCCESS;
   switch (command) {

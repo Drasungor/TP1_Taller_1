@@ -168,7 +168,8 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len){
   return SUCCESS;
 }
 
-
+//This function can't be reduced to 15 lines because all the error checking is
+//necessary and irreducible, as well as the variables initialization
 int socket_receive(socket_t *sckt, void *buffer, size_t len){
   if ((!sckt->is_client) && (!sckt->is_server)) {
     return INVALID_ACTION;
