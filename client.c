@@ -79,7 +79,17 @@ static bool is_program_terminanting_value(int program_status){
 }
 
 static bool should_kill_program(int program_status){
-  return is_program_terminanting_value(program_status) || is_program_terminanting_error(program_status);
+  /*
+  if (is_program_terminanting_value(program_status)) {
+    return true;
+  }
+  if (is_program_terminanting_error(program_status)) {
+    return true;
+  }
+  return false;
+  */
+  return is_program_terminanting_value(program_status) ||
+         is_program_terminanting_error(program_status);
 }
 
 
@@ -140,7 +150,7 @@ static int print_answer(socket_t *sckt){
     return program_status;
   }
   message_size = ntohl(message_size);
-  char message[message_size+1];
+  char message[message_size + 1];
   program_status = socket_receive(sckt, message, message_size);
   if (program_status != SUCCESS) {
     return program_status;
@@ -154,7 +164,8 @@ static int obtain_answer_simple(socket_t *sckt, char indicator){
   char indicator_copy = indicator;
   int program_status = socket_send(sckt, &indicator_copy, sizeof(char));
   if (program_status != SUCCESS) {
-    //VER SI HAY QUE MODIFICAR ESTO UN POCO PARA QUE TAMBIEN RECIBA CLOSED SOCKET
+    //VER SI HAY QUE MODIFICAR ESTO UN POCO PARA QUE
+    //TAMBIEN RECIBA CLOSED SOCKET
     return SOCKET_ERROR;
   }
   if (print_answer(sckt) != SUCCESS) {
