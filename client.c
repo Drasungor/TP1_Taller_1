@@ -18,7 +18,7 @@
 #define EXIT_COMMAND "exit"
 #define PUT_COMMAND_FORMAT "put %d in %d,%d"
 #define NUMBER_OF_INPUTS_PUT 3
-
+#define MAX_RECEIVABLE_LENGHT 722
 
 #define SUCCESS 0
 #define SOCKET_ERROR -1
@@ -152,13 +152,11 @@ static int put_command_validation(char *input, size_t size, uint8_t data[3]){
   int horizontal_position;
 
   int values_read = sscanf(input,
-                           PUT_COMMAND_FORMAT,/*
-                           command,*/
+                           PUT_COMMAND_FORMAT,
                            &number,
                            &vertical_position,
                            &horizontal_position);
   if ((values_read < NUMBER_OF_INPUTS_PUT) || (values_read == EOF)) {
-    printf("ES COMANDO INVALIDO (client.c)\n");
     return INVALID_COMMAND;
   }
   /*
@@ -195,7 +193,8 @@ static int print_answer(socket_t *sckt){
     return program_status;
   }
   message_size = ntohl(message_size);
-  char message[message_size + 1];
+  //message_size++;
+  char message[MAX_RECEIVABLE_LENGHT + 1];
   program_status = socket_receive(sckt, message, message_size);
   if (program_status != SUCCESS) {
     return program_status;
@@ -221,7 +220,9 @@ static int obtain_answer_simple(socket_t *sckt, char indicator){
 
 
 //Receives
-static int obtain_answer_for_put(socket_t *sckt, char *input, size_t input_size){
+static int obtain_answer_for_put(socket_t *sckt,
+                                 char *input,
+                                 size_t input_size){
   //VER SI ESTE BLOQUE DE CODIGO DEBERIA IR EN OTRO LADO
   uint8_t data[3];
   int put_validation = put_command_validation(input, input_size, data);

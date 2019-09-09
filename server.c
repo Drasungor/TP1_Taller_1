@@ -131,7 +131,7 @@ int server_init(server_t *server, const char *service){
   socket_bind_and_listen(&(server->sckt), service);
   socket_accept(&(server->sckt));
 
-  return SUCCESS ;
+  return SUCCESS;
 }
 
 void server_release(server_t *server){

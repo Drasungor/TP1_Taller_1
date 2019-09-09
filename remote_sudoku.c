@@ -13,8 +13,8 @@
 #define NUMBER_ARGUMENTS_CLIENT 3
 #define NUMBER_ARGUMENTS_SERVER 2
 
-#define INVALID_MODE_ERROR_MESSAGE "Modo no sportado, el primer parámatro debe \
-                                    ser sever o client\n"
+//#define INVALID_MODE_ERROR_MESSAGE "Modo no sportado,
+//el primer parámatro debe ser server o client\n"
 #define INVALID_CLIENT_ERROR_MESSAGE "Uso: ./tp client <host> <puerto>\n"
 #define INVALID_SERVER_ERROR_MESSAGE "Uso: ./tp server <puerto>\n"
 
@@ -139,7 +139,8 @@ static void comunicate_mode_error(const char *mode){
 static bool has_viable_arguments(const char **arguments,
                                  int number_of_arguments){
   if (number_of_arguments < 1) {
-    fprintf(stderr, INVALID_MODE_ERROR_MESSAGE);
+    fprintf(stderr, "Modo no sportado, el primer parámatro debe "
+                    "ser server o client\n");
     return false;
   }
   /*
@@ -166,7 +167,8 @@ static bool has_viable_arguments(const char **arguments,
                                strlen(arguments[0]))){
     return true;
   } else {
-    fprintf(stderr, INVALID_MODE_ERROR_MESSAGE);
+    fprintf(stderr, "Modo no sportado, el primer parámatro debe "
+                    "ser server o client\n");
     return false;
   }
 }
