@@ -10,6 +10,7 @@
 #define PUT_INDICATOR 'P'
 #define VERIFY_INDICATOR 'V'
 #define RESET_INDICATOR 'R'
+#define EXIT_INDICATOR 'E'
 #define GET_COMMAND "get"
 #define PUT_COMMAND "put"
 #define VERIFY_COMMAND "verify"
@@ -152,7 +153,7 @@ static int print_answer(socket_t *sckt){
 
 //VER SI CONVIENE SACAR EL NOMBRE XQ TAMBIEN LE MANDA UNA
 //PETICIÓN
-static int obtain_answer(socket_t *sckt, char indicator){
+static int obtain_answer_simple(socket_t *sckt, char indicator){
   char indicator_copy = indicator;
   int program_status = socket_send(sckt, &indicator_copy, sizeof(char));
   if (program_status != SUCCESS) {
@@ -181,6 +182,23 @@ static int obtain_answer_for_put(socket_t *sckt, uint8_t coordinates[3]){
   return SUCCESS;
 }
 
+//Returns the indicator associated to the command given
+//If the command does not exist ir returns INVALID_COMMAND
+static char get_command_indicator(char *input, size_t size){
+  if (strings_are_equal(VERIFY_COMMAND, input, size)) {
+    return VERIFY_INDICATOR;
+  } else if (strings_are_equal(RESET_COMMAND, input, size)) {
+    return RESET_INDICATOR;
+  } else if (strings_are_equal(GET_COMMAND, input, size)) {
+    return GET_INDICATOR;
+  } else if (strings_are_equal(EXIT_COMMAND, input, size)) {
+    return EXIT_INDICATOR;
+  } else if (strings_are_equal(PUT_COMMAND, input, size)){
+    return PUT_INDICATOR;
+  }
+  return INVALID_COMMAND;
+}
+
 //If the input is a valid command it executes it, otherwise returns error
 static int execute_command(socket_t *sckt, char *input, size_t size){
   int program_status = 0;
@@ -188,13 +206,13 @@ static int execute_command(socket_t *sckt, char *input, size_t size){
   int put_validation = put_command_validation(input, size, data);
   //CAMBIAR, NO DEBERIA TENERSTE ESTE ARRAY SOLO PARA UNA DE LAS FUNCIONES
   //QUE SE VAN A LLAMAR
-
+  /*
   if (strings_are_equal(VERIFY_COMMAND, input, size)) {
-    program_status = obtain_answer(sckt, VERIFY_INDICATOR);
+    program_status = obtain_answer_simple(sckt, VERIFY_INDICATOR);
   } else if (strings_are_equal(RESET_COMMAND, input, size)) {
-    program_status = obtain_answer(sckt, RESET_INDICATOR);
+    program_status = obtain_answer_simple(sckt, RESET_INDICATOR);
   } else if (strings_are_equal(GET_COMMAND, input, size)) {
-    program_status = obtain_answer(sckt, GET_INDICATOR);
+    program_status = obtain_answer_simple(sckt, GET_INDICATOR);
   } else if (strings_are_equal(EXIT_COMMAND, input, size)) {
     program_status = EXIT_PROGRAM;
   } else if (put_validation != INVALID_COMMAND) {
@@ -206,6 +224,20 @@ static int execute_command(socket_t *sckt, char *input, size_t size){
   } else {
     program_status = INVALID_COMMAND;
   }
+  */
+  char indicator = get_command_indicator(input, size);
+  if (indicator == INVALID_COMMAND) {
+    return indicator;
+  } else if (indicator == EXIT_INDICATOR) {
+    return EXIT_PROGRAM;
+  } else if (indicator == PUT_INDICATOR) {
+    return execute_put();
+  } else {
+    return obtain_answer_simple(sckt, indicator);
+  }
+
+
+
   return program_status;
 }
 
