@@ -12,7 +12,7 @@
 #define RESET_INDICATOR 'R'
 #define EXIT_INDICATOR 'E'
 #define GET_COMMAND "get"
-//#define PUT_COMMAND "put"
+
 #define VERIFY_COMMAND "verify"
 #define RESET_COMMAND "reset"
 #define EXIT_COMMAND "exit"
@@ -56,15 +56,6 @@ static bool strings_are_equal(char *command, char *input, size_t size){
 
 
 static bool is_program_terminanting_error(int program_status){
-  /*
-  if (program_status == SOCKET_ERROR) {
-    return true;
-  }
-  if (program_status == MEMORY_ERROR) {
-    return true;
-  }
-  return false;
-  */
   return (program_status == SOCKET_ERROR) || (program_status == MEMORY_ERROR);
 }
 
@@ -82,15 +73,6 @@ static bool is_program_terminanting_value(int program_status){
 }
 
 static bool should_kill_program(int program_status){
-  /*
-  if (is_program_terminanting_value(program_status)) {
-    return true;
-  }
-  if (is_program_terminanting_error(program_status)) {
-    return true;
-  }
-  return false;
-  */
   return is_program_terminanting_value(program_status) ||
          is_program_terminanting_error(program_status);
 }
@@ -106,48 +88,8 @@ static bool is_valid_number(int n){
 }
 
 //Indicates if the input is a valid format for the command put
-/*
 static int put_command_validation(char *input, size_t size, uint8_t data[3]){
-  char *first_word = strtok(input, " ");
-  if (first_word == NULL) {
-    return INVALID_COMMAND;
-  }
-  if (!strings_are_equal(PUT_COMMAND, first_word, strlen(first_word))) {
-    return INVALID_COMMAND;
-  }
-  char *number = strtok(NULL, " ");
-  if (number == NULL) {
-    return INVALID_COMMAND;
-  }
-  if (!is_valid_number(atoi(number))) {
-    return INVALID_NUMBER;
-  }
-  char *nexus = strtok(NULL, " ");
-  if ((nexus == NULL) || (!strings_are_equal("in", nexus, strlen(nexus)))) {
-    return INVALID_COMMAND;
-  }
-  char *coordinates = strtok(NULL, "\0");
-  if ((coordinates == NULL) || (coordinates[1] != ',')) {
-    return INVALID_COMMAND;
-  }
-  uint8_t i = atoi(strtok(coordinates, ","));
-  uint8_t j = atoi(strtok(NULL, "\0"));
-  if (!(is_valid_position(i) && is_valid_position(j))) {
-    return INVALID_COORDINATES;
-  }
-  //VER SI ESTO ESTA MAL, BUSCAR OTRA FORMA DE HACERLO
-  data[0] = atoi(number);
-  data[1] = i;
-  data[2] = j;
-  return SUCCESS;
-}
-*/
-
-
-static int put_command_validation(char *input, size_t size, uint8_t data[3]){
-  //char *command;
   int number;
-  //char *nexus;
   int vertical_position;
   int horizontal_position;
 
@@ -159,21 +101,13 @@ static int put_command_validation(char *input, size_t size, uint8_t data[3]){
   if ((values_read < NUMBER_OF_INPUTS_PUT) || (values_read == EOF)) {
     return INVALID_COMMAND;
   }
-  /*
-  if (!strings_are_equal(PUT_COMMAND, command, strlen(command))) {
-    return INVALID_COMMAND;
-  }
-  */
   if (!is_valid_number(number)) {
     return INVALID_NUMBER;
   }
-  //uint8_t i = atoi(strtok(coordinates, ","));
-  //uint8_t j = atoi(strtok(NULL, "\0"));
   if (!(is_valid_position(vertical_position) &&
         is_valid_position(horizontal_position))) {
     return INVALID_COORDINATES;
   }
-  //VER SI ESTO ESTA MAL, BUSCAR OTRA FORMA DE HACERLO
   data[0] = number;
   data[1] = vertical_position;
   data[2] = horizontal_position;
@@ -210,12 +144,15 @@ static int obtain_answer_simple(socket_t *sckt, char indicator){
   if (program_status != SUCCESS) {
     //VER SI HAY QUE MODIFICAR ESTO UN POCO PARA QUE
     //TAMBIEN RECIBA CLOSED SOCKET
-    return SOCKET_ERROR;
+    return program_status;
   }
+  return print_answer(sckt);
+  /*
   if (print_answer(sckt) != SUCCESS) {
     return SOCKET_ERROR;
   }
   return SUCCESS;
+  */
 }
 
 
@@ -223,25 +160,28 @@ static int obtain_answer_simple(socket_t *sckt, char indicator){
 static int obtain_answer_for_put(socket_t *sckt,
                                  char *input,
                                  size_t input_size){
-  //VER SI ESTE BLOQUE DE CODIGO DEBERIA IR EN OTRO LADO
   uint8_t data[3];
   int put_validation = put_command_validation(input, input_size, data);
   if (put_validation != SUCCESS) {
     return put_validation;
   }
   char indicator = PUT_INDICATOR;
-
-  if (socket_send(sckt, &indicator, sizeof(char)) != SUCCESS) {
-    return SOCKET_ERROR;
+  inr program_status = socket_send(sckt, &indicator, sizeof(char));
+  if (program_status != SUCCESS) {
+    return program_status;
   }
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  if (socket_send(sckt, data, 3 * sizeof(uint8_t)) != SUCCESS) {
-    return SOCKET_ERROR;
+  program_status = socket_send(sckt, data, 3 * sizeof(uint8_t));
+  if (program_status != SUCCESS) {
+    return program_status;
   }
+  return print_answer(sckt);
+  /*
   if (print_answer(sckt) != SUCCESS) {
     return SOCKET_ERROR;
   }
   return SUCCESS;
+  */
 }
 
 
@@ -313,6 +253,7 @@ static int process_input(socket_t *sckt){
 
 int client_init(client_t *client, const char *host, const char *service){
   socket_init(&(client->sckt));
+  //VER SI HAY QUE CHEQUEAR SI PUEDE DEVOLVER OTROS VALORES
   if (socket_connect(&(client->sckt), host, service) != SUCCESS) {
     return SOCKET_ERROR;
   }

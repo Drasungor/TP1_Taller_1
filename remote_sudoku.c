@@ -35,13 +35,6 @@ static int execute_as_client(const char *host, const char *port){
   //VER SI CONVIENE HACER UNA FUNCION A PARTE QUE HAGA EL CHEQUEO DE
   //SI SON EL MISMO STRING
   size_t host_len = strlen(host);
-  /*
-  if (host_len == strlen(LOCALHOST_MODE_ARGUMENT)) {
-    if (strncmp(host, LOCALHOST_MODE_ARGUMENT, host_len) == 0) {
-      host = NULL;
-    }
-  }
-  */
   if (strings_are_equal(host, LOCALHOST_MODE_ARGUMENT, host_len)) {
     host = NULL;
   }
@@ -91,15 +84,6 @@ static bool is_valid_server_command(const char *mode, int number_of_arguments){
   if (number_of_arguments != NUMBER_ARGUMENTS_SERVER) {
     return false;
   }
-  /*
-  size_t server_mode_lenght = strlen(SERVER_MODE_ARGUMENT);
-  if (strlen(mode) != server_mode_lenght) {
-    return false;
-  }
-  if (strncmp(mode, SERVER_MODE_ARGUMENT, server_mode_lenght) != 0) {
-    return false;
-  }
-  */
   return strings_are_equal(SERVER_MODE_ARGUMENT,
                            mode,
                            strlen(SERVER_MODE_ARGUMENT));
@@ -118,13 +102,6 @@ static bool strings_are_equal(const char *string_1, const char *string_2){
 */
 
 static void comunicate_mode_error(const char *mode){
-  /*
-  if (strings_are_equal(mode, CLIENT_MODE_ARGUMENT)) {
-    fprintf(stderr, INVALID_CLIENT_ERROR_MESSAGE);
-  } else if (strings_are_equal(mode, SERVER_MODE_ARGUMENT)){
-    fprintf(stderr, INVALID_SERVER_ERROR_MESSAGE);
-  }
-  */
   if (strings_are_equal(mode, CLIENT_MODE_ARGUMENT, strlen(mode))) {
     fprintf(stderr, INVALID_CLIENT_ERROR_MESSAGE);
   } else if (strings_are_equal(mode, SERVER_MODE_ARGUMENT, strlen(mode))){
@@ -143,21 +120,6 @@ static bool has_viable_arguments(const char **arguments,
                     "ser server o client\n");
     return false;
   }
-  /*
-  if (strings_are_equal(arguments[0], CLIENT_MODE_ARGUMENT)) {
-    return true;
-  } else if (strings_are_equal(arguments[0], SERVER_MODE_ARGUMENT)){
-    return true;
-  } else {
-    fprintf(stderr, INVALID_MODE_ERROR_MESSAGE);
-    return false;
-  }
-  */
-  /*
-  bool is_equal_to_client = strings_are_equal(arguments[0],
-                                              CLIENT_MODE_ARGUMENT,
-                                              strlen(arguments[0]));
-  */
   if (strings_are_equal(arguments[0],
                         CLIENT_MODE_ARGUMENT,
                         strlen(arguments[0]))) {
