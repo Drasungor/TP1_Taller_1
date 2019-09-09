@@ -17,8 +17,13 @@ static int char_to_int(char c){
 
 
 
+//This function can't be reduced to 15 lines due to variable
+//initialization and error checking
+static int board_file_to_matrix(FILE *file, int matrix[BOARD_DIMENSION][BOARD_DIMENSION]){
+  char *line;
+  size_t size;
+  int number = 0;
 
-int board_file_to_matrix(FILE *file, int matrix[BOARD_DIMENSION][BOARD_DIMENSION]){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     line = NULL;
     size = 0;
@@ -44,13 +49,10 @@ int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
     return FILE_ERROR;
   }
 
-  char *line;
-  size_t size;
-  int number = 0;
   int board [BOARD_DIMENSION][BOARD_DIMENSION];
   int program_state = board_file_to_matrix(board_file, board);
 
-  fclose(sudoku_file);
+  fclose(board_file);
   if (program_state != SUCCESS) {
     return program_state;
   }
