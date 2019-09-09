@@ -32,7 +32,7 @@
 #define NOT_SIMPLE_COMMAND -9
 
 //If there is an error it prints a message that describes it
-static void print_error(int program_status){
+static void _print_error(int program_status){
   if (program_status == SOCKET_ERROR) {
     fprintf(stderr, "Error de conexión\n");
   } else if (program_status == INVALID_NUMBER) {
@@ -44,7 +44,7 @@ static void print_error(int program_status){
   }
 }
 
-static bool strings_are_equal(char *command, char *input, size_t size){
+static bool _strings_are_equal(char *command, char *input, size_t size){
   if (strlen(command) != size) {
     return false;
   }
@@ -55,11 +55,11 @@ static bool strings_are_equal(char *command, char *input, size_t size){
 }
 
 
-static bool is_program_terminanting_error(int program_status){
+static bool _is_program_terminanting_error(int program_status){
   return (program_status == SOCKET_ERROR) || (program_status == MEMORY_ERROR);
 }
 
-static bool is_program_terminanting_value(int program_status){
+static bool _is_program_terminanting_value(int program_status){
   if (program_status == EXIT_PROGRAM) {
     return true;
   }
@@ -72,23 +72,23 @@ static bool is_program_terminanting_value(int program_status){
   return false;
 }
 
-static bool should_kill_program(int program_status){
-  return is_program_terminanting_value(program_status) ||
-         is_program_terminanting_error(program_status);
+static bool _should_kill_program(int program_status){
+  return _is_program_terminanting_value(program_status) ||
+         _is_program_terminanting_error(program_status);
 }
 
 
-static bool is_valid_position(int position){
+static bool _is_valid_position(int position){
   return (position >= 1) && (position <= 9);
 }
 
 
-static bool is_valid_number(int n){
+static bool _is_valid_number(int n){
   return (n >= 1) && (n <= 9);
 }
 
 //Indicates if the input is a valid format for the command put
-static int put_command_validation(char *input, size_t size, uint8_t data[3]){
+static int _put_command_validation(char *input, size_t size, uint8_t data[3]){
   int number;
   int vertical_position;
   int horizontal_position;
@@ -101,11 +101,11 @@ static int put_command_validation(char *input, size_t size, uint8_t data[3]){
   if ((values_read < NUMBER_OF_INPUTS_PUT) || (values_read == EOF)) {
     return INVALID_COMMAND;
   }
-  if (!is_valid_number(number)) {
+  if (!_is_valid_number(number)) {
     return INVALID_NUMBER;
   }
-  if (!(is_valid_position(vertical_position) &&
-        is_valid_position(horizontal_position))) {
+  if (!(_is_valid_position(vertical_position) &&
+        _is_valid_position(horizontal_position))) {
     return INVALID_COORDINATES;
   }
   data[0] = number;
@@ -115,12 +115,12 @@ static int put_command_validation(char *input, size_t size, uint8_t data[3]){
 }
 
 
-static void print_message(char* message, size_t size){
+static void _print_message(char* message, size_t size){
   message[size] = '\0';
   printf("%s", message);
 }
 
-static int print_answer(socket_t *sckt){
+static int _print_answer(socket_t *sckt){
   uint32_t message_size;
   int program_status = socket_receive(sckt, &message_size, sizeof(uint32_t));
   if (program_status != SUCCESS) {
@@ -133,12 +133,12 @@ static int print_answer(socket_t *sckt){
   if (program_status != SUCCESS) {
     return program_status;
   }
-  print_message(message, message_size);
+  _print_message(message, message_size);
   return SUCCESS;
 }
 
 
-static int obtain_answer_simple(socket_t *sckt, char indicator){
+static int _obtain_answer_simple(socket_t *sckt, char indicator){
   char indicator_copy = indicator;
   int program_status = socket_send(sckt, &indicator_copy, sizeof(char));
   if (program_status != SUCCESS) {
@@ -146,7 +146,7 @@ static int obtain_answer_simple(socket_t *sckt, char indicator){
     //TAMBIEN RECIBA CLOSED SOCKET
     return program_status;
   }
-  return print_answer(sckt);
+  return _print_answer(sckt);
   /*
   if (print_answer(sckt) != SUCCESS) {
     return SOCKET_ERROR;
@@ -157,16 +157,16 @@ static int obtain_answer_simple(socket_t *sckt, char indicator){
 
 
 //Receives
-static int obtain_answer_for_put(socket_t *sckt,
+static int _obtain_answer_for_put(socket_t *sckt,
                                  char *input,
                                  size_t input_size){
   uint8_t data[3];
-  int put_validation = put_command_validation(input, input_size, data);
+  int put_validation = _put_command_validation(input, input_size, data);
   if (put_validation != SUCCESS) {
     return put_validation;
   }
   char indicator = PUT_INDICATOR;
-  inr program_status = socket_send(sckt, &indicator, sizeof(char));
+  int program_status = socket_send(sckt, &indicator, sizeof(char));
   if (program_status != SUCCESS) {
     return program_status;
   }
@@ -175,7 +175,7 @@ static int obtain_answer_for_put(socket_t *sckt,
   if (program_status != SUCCESS) {
     return program_status;
   }
-  return print_answer(sckt);
+  return _print_answer(sckt);
   /*
   if (print_answer(sckt) != SUCCESS) {
     return SOCKET_ERROR;
@@ -187,36 +187,36 @@ static int obtain_answer_for_put(socket_t *sckt,
 
 //Returns the indicator associated to the command given
 //If the command does not exist ir returns INVALID_COMMAND
-static char get_command_indicator(char *input, size_t size){
-  if (strings_are_equal(VERIFY_COMMAND, input, size)) {
+static char _get_command_indicator(char *input, size_t size){
+  if (_strings_are_equal(VERIFY_COMMAND, input, size)) {
     return VERIFY_INDICATOR;
-  } else if (strings_are_equal(RESET_COMMAND, input, size)) {
+  } else if (_strings_are_equal(RESET_COMMAND, input, size)) {
     return RESET_INDICATOR;
-  } else if (strings_are_equal(GET_COMMAND, input, size)) {
+  } else if (_strings_are_equal(GET_COMMAND, input, size)) {
     return GET_INDICATOR;
-  } else if (strings_are_equal(EXIT_COMMAND, input, size)) {
+  } else if (_strings_are_equal(EXIT_COMMAND, input, size)) {
     return EXIT_INDICATOR;
   }
   return NOT_SIMPLE_COMMAND;
 }
 
 //If the input is a valid command it executes it, otherwise returns error
-static int execute_command(socket_t *sckt, char *input, size_t size){
-  char indicator = get_command_indicator(input, size);
+static int _execute_command(socket_t *sckt, char *input, size_t size){
+  char indicator = _get_command_indicator(input, size);
   if (indicator == NOT_SIMPLE_COMMAND) {
     //VER SI CONVIENE CALCULAR input len ANTES Y AHORRARSE
     //DESPUES TODOS LOS CALCULOS DE NUEVO
-    return obtain_answer_for_put(sckt, input, strlen(input));
+    return _obtain_answer_for_put(sckt, input, strlen(input));
   } else if (indicator == EXIT_INDICATOR) {
     return EXIT_PROGRAM;
   } else {
-    return obtain_answer_simple(sckt, indicator);
+    return _obtain_answer_simple(sckt, indicator);
   }
 }
 
 
 
-void clean_input(char* input, size_t *size){
+void _clean_input(char* input, size_t *size){
   if (input[*size-1] == '\n') {
     input[*size-1] = '\0';
     (*size)--;
@@ -230,7 +230,7 @@ void clean_input(char* input, size_t *size){
 //and the other one ends returning 0 because it's not an error
 //This funcion reads a line from stdin and tries to execute the
 //command that in holds, if there is one
-static int process_input(socket_t *sckt){
+static int _process_input(socket_t *sckt){
   char *line = NULL;
   size_t size = 0;
   int program_status = 0;
@@ -244,8 +244,8 @@ static int process_input(socket_t *sckt){
     free(line);
     return MEMORY_ERROR;
   }
-  clean_input(line, &size);
-  program_status = execute_command(sckt, line, size);
+  _clean_input(line, &size);
+  program_status = _execute_command(sckt, line, size);
   free(line);
   return program_status;
 }
@@ -268,10 +268,10 @@ void client_release(client_t *client){
 int client_operate(client_t *client){
   int program_status = 0;
   do {
-    program_status = process_input(&(client->sckt));
-    print_error(program_status);
-  } while (!should_kill_program(program_status));
-  if (is_program_terminanting_error(program_status)) {
+    program_status = _process_input(&(client->sckt));
+    _print_error(program_status);
+  } while (!_should_kill_program(program_status));
+  if (_is_program_terminanting_error(program_status)) {
     return 1;
   }
   return 0;
