@@ -185,7 +185,7 @@ int socket_receive(socket_t *sckt, void *buffer, size_t len){
   int fd = get_fd(sckt);
   char *current_address = buffer;
 
-  while (current_bytes_received < len) {
+  while (total_bytes_received < len) {
     current_bytes_received = recv(fd, current_address, len - total_bytes_received, MSG_NOSIGNAL);
     if (current_bytes_received == 0) {
       return CLOSED_SOCKET;

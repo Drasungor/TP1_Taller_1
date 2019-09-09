@@ -99,6 +99,9 @@ static int put_command_validation(char *input, size_t size, uint8_t data[3]){
   //DEL COMANDO
 
   char *first_word = strtok(input, " ");
+  if (first_word == NULL) {
+    return INVALID_COMMAND;
+  }
   if (!strings_are_equal(PUT_COMMAND, first_word, strlen(first_word))) {
     return INVALID_COMMAND;
   }
