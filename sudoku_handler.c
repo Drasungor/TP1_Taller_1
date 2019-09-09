@@ -84,7 +84,7 @@ void sudoku_handler_release(sudoku_handler_t *sudoku_handler){
 
 //CAMBIAR i y j POR NOMBRES MAS CLAROS, ACA Y EN sudoku_t
 int sudoku_handler_set_number(sudoku_handler_t *sudoku_handler, int number, int vertical_position, int horizontal_position){
-  return sudoku_set_number(&(sudoku_handler->sudoku), number, i, j);
+  return sudoku_set_number(&(sudoku_handler->sudoku), number, vertical_position, horizontal_position);
 }
 
 void sudoku_handler_reset(sudoku_handler_t *sudoku_handler){
