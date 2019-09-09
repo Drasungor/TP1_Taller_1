@@ -19,7 +19,8 @@ static int char_to_int(char c){
 
 //This function can't be reduced to 15 lines due to variable
 //initialization and error checking
-static int board_file_to_matrix(FILE *file, int matrix[BOARD_DIMENSION][BOARD_DIMENSION]){
+static int board_file_to_matrix(FILE *file,
+                                int matrix[BOARD_DIMENSION][BOARD_DIMENSION]){
   char *line;
   size_t size;
   int number = 0;
@@ -42,7 +43,8 @@ static int board_file_to_matrix(FILE *file, int matrix[BOARD_DIMENSION][BOARD_DI
 }
 
 
-//ASEGURARSE QUE DONDE SE LLAMA A sudoku_handler_init SE CHEQUEA EL VALOR DE RETORNO
+//ASEGURARSE QUE DONDE SE LLAMA A sudoku_handler_init
+//SE CHEQUEA EL VALOR DE RETORNO
 int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
   FILE *board_file =  fopen(BOARD_FILE_NAME, "r");
   if (!board_file) {
@@ -83,8 +85,13 @@ void sudoku_handler_release(sudoku_handler_t *sudoku_handler){
 }
 
 //CAMBIAR i y j POR NOMBRES MAS CLAROS, ACA Y EN sudoku_t
-int sudoku_handler_set_number(sudoku_handler_t *sudoku_handler, int number, int vertical_position, int horizontal_position){
-  return sudoku_set_number(&(sudoku_handler->sudoku), number, vertical_position, horizontal_position);
+int sudoku_handler_set_number(sudoku_handler_t *sudoku_handler,
+                              int number,
+                              int vertical_position,
+                              int horizontal_position){
+  return sudoku_set_number(&(sudoku_handler->sudoku),
+                           number, vertical_position,
+                           horizontal_position);
 }
 
 void sudoku_handler_reset(sudoku_handler_t *sudoku_handler){
@@ -95,6 +102,8 @@ bool sudoku_handler_verify(sudoku_handler_t *sudoku_handler){
   return sudoku_verify(&(sudoku_handler->sudoku));
 }
 
-void sudoku_handler_get_board(sudoku_handler_t *sudoku_handler, char buffer[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1]){
+void sudoku_handler_get_board(sudoku_handler_t *sudoku_handler,
+                              char buffer[VERTICAL_DIM_PRINTED_BOARD]
+                              [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   sudoku_get_board(&(sudoku_handler->sudoku), buffer);
 }
