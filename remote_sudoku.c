@@ -19,8 +19,8 @@
 #define INVALID_SERVER_ERROR_MESSAGE "Uso: ./tp server <puerto>\n"
 
 static bool _strings_are_equal(const char *str_1,
-                              const char *str_2,
-                              size_t str_1_size){
+                               const char *str_2,
+                               size_t str_1_size){
   if (str_1_size != strlen(str_2)) {
     return false;
   }
@@ -64,8 +64,8 @@ static bool _is_valid_client_command(const char *mode, int number_of_arguments){
     return false;
   }
   return _strings_are_equal(CLIENT_MODE_ARGUMENT,
-                           mode,
-                           strlen(CLIENT_MODE_ARGUMENT));
+                            mode,
+                            strlen(CLIENT_MODE_ARGUMENT));
 }
 
 
@@ -74,8 +74,8 @@ static bool _is_valid_server_command(const char *mode, int number_of_arguments){
     return false;
   }
   return _strings_are_equal(SERVER_MODE_ARGUMENT,
-                           mode,
-                           strlen(SERVER_MODE_ARGUMENT));
+                            mode,
+                            strlen(SERVER_MODE_ARGUMENT));
 }
 
 
@@ -110,12 +110,12 @@ static bool _has_viable_arguments(const char **arguments,
     return false;
   }
   if (_strings_are_equal(arguments[0],
-                        CLIENT_MODE_ARGUMENT,
-                        strlen(arguments[0]))) {
+                         CLIENT_MODE_ARGUMENT,
+                         strlen(arguments[0]))) {
     return true;
   } else if (_strings_are_equal(arguments[0],
-                               SERVER_MODE_ARGUMENT,
-                               strlen(arguments[0]))){
+                                SERVER_MODE_ARGUMENT,
+                                strlen(arguments[0]))){
     return true;
   } else {
     fprintf(stderr, "Modo no sportado, el primer parámatro debe "
