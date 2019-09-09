@@ -14,7 +14,6 @@
 #define HORIZONTAL_DIM_PRINTED_BOARD 37
 #define VERTICAL_DIM_PRINTED_BOARD 19
 
-
 static int send_data(socket_t *sckt, void *message, uint32_t len){
   uint32_t number_to_send = htonl(len);
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
@@ -39,10 +38,14 @@ static char receive_command(socket_t *sckt){
 }
 
 static int get(server_t *server){
+  size_t elements_printed_board =
+  VERTICAL_DIM_PRINTED_BOARD * (HORIZONTAL_DIM_PRINTED_BOARD + 1);
+  size_t bytes_to_send = elements_printed_board * sizeof(char);
   char board[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1];
+
   sudoku_handler_get_board(&(server->sudoku_handler), board);
   //HACER CHEQUEO POR SI EL SOCKET ESTÁ CERRADO
-  if (send_data(&(server->sckt), board, VERTICAL_DIM_PRINTED_BOARD * (HORIZONTAL_DIM_PRINTED_BOARD + 1) * sizeof(char)) != SUCCESS) {
+  if (send_data(&(server->sckt), board, bytes_to_send) != SUCCESS) {
     return SOCKET_ERROR;
   }
   return SUCCESS;
@@ -51,15 +54,16 @@ static int get(server_t *server){
 static int put(server_t *server){
   char *message = NON_MODIFIABLE_CELL_MESSAGE;
   uint8_t values[PUT_BYTES_RECEIVED-1];
-
+  size_t bytes_to_send = (PUT_BYTES_RECEIVED-1) * sizeof(uint8_t);
   //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  if (socket_receive(&(server->sckt), values, (PUT_BYTES_RECEIVED-1) * sizeof(uint8_t)) != SUCCESS) {
+  if (socket_receive(&(server->sckt), values, bytes_to_send) != SUCCESS) {
     return SOCKET_ERROR;
   }
-  //CAMBIAR EL LLAMADO AL ARRAY EN CADA POSICION POR EL NOMBRE DE UNA VARIABLE ASIGNADA ANTES
-  //O PONER DIRECTAMENTE EL INDICE (PERO HACIENDO ESO TAL VEZ NO SE ENTIENDE FACIL AL LEER)
-
-  if (sudoku_handler_set_number(&(server->sudoku_handler), values[PUT_INDEX_NUMBER], values[PUT_INDEX_VERTICAL_POS], values[PUT_INDEX_HORIZONTAL_POS]) != SUCCESS) {
+  //CAMBIAR EL LLAMADO AL ARRAY EN CADA POSICION POR EL NOMBRE
+  //DE UNA VARIABLE ASIGNADA ANTES O PONER DIRECTAMENTE EL INDICE
+  //(PERO HACIENDO ESO TAL VEZ NO SE ENTIENDE FACIL AL LEER)
+  int program_status = sudoku_handler_set_number(&(server->sudoku_handler), values[PUT_INDEX_NUMBER], values[PUT_INDEX_VERTICAL_POS], values[PUT_INDEX_HORIZONTAL_POS]);
+  if (program_status != SUCCESS) {
     if (send_data(&(server->sckt), message, strlen(message)) != SUCCESS) {
       return SOCKET_ERROR;
     }
