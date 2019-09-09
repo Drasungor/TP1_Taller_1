@@ -17,12 +17,12 @@
 #define INVALID_CLIENT_ERROR_MESSAGE "Uso: ./tp client <host> <puerto>\n"
 #define INVALID_SERVER_ERROR_MESSAGE "Uso: ./tp server <puerto>\n"
 
-static bool strings_are_equal(char *str_1, char *str_2, size_t str_1_size){
+static bool strings_are_equal(const char *str_1, const char *str_2, size_t str_1_size){
   if (str_1_size != strlen(str_2)) {
     return false;
   }
-  if (strncmp(host, LOCALHOST_MODE_ARGUMENT, host_len) != 0) {
-    return false
+  if (strncmp(str_1, str_2, str_1_size) != 0) {
+    return false;
   }
   return true;
 }
@@ -152,7 +152,7 @@ static bool has_viable_arguments(const char **arguments, int number_of_arguments
   */
   if (strings_are_equal(arguments[0], CLIENT_MODE_ARGUMENT, strlen(arguments[0]))) {
     return true;
-  } else if (strings_are_equal(arguments[0], SERVER_MODE_ARGUMENT, strlen(arguments[0])){
+  } else if (strings_are_equal(arguments[0], SERVER_MODE_ARGUMENT, strlen(arguments[0]))){
     return true;
   } else {
     fprintf(stderr, INVALID_MODE_ERROR_MESSAGE);
