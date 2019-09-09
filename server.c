@@ -14,7 +14,7 @@
 #define HORIZONTAL_DIM_PRINTED_BOARD 37
 #define VERTICAL_DIM_PRINTED_BOARD 19
 
-static int send_data(socket_t *sckt, void *message, uint32_t len){
+static int _send_data(socket_t *sckt, void *message, uint32_t len){
   uint32_t number_to_send = htonl(len);
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
   int program_status = socket_send(sckt, &number_to_send, sizeof(uint32_t));
@@ -32,7 +32,7 @@ static int send_data(socket_t *sckt, void *message, uint32_t len){
 }
 
 
-static char receive_command(socket_t *sckt){
+static char _receive_command(socket_t *sckt){
   char command = 0;
   //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
   int program_status = socket_receive(sckt, &command, sizeof(char));
@@ -42,7 +42,7 @@ static char receive_command(socket_t *sckt){
   return command;
 }
 
-static int get(server_t *server){
+static int _get(server_t *server){
   size_t elements_printed_board =
   VERTICAL_DIM_PRINTED_BOARD * (HORIZONTAL_DIM_PRINTED_BOARD + 1);
   size_t bytes_to_send = elements_printed_board * sizeof(char);
@@ -50,13 +50,17 @@ static int get(server_t *server){
 
   sudoku_handler_get_board(&(server->sudoku_handler), board);
   //HACER CHEQUEO POR SI EL SOCKET ESTÁ CERRADO
-  if (send_data(&(server->sckt), board, bytes_to_send) != SUCCESS) {
-    return SOCKET_ERROR;
+  return _send_data(&(server->sckt), board, bytes_to_send);
+  //int program_status = _send_data(&(server->sckt), board, bytes_to_send);
+  /*
+  if (program_status != SUCCESS) {
+    return program_status;
   }
   return SUCCESS;
+  */
 }
 
-static int put(server_t *server){
+static int _put(server_t *server){
   char *message = NON_MODIFIABLE_CELL_MESSAGE;
   uint8_t values[PUT_BYTES_RECEIVED-1];
   size_t bytes_to_send = (PUT_BYTES_RECEIVED-1) * sizeof(uint8_t);
@@ -74,18 +78,19 @@ static int put(server_t *server){
                                                  values[1],
                                                  values[2]);
   if (program_status != SUCCESS) {
-    if (send_data(&(server->sckt), message, strlen(message)) != SUCCESS) {
-      return SOCKET_ERROR;
+    program_status = _send_data(&(server->sckt), message, strlen(message));
+    if (program_status != SUCCESS) {
+      return program_status;
     }
   }/* else {
     //HACER CHEQUEO DE VALOR DE RETORNO DE GET
   }
   */
-  return get(server);
+  return _get(server);
   //return SUCCESS;
 }
 
-static int verify(server_t *server){
+static int _verify(server_t *server){
   char *message = SUDOKU_VERIFIES;
   if (!sudoku_handler_verify(&(server->sudoku_handler))) {
     message = SUDOKU_DOESNT_VERIFY;
@@ -96,33 +101,33 @@ static int verify(server_t *server){
   }
   return SUCCESS;
   */
-  return send_data(&(server->sckt), message, strlen(message));
+  return _send_data(&(server->sckt), message, strlen(message));
 }
 
-static int reset(server_t *server){
+static int _reset(server_t *server){
   //AGREGAR CHEQUEOS DE VALORES QUE DEVUELVEN LAS FUNCIONES
   sudoku_handler_reset(&(server->sudoku_handler));
-  return get(server);
+  return _get(server);
   //return SUCCESS;
 }
 
 //This function can't be reduced to 15 lines because all the indicators have
 //to be checked and it makes no sense to separate the indicator checking in
 //different functions
-static int process_command(server_t *server, char command){
+static int _process_command(server_t *server, char command){
   int program_state = SUCCESS;
   switch (command) {
     case GET_INDICATOR:
-      program_state = get(server);
+      program_state = _get(server);
       break;
     case PUT_INDICATOR:
-      program_state = put(server);
+      program_state = _put(server);
       break;
     case VERIFY_INDICATOR:
-      program_state = verify(server);
+      program_state = _verify(server);
       break;
     case RESET_INDICATOR:
-      program_state = reset(server);
+      program_state = _reset(server);
       break;
     default:
       program_state = INVALID_INDICATOR;
@@ -155,10 +160,10 @@ void server_release(server_t *server){
 int server_operate(server_t *server){
   //PONER TODO EN UN LOOP DE WHILE IS CONNECTED O ALGO ASI
   int program_state = SUCCESS;
-  char command = receive_command(&(server->sckt));
+  char command = _receive_command(&(server->sckt));
   while ((program_state == SUCCESS) && (command != SOCKET_ERROR)) {
-    program_state = process_command(server, command);
-    command = receive_command(&(server->sckt));
+    program_state = _process_command(server, command);
+    command = _receive_command(&(server->sckt));
   }
 
   //VA A SALIR SOLO CUANDO RECIBA UN ERROR, XQ LO VA A RECIBIR
