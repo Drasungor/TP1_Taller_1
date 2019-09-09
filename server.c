@@ -17,22 +17,27 @@
 static int send_data(socket_t *sckt, void *message, uint32_t len){
   uint32_t number_to_send = htonl(len);
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  if (socket_send(sckt, &number_to_send, sizeof(uint32_t)) != SUCCESS) {
-    return SOCKET_ERROR;
+  int program_status = socket_send(sckt, &number_to_send, sizeof(uint32_t));
+  if (program_status != SUCCESS) {
+    return program_status;
   }
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
+  /*
   if (socket_send(sckt, message, len) != SUCCESS) {
     return SOCKET_ERROR;
   }
   return SUCCESS;
+  */
+  return socket_send(sckt, message, len);
 }
 
 
 static char receive_command(socket_t *sckt){
   char command = 0;
   //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  if (socket_receive(sckt, &command, sizeof(char)) != SUCCESS) {
-    return SOCKET_ERROR;
+  int program_status = socket_receive(sckt, &command, sizeof(char));
+  if (program_status != SUCCESS) {
+    return program_status;
   }
   return command;
 }
@@ -56,13 +61,14 @@ static int put(server_t *server){
   uint8_t values[PUT_BYTES_RECEIVED-1];
   size_t bytes_to_send = (PUT_BYTES_RECEIVED-1) * sizeof(uint8_t);
   //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  if (socket_receive(&(server->sckt), values, bytes_to_send) != SUCCESS) {
-    return SOCKET_ERROR;
+  int program_status = socket_receive(&(server->sckt), values, bytes_to_send);
+  if (program_status != SUCCESS) {
+    return program_status;
   }
   //CAMBIAR EL LLAMADO AL ARRAY EN CADA POSICION POR EL NOMBRE
   //DE UNA VARIABLE ASIGNADA ANTES O PONER DIRECTAMENTE EL INDICE
   //(PERO HACIENDO ESO TAL VEZ NO SE ENTIENDE FACIL AL LEER)
-  int program_status = sudoku_handler_set_number(&(server->sudoku_handler),
+  program_status = sudoku_handler_set_number(&(server->sudoku_handler),
 //VER SI CONVIENE USAR CONSTANTES
                                                  values[0],
                                                  values[1],
@@ -71,11 +77,12 @@ static int put(server_t *server){
     if (send_data(&(server->sckt), message, strlen(message)) != SUCCESS) {
       return SOCKET_ERROR;
     }
-  } else {
+  }/* else {
     //HACER CHEQUEO DE VALOR DE RETORNO DE GET
-    get(server);
   }
-  return SUCCESS;
+  */
+  return get(server);
+  //return SUCCESS;
 }
 
 static int verify(server_t *server){
@@ -83,18 +90,20 @@ static int verify(server_t *server){
   if (!sudoku_handler_verify(&(server->sudoku_handler))) {
     message = SUDOKU_DOESNT_VERIFY;
   }
+  /*
   if (send_data(&(server->sckt), message, strlen(message)) != SUCCESS) {
     return SOCKET_ERROR;
   }
   return SUCCESS;
+  */
+  return send_data(&(server->sckt), message, strlen(message));
 }
 
 static int reset(server_t *server){
   //AGREGAR CHEQUEOS DE VALORES QUE DEVUELVEN LAS FUNCIONES
   sudoku_handler_reset(&(server->sudoku_handler));
-  //AGREGAR CHEQUEO DE GET
-  get(server);
-  return SUCCESS;
+  return get(server);
+  //return SUCCESS;
 }
 
 //This function can't be reduced to 15 lines because all the indicators have
@@ -124,14 +133,17 @@ static int process_command(server_t *server, char command){
 
 
 int server_init(server_t *server, const char *service){
-  //AGREGAR CHEQUEOS DE LO QUE DEVUELVEN LAS FUNCIONES PARA
-  //VER SI HAY QUE DEVOLVER ERROR
-  sudoku_handler_init(&(server->sudoku_handler));
+  int program_state = sudoku_handler_init(&(server->sudoku_handler));
+  if (program_state != SUCCESS) {
+    return program_state;
+  }
   socket_init(&(server->sckt));
-  socket_bind_and_listen(&(server->sckt), service);
-  socket_accept(&(server->sckt));
-
-  return SUCCESS;
+  program_state = socket_bind_and_listen(&(server->sckt), service);
+  if (program_state != SUCCESS) {
+    return program_state;
+  }
+  return socket_accept(&(server->sckt));
+  //return SUCCESS;
 }
 
 void server_release(server_t *server){
