@@ -87,6 +87,8 @@ static bool _is_valid_number(int n){
 }
 
 //Indicates if the input is a valid format for the command put
+//and puts in data the information that is goint to be sent to
+//the server
 static int _put_command_validation(char *input, size_t size, uint8_t data[3]){
   int number;
   int vertical_position;
@@ -119,6 +121,7 @@ static void _print_message(char* message, size_t size){
   printf("%s", message);
 }
 
+//Prints the message that is received
 static int _print_answer(socket_t *sckt){
   uint32_t message_size;
   int program_status = socket_receive(sckt, &message_size, sizeof(uint32_t));
@@ -135,7 +138,8 @@ static int _print_answer(socket_t *sckt){
   return SUCCESS;
 }
 
-
+//Excecutes the processes necessary to obtain the answer to a
+//command that only needs to send it's indicator to be executed
 static int _obtain_answer_simple(socket_t *sckt, char indicator){
   char indicator_copy = indicator;
   int program_status = socket_send(sckt, &indicator_copy, sizeof(char));
@@ -146,7 +150,9 @@ static int _obtain_answer_simple(socket_t *sckt, char indicator){
 }
 
 
-//Receives
+//Tries to send a petition for the execution of the command put,
+//that puts a number in a position in the sudoku stored in the server
+//If the input is invalid then exits with the correspondent error value
 static int _obtain_answer_for_put(socket_t *sckt,
                                   char *input,
                                   size_t input_size){
