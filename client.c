@@ -201,8 +201,6 @@ static char _get_command_indicator(char *input, size_t size){
 static int _execute_command(socket_t *sckt, char *input, size_t size){
   char indicator = _get_command_indicator(input, size);
   if (indicator == NOT_SIMPLE_COMMAND) {
-    //VER SI CONVIENE CALCULAR input len ANTES Y AHORRARSE
-    //DESPUES TODOS LOS CALCULOS DE NUEVO
     return _obtain_answer_for_put(sckt, input, strlen(input));
   } else if (indicator == EXIT_INDICATOR) {
     return EXIT_PROGRAM;

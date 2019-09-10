@@ -24,7 +24,7 @@ typedef int (*linking_function_t) (int socket_fd,
 
 
 
-
+/*
 static bool _process_info_to_link(struct addrinfo* info,
                                   int *socket_fd,
                                   linking_function_t link){
@@ -45,7 +45,57 @@ static bool _process_info_to_link(struct addrinfo* info,
   }
   return is_linked;
 }
+*/
 
+static bool _process_info_to_connect(struct addrinfo* info,
+                                     int *socket_fd,
+                                     linking_function_t link){
+  int link_value = 0;
+  bool is_linked = false;
+
+  while ((info != NULL) && (!is_linked)) {
+    *socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
+    if (*socket_fd != -1) {
+      link_value = connect(*socket_fd, info->ai_addr, info->ai_addrlen);
+      if (link_value == -1) {
+        close(*socket_fd);
+      } else{
+        is_linked = true;
+      }
+    }
+    info = info->ai_next;
+  }
+  return is_linked;
+}
+
+
+static bool _process_info_to_bind(struct addrinfo* info,
+                                     int *socket_fd,
+                                     linking_function_t link){
+  int link_value = 0;
+  bool is_linked = false;
+  int val = 1;
+  int set_value = 0;
+  while ((info != NULL) && (!is_linked)) {
+    *socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
+    if (*socket_fd != -1) {
+      val = 1;
+      set_value = setsockopt(*socket_fd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int));
+      if (set_value == -1) {
+        close(*socket_fd);
+      } else {
+        link_value = bind(*socket_fd, info->ai_addr, info->ai_addrlen);
+        if (link_value == -1) {
+          close(*socket_fd);
+        } else{
+          is_linked = true;
+        }
+      }
+    }
+    info = info->ai_next;
+  }
+  return is_linked;
+}
 
 
 static int _get_fd(socket_t *sckt){
@@ -98,7 +148,7 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
   if (info_result != 0) {
     return info_result;
   }
-  is_bound = _process_info_to_link(result, &socket_fd, bind);
+  is_bound = _process_info_to_bind(result, &socket_fd, bind);
   freeaddrinfo(result);
   if (!is_bound) {
     return BINDING_ERROR;
@@ -139,7 +189,7 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
   if (info_result != 0) {
     return info_result;
   }
-  is_connected = _process_info_to_link(result, &socket_fd, connect);
+  is_connected = _process_info_to_connect(result, &socket_fd, connect);
   freeaddrinfo(result);
   if (!is_connected) {
     return CONNECTION_ERROR;
