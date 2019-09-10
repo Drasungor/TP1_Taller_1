@@ -11,15 +11,11 @@
 #define CLIENT_MODE_ARGUMENT "client"
 #define SERVER_MODE_ARGUMENT "server"
 #define LOCALHOST_MODE_ARGUMENT "localhost"
-//VER SI LO DEJO COMO UN SOLO DEFINE XQ SON EL MISMO VALOR,
-//PERO SI AGREGO OTRO COMANDO MAS DESPUES QUE TIENE UNA CANTIDAD
-//DISTINTA DE PARAMETROS SE ROMPE TODO
 #define NUMBER_ARGUMENTS_CLIENT 3
 #define NUMBER_ARGUMENTS_SERVER 2
 
-//#define INVALID_MODE_ERROR_MESSAGE "Modo no sportado,
-//el primer parámatro debe ser server o client\n"
-#define INVALID_CLIENT_ERROR_MESSAGE "Uso: ./tp client <host> <puerto>\n"
+//VER SI HAY QUE SACAR LAS CONSTANTES
+//DE ESTOS STRINGS PARA SER CONSISTENTE
 #define INVALID_SERVER_ERROR_MESSAGE "Uso: ./tp server <puerto>\n"
 
 static bool _strings_are_equal(const char *str_1,
@@ -40,7 +36,6 @@ static int _execute_as_client(const char *host, const char *port){
   if (_strings_are_equal(host, LOCALHOST_MODE_ARGUMENT, host_len)) {
     host = NULL;
   }
-  //ESPECIFICAR EL TIPO DE ERROR QUE SE TIENE QUE DEVOLVER
   if (client_init(&client, host, port) != SUCCESS) {
     return ERROR;
   }
@@ -82,17 +77,6 @@ static bool _is_valid_server_command(const char *mode, int number_of_arguments){
                             strlen(SERVER_MODE_ARGUMENT));
 }
 
-
-//VER SI ESTA FUNCION COMENTADA ES MEJOR QUE LA OTRA strings_are_equal
-/*
-static bool strings_are_equal(const char *string_1, const char *string_2){
-  size_t string_1_len = strlen(string_1);
-  if (string_1_len == strlen(string_2)) {
-    return strncmp(string_1, string_2, string_1_len) == 0;
-  }
-  return false;
-}
-*/
 
 static void _comunicate_mode_error(const char *mode){
   if (_strings_are_equal(mode, CLIENT_MODE_ARGUMENT, strlen(mode))) {
