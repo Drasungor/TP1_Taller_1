@@ -11,7 +11,7 @@
 //Server mode: mode, port
 //Client mode: mode, host, port
 //Returns 0 on success, -1 on error
-int remote_sudoku_start(const char **arguments, int number_of_arguments);
+int remote_sudoku_execute(const char **arguments, int number_of_arguments);
 
 
 #endif

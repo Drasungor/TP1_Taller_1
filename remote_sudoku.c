@@ -129,7 +129,7 @@ static bool _has_viable_arguments(const char **arguments,
 }
 
 
-int remote_sudoku_start(const char **arguments, int number_of_arguments){
+int remote_sudoku_execute(const char **arguments, int number_of_arguments){
   if (!_has_viable_arguments(arguments, number_of_arguments)) {
     return ERROR;
   }
