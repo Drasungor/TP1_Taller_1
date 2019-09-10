@@ -4,11 +4,7 @@
 
 #include "sudoku_handler.h"
 #include "socket.h"
-
-#define GET_INDICATOR 'G'
-#define PUT_INDICATOR 'P'
-#define VERIFY_INDICATOR 'V'
-#define RESET_INDICATOR 'R'
+#include "client_server_constants.h"
 
 #define SUCCESS 0
 #define SOCKET_ERROR -1

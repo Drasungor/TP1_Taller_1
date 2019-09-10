@@ -4,12 +4,9 @@
 #include <string.h>
 #include "client.h"
 #include "socket.h"
+#include "client_server_constants.h"
 
 
-#define GET_INDICATOR 'G'
-#define PUT_INDICATOR 'P'
-#define VERIFY_INDICATOR 'V'
-#define RESET_INDICATOR 'R'
 #define EXIT_INDICATOR 'E'
 #define GET_COMMAND "get"
 
@@ -144,12 +141,6 @@ static int _obtain_answer_simple(socket_t *sckt, char indicator){
     return program_status;
   }
   return _print_answer(sckt);
-  /*
-  if (print_answer(sckt) != SUCCESS) {
-    return SOCKET_ERROR;
-  }
-  return SUCCESS;
-  */
 }
 
 
@@ -167,18 +158,11 @@ static int _obtain_answer_for_put(socket_t *sckt,
   if (program_status != SUCCESS) {
     return program_status;
   }
-  //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
   program_status = socket_send(sckt, data, 3 * sizeof(uint8_t));
   if (program_status != SUCCESS) {
     return program_status;
   }
   return _print_answer(sckt);
-  /*
-  if (print_answer(sckt) != SUCCESS) {
-    return SOCKET_ERROR;
-  }
-  return SUCCESS;
-  */
 }
 
 
@@ -248,11 +232,7 @@ static int _process_input(socket_t *sckt){
 
 int client_init(client_t *client, const char *host, const char *service){
   socket_init(&(client->sckt));
-  //VER SI HAY QUE CHEQUEAR SI PUEDE DEVOLVER OTROS VALORES
-  if (socket_connect(&(client->sckt), host, service) != SUCCESS) {
-    return SOCKET_ERROR;
-  }
-  return SUCCESS;
+  return socket_connect(&(client->sckt), host, service) != SUCCESS;
 }
 
 void client_release(client_t *client){
