@@ -129,12 +129,12 @@ void server_release(server_t *server){
 int server_operate(server_t *server){
   int program_status = SUCCESS;
   char command = _receive_command(&(server->sckt));
-  while ((program_status == SUCCESS) && (command != SOCKET_ERROR)) {
+  while ((program_status == SUCCESS) && (command != ERROR)) {
     program_status = _process_command(server, command);
     command = _receive_command(&(server->sckt));
   }
 
-  if ((command == SOCKET_ERROR) || (program_status == SOCKET_ERROR)) {
+  if ((command == ERROR) || (program_status == ERROR)) {
     return FINISHED_IN_ERROR;
   }
   return SUCCESS;
