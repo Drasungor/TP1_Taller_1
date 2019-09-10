@@ -86,7 +86,6 @@ static void _comunicate_mode_error(const char *mode){
 
 //Returns if the received arguments are potential valid arguments.
 //If not it prints an error message
-//VER SI HAY QUE CAMBIAR EL NOMBRE, NO ES MUY CLARO
 static bool _has_viable_arguments(const char **arguments,
                                  int number_of_arguments){
   if (number_of_arguments < 1) {
