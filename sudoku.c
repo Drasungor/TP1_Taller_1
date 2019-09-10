@@ -135,8 +135,6 @@ static char _int_to_char(int n){
 //This function can't be reduced to 15 lines because it's necessary
 //to have an inf for each character that has to be present in the
 //matrix
-
-//VER SI CONVIENE CAMBIAR POR vertical_position Y horizontal_position
 static char _select_char(size_t i, size_t j){
   if (j == HORIZONTAL_DIM_PRINTED_BOARD) {
     return '\n';
@@ -220,9 +218,6 @@ int sudoku_set_number(sudoku_t *sudoku,
 void sudoku_reset(sudoku_t *sudoku){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
-      //VER SI HACE FALTA USAR UN .h DE CONSTANTES PARA QUE
-      //EL FUNCIONAMIENTO NO DEPENDA DE EMPTY_CELL_VALUE
-      //PUEDE SER QUE ESTO NO HAGA FALTA
       cell_set(&(sudoku->board[i][j]), EMPTY_CELL_VALUE);
     }
   }

@@ -42,8 +42,6 @@ static int _board_file_to_matrix(FILE *file,
 }
 
 
-//ASEGURARSE QUE DONDE SE LLAMA A sudoku_handler_init
-//SE CHEQUEA EL VALOR DE RETORNO
 int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
   FILE *board_file =  fopen(BOARD_FILE_NAME, "r");
   if (!board_file) {
@@ -65,7 +63,6 @@ void sudoku_handler_release(sudoku_handler_t *sudoku_handler){
   sudoku_release(&(sudoku_handler->sudoku));
 }
 
-//CAMBIAR i y j POR NOMBRES MAS CLAROS, ACA Y EN sudoku_t
 int sudoku_handler_set_number(sudoku_handler_t *sudoku_handler,
                               int number,
                               int vertical_position,

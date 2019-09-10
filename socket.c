@@ -28,29 +28,6 @@ typedef int (*linking_function_t) (int socket_fd,
 
 
 
-/*
-static bool _process_info_to_link(struct addrinfo* info,
-                                  int *socket_fd,
-                                  linking_function_t link){
-  int link_value = 0;
-  bool is_linked = false;
-
-  while ((info != NULL) && (!is_linked)) {
-    *socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
-    if (*socket_fd != -1) {
-      link_value = link(*socket_fd, info->ai_addr, info->ai_addrlen);
-      if (link_value == -1) {
-        close(*socket_fd);
-      } else{
-        is_linked = true;
-      }
-    }
-    info = info->ai_next;
-  }
-  return is_linked;
-}
-*/
-
 static bool _process_info_to_connect(struct addrinfo* info,
                                      int *socket_fd,
                                      linking_function_t link){
