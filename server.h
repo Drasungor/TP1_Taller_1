@@ -6,9 +6,11 @@
 #include "socket.h"
 #include "client_server_constants.h"
 
+/*
 #define SUCCESS 0
 #define SOCKET_ERROR -1
 #define INVALID_INDICATOR -2
+*/
 
 //all attributes are private
 typedef struct{

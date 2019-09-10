@@ -4,6 +4,10 @@
 #include "client.h"
 #include "server.h"
 
+
+#define SUCCESS 0
+#define ERROR -1
+
 #define CLIENT_MODE_ARGUMENT "client"
 #define SERVER_MODE_ARGUMENT "server"
 #define LOCALHOST_MODE_ARGUMENT "localhost"

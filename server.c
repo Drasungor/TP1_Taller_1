@@ -14,6 +14,13 @@
 #define HORIZONTAL_DIM_PRINTED_BOARD 37
 #define VERTICAL_DIM_PRINTED_BOARD 19
 
+
+#define SUCCESS 0
+#define SOCKET_ERROR -1
+#define CLOSED_SOCKET -2
+#define INVALID_INDICATOR -3
+
+
 static int _send_data(socket_t *sckt, void *message, uint32_t len){
   uint32_t number_to_send = htonl(len);
   //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
