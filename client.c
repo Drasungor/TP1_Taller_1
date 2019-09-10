@@ -24,8 +24,8 @@
 #define INVALID_NUMBER -4
 #define INVALID_COORDINATES -5
 #define EXIT_PROGRAM -6
-#define END_OF_FILE -7
-#define CLOSED_SOCKET -8
+#define CLOSED_SOCKET -7
+#define END_OF_FILE -8
 #define NOT_SIMPLE_COMMAND -9
 
 //If there is an error it prints a message that describes it
@@ -232,7 +232,7 @@ static int _process_input(socket_t *sckt){
 
 int client_init(client_t *client, const char *host, const char *service){
   socket_init(&(client->sckt));
-  return socket_connect(&(client->sckt), host, service) != SUCCESS;
+  return socket_connect(&(client->sckt), host, service);
 }
 
 void client_release(client_t *client){

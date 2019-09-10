@@ -9,13 +9,17 @@
 
 
 #define SUCCESS 0
+#define ERROR -1
+#define CLOSED_SOCKET -2
+#define INVALID_ACTION -3
+
+/*
 #define CONNECTION_ERROR -1
 #define BINDING_ERROR -2
 #define LISTEN_ERROR -3
-#define INVALID_ACTION -4
-#define ACCEPT_ERROR -5
+#define LISTEN_ERROR -5
 #define COMMUNICATION_ERROR -6
-#define CLOSED_SOCKET -7
+*/
 
 
 typedef int (*linking_function_t) (int socket_fd,
@@ -155,12 +159,12 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
   is_bound = _process_info_to_bind(result, &socket_fd, bind);
   freeaddrinfo(result);
   if (!is_bound) {
-    return BINDING_ERROR;
+    return ERROR;
   }
   sckt->fd = socket_fd;
   listen_value = listen(sckt->fd, 1);
   if (listen_value != 0) {
-    return LISTEN_ERROR;
+    return ERROR;
   }
   sckt->is_server = true;
   return SUCCESS;
@@ -172,7 +176,7 @@ int socket_accept(socket_t *sckt){
   }
   sckt->client_fd = accept(sckt->fd, NULL, NULL);
   if (sckt->client_fd == -1) {
-    return ACCEPT_ERROR;
+    return ERROR;
   }
   return SUCCESS;
 }
@@ -196,7 +200,7 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
   is_connected = _process_info_to_connect(result, &socket_fd, connect);
   freeaddrinfo(result);
   if (!is_connected) {
-    return CONNECTION_ERROR;
+    return ERROR;
   }
   sckt->fd = socket_fd;
   sckt->is_client = true;
@@ -222,7 +226,7 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len){
       return CLOSED_SOCKET;
     }
     if (current_bytes_sent < 0) {
-      return COMMUNICATION_ERROR;
+      return ERROR;
     }
     current_address += current_bytes_sent;
     total_bytes_sent += current_bytes_sent;
@@ -250,7 +254,7 @@ int socket_receive(socket_t *sckt, void *buffer, size_t len){
       return CLOSED_SOCKET;
     }
     if (current_bytes_received < 0) {
-      return COMMUNICATION_ERROR;
+      return ERROR;
     }
     current_address += current_bytes_received;
     total_bytes_received += current_bytes_received;
