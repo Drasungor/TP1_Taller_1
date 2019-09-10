@@ -43,7 +43,7 @@ static bool _process_info_to_connect(struct addrinfo* info, int *socket_fd){
     is_connected = _could_connect(info, socket_fd);
     info = info->ai_next;
   }
-  return is_linked;
+  return is_connected;
 }
 
 

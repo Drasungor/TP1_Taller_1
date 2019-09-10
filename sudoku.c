@@ -135,6 +135,9 @@ static char _int_to_char(int n){
 //This function can't be reduced to 15 lines because it's necessary
 //to have an inf for each character that has to be present in the
 //matrix
+//This function returns the character that has to be put in
+//the matrix buffer initialized by the sudoku based in the
+//position (i,j)
 static char _select_char(size_t i, size_t j){
   if (j == HORIZONTAL_DIM_PRINTED_BOARD) {
     return '\n';
@@ -157,6 +160,9 @@ static char _select_char(size_t i, size_t j){
   return ' ';
 }
 
+//Initializes de matrix with the characters thar establish
+//a separation between the numbers in the sudoku that is
+//going to be printed
 static void _set_delimiters(char buffer[VERTICAL_DIM_PRINTED_BOARD]
                                        [HORIZONTAL_DIM_PRINTED_BOARD + 1]){
   for (size_t i = 0; i < VERTICAL_DIM_PRINTED_BOARD; i++) {
@@ -199,12 +205,6 @@ void sudoku_release(sudoku_t *sudoku){
 }
 
 
-//Sets the cell in the position specified to the
-//value written. It fails if a value is below 0 or
-//above 9, the positions (from 1 to 9) are out of bounds
-//or the value that is trying to be changed is one of
-//the default non zero ones. Returns 1 on error and 0
-//on success
 int sudoku_set_number(sudoku_t *sudoku,
                       int number,
                       int vertical_position,
@@ -214,7 +214,6 @@ int sudoku_set_number(sudoku_t *sudoku,
 }
 
 
-//Sets all player set cells to the EMPTY_CELL_VALUE
 void sudoku_reset(sudoku_t *sudoku){
   for (size_t i = 0; i < BOARD_DIMENSION; i++) {
     for (size_t j = 0; j < BOARD_DIMENSION; j++) {
@@ -223,8 +222,7 @@ void sudoku_reset(sudoku_t *sudoku){
   }
 }
 
-//Indicates if the current state of the board follows
-//the rules of the game
+
 bool sudoku_verify(const sudoku_t *sudoku){
   if (!_verify_blocks(sudoku->board)) {
     return false;
