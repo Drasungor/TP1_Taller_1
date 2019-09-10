@@ -18,9 +18,6 @@ typedef struct{
 }socket_t;
 
 
-
-//AGREGAR COMENTARIOS SOBRE LO QUE HACE CADA FUNCION: IMPORTANTE
-
 void socket_init(socket_t *sckt);
 
 void socket_release(socket_t *sckt);
@@ -30,27 +27,39 @@ void socket_release(socket_t *sckt);
 //If it fails the file descriptor value must be ignored and accept
 //shouldn't be called
 //Returns: 0 it it excecutes succesfully
-//         -2 if there is a binding error
-//         -3 if there is a listening error
+//         -1 if there is an error
 int socket_bind_and_listen(socket_t *sckt, const char *service);
 
 
 //Accepts a pending connection
 //Returns 0 if it's successful and -1 if it fails
+//If it didn't bind_and_listen previously returns -3
 int socket_accept(socket_t *sckt);
 
 //Connects to the service of the specified host
 //Returns 0 if it's successful and -1 if it fails
+//if
 int socket_connect(socket_t *sckt, const char *host, const char *service);
 
 //Sends len bytes of the buffer received
-//It fails if the socket is not connected or did not accept a connection,
-//
-
+//It fails if the socket is not connected, didn't
+//accept a connection, or due to errors in sending the message
+//Returns: 0 if it's successful
+//         -1 if there is an error sending the message
+//         -2 if the socket that is going to receive the message
+//          is closed
+//         -3 if the socket didin't accept or connect
 int socket_send(socket_t *sckt, const void *buffer, size_t len);
 
-//Receives len bytes and places them in the buffer
 
+//Receives len bytes and places them in the buffer
+//It fails if the socket is not connected or due
+//to errors in sending the message
+//Returns: 0 if it's successful
+//         -1 if there is an error sending the message
+//         -2 if the socket that is going to receive the message
+//          is closed
+//         -3 if the socket didin't accept or connect
 int socket_receive(socket_t *sckt, void *buffer, size_t len);
 
 #endif
