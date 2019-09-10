@@ -18,7 +18,7 @@
 #define SUCCESS 0
 #define SOCKET_ERROR -1
 #define CLOSED_SOCKET -2
-#define INVALID_INDICATOR -3
+#define FINISHED_IN_ERROR 1
 
 
 static int _send_data(socket_t *sckt, void *message, uint32_t len){
@@ -135,11 +135,13 @@ static int _process_command(server_t *server, char command){
     case RESET_INDICATOR:
       program_state = _reset(server);
       break;
-    default:
-      program_state = INVALID_INDICATOR;
-      break;
   }
   return program_state;
+}
+
+
+static bool _is_program_terminanting_error(int program_status){
+
 }
 
 
@@ -163,15 +165,15 @@ void server_release(server_t *server){
 
 
 int server_operate(server_t *server){
-  int program_state = SUCCESS;
+  int program_status = SUCCESS;
   char command = _receive_command(&(server->sckt));
-  while ((program_state == SUCCESS) && (command != SOCKET_ERROR)) {
-    program_state = _process_command(server, command);
+  while ((program_status == SUCCESS) && (command != SOCKET_ERROR)) {
+    program_status = _process_command(server, command);
     command = _receive_command(&(server->sckt));
   }
 
-  //VA A SALIR SOLO CUANDO RECIBA UN ERROR, XQ LO VA A RECIBIR
-  //CUANDO CIERRE EL SOCKET DEL CLIENTE
-
+  if ((command == SOCKET_ERROR) || (program_status == SOCKET_ERROR)) {
+    return FINISHED_IN_ERROR;
+  }
   return SUCCESS;
 }

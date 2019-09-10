@@ -28,6 +28,7 @@
 #define MEMORY_ERROR -7
 #define END_OF_FILE -8
 #define NOT_SIMPLE_COMMAND -9
+#define FINISHED_IN_ERROR 1
 
 //If there is an error it prints a message that describes it
 static void _print_error(int program_status){
@@ -248,7 +249,7 @@ int client_operate(client_t *client){
     _print_error(program_status);
   } while (!_should_kill_program(program_status));
   if (_is_program_terminanting_error(program_status)) {
-    return 1;
+    return FINISHED_IN_ERROR;
   }
-  return 0;
+  return SUCCESS;
 }
