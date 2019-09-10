@@ -36,11 +36,11 @@ int socket_bind_and_listen(socket_t *sckt, const char *service);
 
 
 //Accepts a pending connection
-
+//Returns 0 if it's successful and -1 if it fails
 int socket_accept(socket_t *sckt);
 
 //Connects to the service of the specified host
-
+//Returns 0 if it's successful and -1 if it fails
 int socket_connect(socket_t *sckt, const char *host, const char *service);
 
 //Sends len bytes of the buffer received
