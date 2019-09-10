@@ -7,9 +7,9 @@
 #define SUDOKU_VERIFIES "OK\n"
 #define SUDOKU_DOESNT_VERIFY "ERROR\n"
 #define PUT_BYTES_RECEIVED 4
-#define PUT_INDEX_NUMBER 0
-#define PUT_INDEX_VERTICAL_POS 1
-#define PUT_INDEX_HORIZONTAL_POS 2
+#define NUMBER_INDEX 0
+#define VER_POS_INDEX 1
+#define HOR_POS_INDEX 2
 #define NON_MODIFIABLE_CELL_MESSAGE "La celda indicada no es modificable\n"
 #define HORIZONTAL_DIM_PRINTED_BOARD 37
 #define VERTICAL_DIM_PRINTED_BOARD 19
@@ -23,25 +23,16 @@
 
 static int _send_data(socket_t *sckt, void *message, uint32_t len){
   uint32_t number_to_send = htonl(len);
-  //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
   int program_status = socket_send(sckt, &number_to_send, sizeof(uint32_t));
   if (program_status != SUCCESS) {
     return program_status;
   }
-  //HACER CHEQUEO DE SI EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
-  /*
-  if (socket_send(sckt, message, len) != SUCCESS) {
-    return SOCKET_ERROR;
-  }
-  return SUCCESS;
-  */
   return socket_send(sckt, message, len);
 }
 
 
 static char _receive_command(socket_t *sckt){
   char command = 0;
-  //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
   int program_status = socket_receive(sckt, &command, sizeof(char));
   if (program_status != SUCCESS) {
     return program_status;
@@ -56,46 +47,28 @@ static int _get(server_t *server){
   char board[VERTICAL_DIM_PRINTED_BOARD][HORIZONTAL_DIM_PRINTED_BOARD + 1];
 
   sudoku_handler_get_board(&(server->sudoku_handler), board);
-  //HACER CHEQUEO POR SI EL SOCKET ESTÁ CERRADO
   return _send_data(&(server->sckt), board, bytes_to_send);
-  //int program_status = _send_data(&(server->sckt), board, bytes_to_send);
-  /*
-  if (program_status != SUCCESS) {
-    return program_status;
-  }
-  return SUCCESS;
-  */
 }
 
 static int _put(server_t *server){
   char *message = NON_MODIFIABLE_CELL_MESSAGE;
   uint8_t values[PUT_BYTES_RECEIVED-1];
   size_t bytes_to_send = (PUT_BYTES_RECEIVED-1) * sizeof(uint8_t);
-  //HACER CHEQUEO DE SI ES QUE EL SOCKET ESTA CERRADO O SI HUBO UN ERROR
   int program_status = socket_receive(&(server->sckt), values, bytes_to_send);
   if (program_status != SUCCESS) {
     return program_status;
   }
-  //CAMBIAR EL LLAMADO AL ARRAY EN CADA POSICION POR EL NOMBRE
-  //DE UNA VARIABLE ASIGNADA ANTES O PONER DIRECTAMENTE EL INDICE
-  //(PERO HACIENDO ESO TAL VEZ NO SE ENTIENDE FACIL AL LEER)
   program_status = sudoku_handler_set_number(&(server->sudoku_handler),
-//VER SI CONVIENE USAR CONSTANTES
-                                             values[0],
-                                             values[1],
-                                             values[2]);
+                                             values[NUMBER_INDEX],
+                                             values[VER_POS_INDEX],
+                                             values[HOR_POS_INDEX]);
   if (program_status != SUCCESS) {
     program_status = _send_data(&(server->sckt), message, strlen(message));
     if (program_status != SUCCESS) {
       return program_status;
     }
   }
-  /* else {
-    //HACER CHEQUEO DE VALOR DE RETORNO DE GET
-  }
-  */
   return _get(server);
-  //return SUCCESS;
 }
 
 static int _verify(server_t *server){
@@ -103,12 +76,6 @@ static int _verify(server_t *server){
   if (!sudoku_handler_verify(&(server->sudoku_handler))) {
     message = SUDOKU_DOESNT_VERIFY;
   }
-  /*
-  if (send_data(&(server->sckt), message, strlen(message)) != SUCCESS) {
-    return SOCKET_ERROR;
-  }
-  return SUCCESS;
-  */
   return _send_data(&(server->sckt), message, strlen(message));
 }
 
@@ -137,11 +104,6 @@ static int _process_command(server_t *server, char command){
       break;
   }
   return program_state;
-}
-
-
-static bool _is_program_terminanting_error(int program_status){
-
 }
 
 
