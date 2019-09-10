@@ -17,6 +17,7 @@
 //VER SI HAY QUE SACAR LAS CONSTANTES
 //DE ESTOS STRINGS PARA SER CONSISTENTE
 #define INVALID_SERVER_ERROR_MESSAGE "Uso: ./tp server <puerto>\n"
+#define INVALID_CLIENT_ERROR_MESSAGE "Uso: ./tp client <hostname-servidor> <puerto>"
 
 static bool _strings_are_equal(const char *str_1,
                                const char *str_2,

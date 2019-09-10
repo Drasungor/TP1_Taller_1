@@ -107,6 +107,12 @@ static int _process_command(server_t *server, char command){
 }
 
 
+static bool _program_should_run(int program_status, char command){
+  return program_status == SUCCESS &&
+         command != ERROR &&
+         command != CLOSED_SOCKET;
+}
+
 int server_init(server_t *server, const char *service){
   int program_state = sudoku_handler_init(&(server->sudoku_handler));
   if (program_state != SUCCESS) {
@@ -129,11 +135,10 @@ void server_release(server_t *server){
 int server_operate(server_t *server){
   int program_status = SUCCESS;
   char command = _receive_command(&(server->sckt));
-  while ((program_status == SUCCESS) && (command != ERROR)) {
+  while (_program_should_run(program_status, command)) {
     program_status = _process_command(server, command);
     command = _receive_command(&(server->sckt));
   }
-
   if ((command == ERROR) || (program_status == ERROR)) {
     return FINISHED_IN_ERROR;
   }
