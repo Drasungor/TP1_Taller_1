@@ -18,6 +18,7 @@ typedef struct{
   socket_t sckt;
 }server_t;
 
+//Initializes
 int server_init(server_t *server, const char *service);
 
 void server_release(server_t *server);

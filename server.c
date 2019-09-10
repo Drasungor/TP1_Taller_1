@@ -16,7 +16,7 @@
 
 
 #define SUCCESS 0
-#define SOCKET_ERROR -1
+#define ERROR -1
 #define CLOSED_SOCKET -2
 #define FINISHED_IN_ERROR 1
 
@@ -110,12 +110,12 @@ static int _process_command(server_t *server, char command){
 int server_init(server_t *server, const char *service){
   int program_state = sudoku_handler_init(&(server->sudoku_handler));
   if (program_state != SUCCESS) {
-    return program_state;
+    return ERROR;
   }
   socket_init(&(server->sckt));
   program_state = socket_bind_and_listen(&(server->sckt), service);
   if (program_state != SUCCESS) {
-    return program_state;
+    return ERROR;
   }
   return socket_accept(&(server->sckt));
 }

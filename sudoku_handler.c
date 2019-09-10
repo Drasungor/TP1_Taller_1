@@ -6,10 +6,8 @@
 #define BOARD_FILE_NAME "board.txt"
 
 #define SUCCESS 0
-#define INVALID_NUMBER -1
-#define OUT_OF_BOUNDS -2
-#define FILE_ERROR -3
-#define MEMORY_ERROR -4
+#define FILE_ERROR -1
+#define MEMORY_ERROR -2
 
 static int _char_to_int(char c){
   return c - 48;
