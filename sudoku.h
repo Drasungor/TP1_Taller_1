@@ -36,7 +36,7 @@ int sudoku_set_number(sudoku_t *sudoku,
                       int horizontal_position);
 
 
-//Sets all player set cells to 0
+//Sets all  cells set by the player to 0
 void sudoku_reset(sudoku_t *sudoku);
 
 //Indicates if the current state of the board follows
