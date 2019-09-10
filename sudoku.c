@@ -5,9 +5,6 @@
 #include "cell.h"
 
 #define BLOCK_DIMENSION 3
-#define CHARACTERS_BY_LINE 18
-
-#define SUCCESS 0
 
 typedef bool (*visit_t)(void*, void*);
 

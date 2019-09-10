@@ -247,7 +247,6 @@ void client_release(client_t *client){
   socket_release(&(client->sckt));
 }
 
-
 int client_operate(client_t *client){
   int program_status = 0;
   do {
