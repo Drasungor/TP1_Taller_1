@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-#include "socket.h"
 #include "remote_sudoku.h"
 
 int main(int argc, char const *argv[]) {

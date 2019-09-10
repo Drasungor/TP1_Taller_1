@@ -8,6 +8,7 @@
 
 typedef bool (*visit_t)(void*, void*);
 
+
 //auxiliar struct to reduce the repeted values'
 //checker firm lenght
 //It determines a region in a matrix that goes from
@@ -35,6 +36,7 @@ static void _set_row_limits(limits_t *limits, size_t i){
   limits->last_j = BOARD_DIMENSION;
 }
 
+
 static void _set_column_limits(limits_t *limits, size_t j){
   limits->first_i = 0;
   limits->last_i = BOARD_DIMENSION;
@@ -51,12 +53,14 @@ static bool _is_in_array(int array[], size_t data_size, int n){
   return false;
 }
 
+
 static void _add_to_checker_array(int array[], size_t* data_size, int n){
   if (n != EMPTY_CELL_VALUE) {
     array[*data_size] = n;
     (*data_size)++;
   }
 }
+
 
 //checks if the area delimited has repeated values
 //that go from 1 to 9
@@ -107,6 +111,7 @@ static bool _verify_rows(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION]){
   return true;
 }
 
+
 static bool _verify_columns(const cell_t board[BOARD_DIMENSION]
                                               [BOARD_DIMENSION]){
   limits_t limits;
@@ -118,7 +123,6 @@ static bool _verify_columns(const cell_t board[BOARD_DIMENSION]
   }
   return true;
 }
-
 
 
 static char _int_to_char(int n){
@@ -157,6 +161,7 @@ static char _select_char(size_t i, size_t j){
   return ' ';
 }
 
+
 //Initializes de matrix with the characters thar establish
 //a separation between the numbers in the sudoku that is
 //going to be printed
@@ -168,6 +173,7 @@ static void _set_delimiters(char buffer[VERTICAL_DIM_PRINTED_BOARD]
     }
   }
 }
+
 
 static void _set_numbers(const cell_t board[BOARD_DIMENSION][BOARD_DIMENSION],
                          char buffer[VERTICAL_DIM_PRINTED_BOARD]

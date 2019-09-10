@@ -24,6 +24,7 @@ void sudoku_init(sudoku_t *sudoku,
 
 void sudoku_release(sudoku_t *sudoku);
 
+
 //Sets the cell in the position specified to the
 //value written. It fails if a value is below 0 or
 //above 9, the positions (from 0 to 8) are out of bounds
@@ -39,13 +40,13 @@ int sudoku_set_number(sudoku_t *sudoku,
 //Sets all  cells set by the player to 0
 void sudoku_reset(sudoku_t *sudoku);
 
+
 //Indicates if the current state of the board follows
 //the rules of the game
 bool sudoku_verify(const sudoku_t *sudoku);
 
-//Copies the current state of the sudoku in the matrix
 
-//Copies the current state of the board in destiny
+//Copies the current state of the board in the buffer
 //VER SI CONVIENE DEVOLVER UN PUNTERO CON MEMORIA DINAMICA
 void sudoku_get_board(const sudoku_t *sudoku,
                       char buffer[VERTICAL_DIM_PRINTED_BOARD]

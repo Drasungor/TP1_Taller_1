@@ -58,9 +58,11 @@ int sudoku_handler_init(sudoku_handler_t *sudoku_handler){
   return SUCCESS;
 }
 
+
 void sudoku_handler_release(sudoku_handler_t *sudoku_handler){
   sudoku_release(&(sudoku_handler->sudoku));
 }
+
 
 int sudoku_handler_set_number(sudoku_handler_t *sudoku_handler,
                               int number,
@@ -71,13 +73,16 @@ int sudoku_handler_set_number(sudoku_handler_t *sudoku_handler,
                            horizontal_position);
 }
 
+
 void sudoku_handler_reset(sudoku_handler_t *sudoku_handler){
   sudoku_reset(&(sudoku_handler->sudoku));
 }
 
+
 bool sudoku_handler_verify(sudoku_handler_t *sudoku_handler){
   return sudoku_verify(&(sudoku_handler->sudoku));
 }
+
 
 void sudoku_handler_get_board(sudoku_handler_t *sudoku_handler,
                               char buffer[VERTICAL_DIM_PRINTED_BOARD]

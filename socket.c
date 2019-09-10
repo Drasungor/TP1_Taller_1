@@ -18,6 +18,7 @@ typedef int (*linking_function_t) (int socket_fd,
                                    const struct sockaddr *addr,
                                    socklen_t addr_len);
 
+
 //Tries a getspecific socket and establish a connection, returns true
 //if it acomplishes, otherwise returns false
 static bool _could_connect(struct addrinfo* info, int *socket_fd){
@@ -45,66 +46,6 @@ static bool _process_info_to_connect(struct addrinfo* info, int *socket_fd){
   }
   return is_connected;
 }
-
-
-/*
-//Tries to get a socket with the information provided by info
-//and tries to establish a connection
-static bool _process_info_to_connect(struct addrinfo* info, int *socket_fd){
-  int link_value = 0;
-  bool is_linked = false;
-
-  while ((info != NULL) && (!is_linked)) {
-    *socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
-    if (*socket_fd != -1) {
-      link_value = connect(*socket_fd, info->ai_addr, info->ai_addrlen);
-      if (link_value == -1) {
-        close(*socket_fd);
-      } else{
-        is_linked = true;
-      }
-    }
-    info = info->ai_next;
-  }
-  return is_linked;
-}
-*/
-
-
-/*
-//Tries to get a socket with the information provided by info
-//and tries to bind this socket to the address and listen to
-//connections
-static bool _process_info_to_bind(struct addrinfo* info, int *socket_fd){
-  int link_value = 0;
-  bool is_linked = false;
-  int val = 1;
-  int set_value = 0;
-  while ((info != NULL) && (!is_linked)) {
-    *socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
-    if (*socket_fd != -1) {
-      val = 1;
-      set_value = setsockopt(*socket_fd,
-                             SOL_SOCKET,
-                             SO_REUSEADDR,
-                             &val,
-                             sizeof(int));
-      if (set_value == -1) {
-        close(*socket_fd);
-      } else {
-        link_value = bind(*socket_fd, info->ai_addr, info->ai_addrlen);
-        if (link_value == -1) {
-          close(*socket_fd);
-        } else{
-          is_linked = true;
-        }
-      }
-    }
-    info = info->ai_next;
-  }
-  return is_linked;
-}
-*/
 
 
 //This function can't be reduced to 15 lines due to error
@@ -164,12 +105,14 @@ static void _set_hints(struct addrinfo *hints){
   hints->ai_socktype = SOCK_STREAM;
 }
 
+
 void socket_init(socket_t *sckt){
   sckt->fd = -1;
   sckt->is_client = false;
   sckt->is_server = false;
   sckt->client_fd = 0;
 }
+
 
 void socket_release(socket_t *sckt){
   if (sckt->is_server) {
@@ -181,6 +124,7 @@ void socket_release(socket_t *sckt){
     close(sckt->fd);
   }
 }
+
 
 //This function can't be reduced to 15 lines bcause of error
 //checking and initializacion
@@ -216,6 +160,7 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
   return SUCCESS;
 }
 
+
 int socket_accept(socket_t *sckt){
   if (!sckt->is_server) {
     return INVALID_ACTION;
@@ -226,6 +171,7 @@ int socket_accept(socket_t *sckt){
   }
   return SUCCESS;
 }
+
 
 //This function can't be reduced to 15 lines bcause of error
 //checking and initializacion
@@ -255,6 +201,7 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
   return SUCCESS;
 }
 
+
 //This function can't be reduced to 15 lines because all the error checking is
 //necessary and irreducible, as well as the variables initialization
 int socket_send(socket_t *sckt, const void *buffer, size_t len){
@@ -281,6 +228,7 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len){
   }
   return SUCCESS;
 }
+
 
 //This function can't be reduced to 15 lines because all the error checking is
 //necessary and irreducible, as well as the variables initialization

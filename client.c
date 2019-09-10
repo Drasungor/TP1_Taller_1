@@ -45,6 +45,7 @@ static void _print_error(int program_status){
   }
 }
 
+
 static bool _strings_are_equal(char *command, char *input, size_t size){
   if (strlen(command) != size) {
     return false;
@@ -60,6 +61,7 @@ static bool _is_program_terminanting_error(int program_status){
   return (program_status == SOCKET_ERROR) || (program_status == MEMORY_ERROR);
 }
 
+
 static bool _is_program_terminanting_value(int program_status){
   if (program_status == EXIT_PROGRAM) {
     return true;
@@ -72,6 +74,7 @@ static bool _is_program_terminanting_value(int program_status){
   }
   return false;
 }
+
 
 static bool _should_kill_program(int program_status){
   return _is_program_terminanting_value(program_status) ||
@@ -87,6 +90,7 @@ static bool _is_valid_position(int position){
 static bool _is_valid_number(int n){
   return (n >= 1) && (n <= 9);
 }
+
 
 //Indicates if the input is a valid format for the command put
 //and puts in data the information that is goint to be sent to
@@ -123,6 +127,7 @@ static void _print_message(char* message, size_t size){
   printf("%s", message);
 }
 
+
 //Prints the message that is received
 static int _print_answer(socket_t *sckt){
   uint32_t message_size;
@@ -139,6 +144,7 @@ static int _print_answer(socket_t *sckt){
   _print_message(message, message_size);
   return SUCCESS;
 }
+
 
 //Excecutes the processes necessary to obtain the answer to a
 //command that only needs to send it's indicator to be executed
@@ -191,6 +197,7 @@ static char _get_command_indicator(char *input, size_t size){
   return NOT_SIMPLE_COMMAND;
 }
 
+
 //If the input is a valid command it executes it, otherwise returns error
 static int _execute_command(socket_t *sckt, char *input, size_t size){
   char indicator = _get_command_indicator(input, size);
@@ -202,7 +209,6 @@ static int _execute_command(socket_t *sckt, char *input, size_t size){
     return _obtain_answer_simple(sckt, indicator);
   }
 }
-
 
 
 void _clean_input(char* input, size_t *size){
@@ -245,9 +251,11 @@ int client_init(client_t *client, const char *host, const char *service){
   return socket_connect(&(client->sckt), host, service);
 }
 
+
 void client_release(client_t *client){
   socket_release(&(client->sckt));
 }
+
 
 int client_operate(client_t *client){
   int program_status = 0;

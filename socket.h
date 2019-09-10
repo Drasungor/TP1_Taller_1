@@ -20,7 +20,9 @@ typedef struct{
 
 void socket_init(socket_t *sckt);
 
+
 void socket_release(socket_t *sckt);
+
 
 //Tries to bind to the service and sets the socket as a server,
 //listening to any pending connection
@@ -36,10 +38,12 @@ int socket_bind_and_listen(socket_t *sckt, const char *service);
 //If it didn't bind_and_listen previously returns -3
 int socket_accept(socket_t *sckt);
 
+
 //Connects to the service of the specified host
 //Returns 0 if it's successful and -1 if it fails
 //if
 int socket_connect(socket_t *sckt, const char *host, const char *service);
+
 
 //Sends len bytes of the buffer received
 //It fails if the socket is not connected, didn't
@@ -61,5 +65,6 @@ int socket_send(socket_t *sckt, const void *buffer, size_t len);
 //          is closed
 //         -3 if the socket didin't accept or connect
 int socket_receive(socket_t *sckt, void *buffer, size_t len);
+
 
 #endif

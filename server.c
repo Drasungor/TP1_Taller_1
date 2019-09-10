@@ -49,6 +49,7 @@ static int _get(server_t *server){
   return _send_data(&(server->sckt), board, bytes_to_send);
 }
 
+
 static int _put(server_t *server){
   char *message = NON_MODIFIABLE_CELL_MESSAGE;
   uint8_t values[PUT_BYTES_RECEIVED-1];
@@ -70,6 +71,7 @@ static int _put(server_t *server){
   return _get(server);
 }
 
+
 static int _verify(server_t *server){
   char *message = SUDOKU_VERIFIES;
   if (!sudoku_handler_verify(&(server->sudoku_handler))) {
@@ -82,6 +84,7 @@ static int _reset(server_t *server){
   sudoku_handler_reset(&(server->sudoku_handler));
   return _get(server);
 }
+
 
 //This function can't be reduced to 15 lines because all the indicators have
 //to be checked and it makes no sense to separate the indicator checking in
@@ -112,6 +115,7 @@ static bool _program_should_run(int program_status, char command){
          command != CLOSED_SOCKET;
 }
 
+
 int server_init(server_t *server, const char *service){
   int program_state = sudoku_handler_init(&(server->sudoku_handler));
   if (program_state != SUCCESS) {
@@ -124,6 +128,7 @@ int server_init(server_t *server, const char *service){
   }
   return socket_accept(&(server->sckt));
 }
+
 
 void server_release(server_t *server){
   sudoku_handler_release(&(server->sudoku_handler));

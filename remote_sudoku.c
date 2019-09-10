@@ -27,6 +27,7 @@ static bool _strings_are_equal(const char *str_1,
   return true;
 }
 
+
 static int _execute_as_client(const char *host, const char *port){
   client_t client;
   size_t host_len = strlen(host);
@@ -43,6 +44,7 @@ static int _execute_as_client(const char *host, const char *port){
   return SUCCESS;
 }
 
+
 static int _execute_as_server(const char *port){
   server_t server;
   if (server_init(&server, port) != SUCCESS) {
@@ -54,6 +56,7 @@ static int _execute_as_server(const char *port){
   server_release(&server);
   return SUCCESS;
 }
+
 
 static bool _is_valid_client_command(const char *mode, int number_of_arguments){
   if (number_of_arguments != NUMBER_ARGUMENTS_CLIENT) {
