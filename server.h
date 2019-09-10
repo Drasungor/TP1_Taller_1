@@ -18,7 +18,8 @@ typedef struct{
   socket_t sckt;
 }server_t;
 
-//Initializes
+//Initializes the servers' elements
+//Returns 0 if it's successful and -1 if it fails
 int server_init(server_t *server, const char *service);
 
 void server_release(server_t *server);
