@@ -13,21 +13,13 @@
 #define CLOSED_SOCKET -2
 #define INVALID_ACTION -3
 
-/*
-#define CONNECTION_ERROR -1
-#define BINDING_ERROR -2
-#define LISTEN_ERROR -3
-#define LISTEN_ERROR -5
-#define COMMUNICATION_ERROR -6
-*/
-
 
 typedef int (*linking_function_t) (int socket_fd,
                                    const struct sockaddr *addr,
                                    socklen_t addr_len);
 
-
-
+//Tries to get a socket with the information provided by info
+//and tries to establish a connection
 static bool _process_info_to_connect(struct addrinfo* info,
                                      int *socket_fd,
                                      linking_function_t link){
@@ -49,7 +41,9 @@ static bool _process_info_to_connect(struct addrinfo* info,
   return is_linked;
 }
 
-
+//Tries to get a socket with the information provided by info
+//and tries to bind this socket to the address and listen to
+//connections
 static bool _process_info_to_bind(struct addrinfo* info,
                                      int *socket_fd,
                                      linking_function_t link){
