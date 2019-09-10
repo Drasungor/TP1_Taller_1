@@ -8,15 +8,17 @@
 
 
 #define EXIT_INDICATOR 'E'
-#define GET_COMMAND "get"
 
+#define GET_COMMAND "get"
 #define VERIFY_COMMAND "verify"
 #define RESET_COMMAND "reset"
 #define EXIT_COMMAND "exit"
 #define PUT_COMMAND_FORMAT "put %d in %d,%d"
 #define NUMBER_OF_INPUTS_PUT 3
 #define MAX_RECEIVABLE_LENGHT 722
-
+#define NUMBER_INDEX 0
+#define VER_POS_INDEX 1
+#define HOR_POS_INDEX 2
 
 #define SUCCESS 0
 #define SOCKET_ERROR -1
@@ -109,9 +111,9 @@ static int _put_command_validation(char *input, size_t size, uint8_t data[3]){
         _is_valid_position(horizontal_position))) {
     return INVALID_COORDINATES;
   }
-  data[0] = number;
-  data[1] = vertical_position;
-  data[2] = horizontal_position;
+  data[NUMBER_INDEX] = number;
+  data[VER_POS_INDEX] = vertical_position;
+  data[HOR_POS_INDEX] = horizontal_position;
   return SUCCESS;
 }
 
