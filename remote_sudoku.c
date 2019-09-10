@@ -14,10 +14,6 @@
 #define NUMBER_ARGUMENTS_CLIENT 3
 #define NUMBER_ARGUMENTS_SERVER 2
 
-//VER SI HAY QUE SACAR LAS CONSTANTES
-//DE ESTOS STRINGS PARA SER CONSISTENTE
-#define INVALID_SERVER_ERROR_MESSAGE "Uso: ./tp server <puerto>\n"
-#define INVALID_CLIENT_ERROR_MESSAGE "Uso: ./tp client <hostname-servidor> <puerto>"
 
 static bool _strings_are_equal(const char *str_1,
                                const char *str_2,
@@ -81,9 +77,9 @@ static bool _is_valid_server_command(const char *mode, int number_of_arguments){
 
 static void _comunicate_mode_error(const char *mode){
   if (_strings_are_equal(mode, CLIENT_MODE_ARGUMENT, strlen(mode))) {
-    fprintf(stderr, INVALID_CLIENT_ERROR_MESSAGE);
+    fprintf(stderr, "Uso: ./tp client <hostname-servidor> <puerto>");
   } else if (_strings_are_equal(mode, SERVER_MODE_ARGUMENT, strlen(mode))){
-    fprintf(stderr, INVALID_SERVER_ERROR_MESSAGE);
+    fprintf(stderr, "Uso: ./tp server <puerto>\n");
   }
 }
 
