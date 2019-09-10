@@ -16,6 +16,7 @@ static int _char_to_int(char c){
 
 //This function can't be reduced to 15 lines due to variable
 //initialization and error checking
+//Initializes the matrix with the values found in the file
 static int _board_file_to_matrix(FILE *file,
                                  int matrix[BOARD_DIMENSION][BOARD_DIMENSION]){
   char *line;
