@@ -82,7 +82,8 @@ static int _put(server_t *server){
     if (program_status != SUCCESS) {
       return program_status;
     }
-  }/* else {
+  }
+  /* else {
     //HACER CHEQUEO DE VALOR DE RETORNO DE GET
   }
   */

@@ -80,7 +80,11 @@ static bool _process_info_to_bind(struct addrinfo* info,
     *socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
     if (*socket_fd != -1) {
       val = 1;
-      set_value = setsockopt(*socket_fd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int));
+      set_value = setsockopt(*socket_fd,
+                             SOL_SOCKET,
+                             SO_REUSEADDR,
+                             &val,
+                             sizeof(int));
       if (set_value == -1) {
         close(*socket_fd);
       } else {
