@@ -1,4 +1,3 @@
-#define _POSIX_C_SOURCE 200112L
 #include <string.h>
 #include "server.h"
 #include "sudoku_handler.h"
