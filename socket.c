@@ -18,11 +18,39 @@ typedef int (*linking_function_t) (int socket_fd,
                                    const struct sockaddr *addr,
                                    socklen_t addr_len);
 
+//Tries a getspecific socket and establish a connection, returns true
+//if it acomplishes, otherwise returns false
+static bool _could_connect(struct addrinfo* info, int *socket_fd){
+  int connect_value = 0;
+  *socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
+  if (*socket_fd != -1) {
+    connect_value = connect(*socket_fd, info->ai_addr, info->ai_addrlen);
+    if (connect_value == -1) {
+      close(*socket_fd);
+    } else{
+      return true;
+    }
+  }
+  return false;
+}
+
+
 //Tries to get a socket with the information provided by info
 //and tries to establish a connection
-static bool _process_info_to_connect(struct addrinfo* info,
-                                     int *socket_fd,
-                                     linking_function_t link){
+static bool _process_info_to_connect(struct addrinfo* info, int *socket_fd){
+  bool is_connected = false;
+  while ((info != NULL) && (!is_connected)) {
+    is_connected = _could_connect(info, socket_fd);
+    info = info->ai_next;
+  }
+  return is_linked;
+}
+
+
+/*
+//Tries to get a socket with the information provided by info
+//and tries to establish a connection
+static bool _process_info_to_connect(struct addrinfo* info, int *socket_fd){
   int link_value = 0;
   bool is_linked = false;
 
@@ -40,13 +68,14 @@ static bool _process_info_to_connect(struct addrinfo* info,
   }
   return is_linked;
 }
+*/
 
+
+/*
 //Tries to get a socket with the information provided by info
 //and tries to bind this socket to the address and listen to
 //connections
-static bool _process_info_to_bind(struct addrinfo* info,
-                                     int *socket_fd,
-                                     linking_function_t link){
+static bool _process_info_to_bind(struct addrinfo* info, int *socket_fd){
   int link_value = 0;
   bool is_linked = false;
   int val = 1;
@@ -74,6 +103,50 @@ static bool _process_info_to_bind(struct addrinfo* info,
     info = info->ai_next;
   }
   return is_linked;
+}
+*/
+
+
+//This function can't be reduced to 15 lines due to error
+//checking
+//Tries get a socket and bind, returns true
+//if it acomplishes, otherwise returns false
+static bool _could_bind(struct addrinfo* info, int *socket_fd){
+  int val = 1;
+  int set_value = 0;
+  int bind_value = 0;
+  *socket_fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
+  if (*socket_fd != -1) {
+    set_value = setsockopt(*socket_fd,
+                           SOL_SOCKET,
+                           SO_REUSEADDR,
+                           &val,
+                           sizeof(int));
+    if (set_value == -1) {
+      close(*socket_fd);
+    } else {
+      bind_value = bind(*socket_fd, info->ai_addr, info->ai_addrlen);
+      if (bind_value == -1) {
+        close(*socket_fd);
+      } else{
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+
+//Tries to get a socket with the information provided by info
+//and tries to bind this socket to the address and listen to
+//connections
+static bool _process_info_to_bind(struct addrinfo* info, int *socket_fd){
+  bool is_bound = false;
+  while ((info != NULL) && (!is_bound)) {
+    is_bound = _could_bind(info, socket_fd);
+    info = info->ai_next;
+  }
+  return is_bound;
 }
 
 
@@ -109,6 +182,8 @@ void socket_release(socket_t *sckt){
   }
 }
 
+//This function can't be reduced to 15 lines bcause of error
+//checking and initializacion
 int socket_bind_and_listen(socket_t *sckt, const char *service){
   if (sckt->is_client) {
     return false;
@@ -127,7 +202,7 @@ int socket_bind_and_listen(socket_t *sckt, const char *service){
   if (info_result != 0) {
     return info_result;
   }
-  is_bound = _process_info_to_bind(result, &socket_fd, bind);
+  is_bound = _process_info_to_bind(result, &socket_fd);
   freeaddrinfo(result);
   if (!is_bound) {
     return ERROR;
@@ -152,6 +227,8 @@ int socket_accept(socket_t *sckt){
   return SUCCESS;
 }
 
+//This function can't be reduced to 15 lines bcause of error
+//checking and initializacion
 int socket_connect(socket_t *sckt, const char *host, const char *service){
   if (sckt->is_server) {
     return false;
@@ -168,7 +245,7 @@ int socket_connect(socket_t *sckt, const char *host, const char *service){
   if (info_result != 0) {
     return info_result;
   }
-  is_connected = _process_info_to_connect(result, &socket_fd, connect);
+  is_connected = _process_info_to_connect(result, &socket_fd);
   freeaddrinfo(result);
   if (!is_connected) {
     return ERROR;
